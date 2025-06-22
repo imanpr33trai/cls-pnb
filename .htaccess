@@ -1,0 +1,12 @@
+# Enable the rewrite engine
+RewriteEngine On
+
+# To prevent a rewrite loop, make sure the request is not for an existing file
+RewriteCond %{REQUEST_FILENAME} !-f
+# And make sure the request is not for an existing directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# THE REWRITE RULE
+# This rule captures the slug from the URL `category/the-slug-is-here`
+# and passes it to `single-category.php` as a `slug` parameter.
+RewriteRule ^category/([a-zA-Z0-9-]+)/?$ single-category.php?slug=$1 [L,QSA]
