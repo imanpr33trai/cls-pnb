@@ -220,9 +220,15 @@ a:hover {
   background-color: var(--theme-color-pink);
   color: var(--theme-color-white);
   border: 1px solid var(--theme-color-pink);
-  padding: 13px 33px;
+  padding: 0px 20px;
   transition: all ease 0.5s;
   font-size: 16px;
+  flex-wrap: nowrap;
+  height: 50px;
+  display: flex;
+  /* width: fit-content; */
+  justify-content: center;
+  align-items: center;
 }
 .theme-btn:hover {
   background: transparent;
@@ -283,8 +289,6 @@ header select option {
 /* header part */
 /* header part */
 
-
-
 /* popups and header searches */
 /* popups and header searches */
 /* popups and header searches */
@@ -292,139 +296,150 @@ header select option {
 /* popups and header searches */
 /* popups and header searches */
 /* popups and header searches */
- /* You can include this CSS to animate the mic icon while listening */
+/* You can include this CSS to animate the mic icon while listening */
 #startVoiceSearch.listening {
-    animation: pulse 1s infinite;
+  animation: pulse 1s infinite;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.2); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.8; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
 }
 .voice-overlay {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
-    overflow-y: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .voice-box {
-    width: 100%;
-    max-width: 600px;
+  width: 100%;
+  max-width: 600px;
 }
 
 .voice-overlay.d-none {
-    display: none;
+  display: none;
 }
 
 /* keyword search */
 /* keyword search */
 
-    #overlay {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-        color:white;
-      overflow-y: auto;
+#overlay {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+  overflow-y: auto;
 
-      border-top: 2px solid #ddd;
-      box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-      padding: 20px;
-    }
-    #overlay a{
-        color:white;
-    }
-    #overlay .loader {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+  border-top: 2px solid #ddd;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 20px;
+}
+#overlay a {
+  color: white;
+}
+#overlay .loader {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    .loader img {
-      width: 50px;
-      animation: spin 1s linear infinite;
-    }
+.loader img {
+  width: 50px;
+  animation: spin 1s linear infinite;
+}
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
-    .single-result {
-      padding: 15px;
-      border-bottom: 1px solid #eee;
-    }
+.single-result {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
 
-    .single-result h5 {
-      margin-bottom: 5px;
-    }
+.single-result h5 {
+  margin-bottom: 5px;
+}
 
-    .close-btn {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #fff;
-    }
-
+.close-btn {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #fff;
+}
 
 /* keyword search */
 /* keyword search */
-
 
 /* header popup */
 /* header popup */
 /* header popup */
 /* header popup */
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .popup-content {
-    background: white;
-    max-width: 600px;
-    width: 100%;
-    border-radius: 10px;
-    position: relative;
+  background: white;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 10px;
+  position: relative;
 }
 
 .close-popup {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    background: transparent;
-    border: none;
-    font-size: 28px;
-    color: #333;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #333;
+  cursor: pointer;
 }
 
 .head-search-area select,
 .head-search-area input {
-    font-size: 14px;
+  font-size: 14px;
 }
 /* header popup */
 /* header popup */
@@ -436,13 +451,6 @@ header select option {
 /* popups and header searches */
 /* popups and header searches */
 /* popups and header searches */
-
-
-
-
-
-
-
 
 /* hero sec */
 /* hero sec */
@@ -528,7 +536,7 @@ header select option {
   outline: none;
   background-color: transparent;
 }
-.search-posts-input-cont{
+.search-posts-input-cont {
   flex-grow: 1;
   display: flex;
   width: 100%;
@@ -544,15 +552,8 @@ header select option {
   border: none !important;
 }
 
-
-
-
-
-
-
-
-.inner-search-container-new .main-search-con{
-    background-color: #f5f5f5;
+.inner-search-container-new .main-search-con {
+  background-color: #f5f5f5;
   border-radius: 48px;
   padding: 13px 17px 15px 17px;
   max-width: 532px;
@@ -563,13 +564,13 @@ header select option {
   outline: none;
   background-color: transparent;
 }
-.inner-search-container-new .search-posts-input-cont{
+.inner-search-container-new .search-posts-input-cont {
   flex-grow: 1;
   display: flex;
   width: 100%;
 }
-.inner-search-container-new .search-posts-input-cont img{
-filter: invert(1);
+.inner-search-container-new .search-posts-input-cont img {
+  filter: invert(1);
 }
 .inner-search-container-new .search-posts-input-cont input {
   background: transparent;
@@ -582,13 +583,13 @@ filter: invert(1);
   padding: 7px 13px;
 }
 
-
-
-
-
-.header-links-new .main-search-con{
+.header-links-new .main-search-con {
   background-color: #383838;
-  padding: 7px 13px;
+  /* padding: 7px 13px; */
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 10px;
 }
 .header-links-new .posts-search {
   background-color: transparent;
@@ -601,7 +602,7 @@ filter: invert(1);
   color: #707070;
   font-size: 20px;
 }
- .header-links-new .search-posts-input-cont input {
+.header-links-new .search-posts-input-cont input {
   background-color: transparent;
   border: none;
   outline: none;
@@ -1058,14 +1059,14 @@ footer {
     max-width: 33.33%;
     min-width: 33.33%;
   }
-  .search-cont-after{
+  .search-cont-after {
     flex-direction: column;
     align-items: center;
   }
-  .posts-search-con{
+  .posts-search-con {
     flex-grow: 1;
-      max-width: 100%;
-  min-width: 100%;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 @media screen and (max-width: 768px) {
@@ -1156,12 +1157,12 @@ footer {
   }
 }
 @media screen and (max-width: 500px) {
-  .posts-search-con{
+  .posts-search-con {
     flex-direction: column;
     align-items: center;
     row-gap: 20px;
   }
-  .line-head{
+  .line-head {
     display: none;
   }
 }

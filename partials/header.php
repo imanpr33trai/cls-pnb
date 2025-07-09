@@ -136,7 +136,7 @@ include_once(__DIR__ . '/../config/config.php');
     </div>
     <header>
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container justify-content-center">
                 <a class="navbar-brand" href="<?= $base_url ?>"><img
                         src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="" /></a>
 
@@ -163,11 +163,13 @@ include_once(__DIR__ . '/../config/config.php');
                     <?php endif; ?>
 
                     <!-- <button type="button" class="theme-btn">+ Post Ad</button> -->
-                    <a href="<?= POST_AD_URL ?>" class="theme-btn text-decoration-none">+ Post Ad</a>
+                    <a href="<?= POST_AD_URL ?>" class="theme-btn text-decoration-none ">+ Post
+                        Ad</a>
                 </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-                    aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler d-lg-none d-md-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false"
+                    aria-label="Toggle navigation">
                     <span><img src="<?php echo $base_url; ?>assets/images/humbergar.svg" alt=""></span>
                 </button>
 
