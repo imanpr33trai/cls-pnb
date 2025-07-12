@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php
 include_once('partials/header.php');
 include('partials/google-login.php'); // Include Google login logic
-include('partials/github-login.php'); // Include GitHub login logic
+include'partials/github_login.php'; // Include GitHub login logic
 ?>
 
 
