@@ -123,6 +123,7 @@ include_once(__DIR__ . '/../config/config.php');
 
 
     </style>
+    <link rel="stylesheet" href="/assets/css/product-card.css">
 </head>
 
 <body>

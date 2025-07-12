@@ -1,19 +1,49 @@
 <?php
-include 'config/config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Redirect logged-in users to the homepage
+if (isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config/config.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+use Dotenv\Dotenv;
+
 
 $errors = [];
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Sanitize and get form values
-    $first_name = trim($_POST['first_name']);
-    $last_name = trim($_POST['last_name']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
     $phone = trim($_POST['phone']); // Getting the number from the visible input
+    $country = isset($_POST['country']) ? trim($_POST['country']) : '';
+
+        // Check for duplicate email
+    if (empty($errors)) {
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $errors[] = "An account with this email already exists.";
+        }
+        $stmt->close();
+    }
 
     // --- NEW: Get the country name from the hidden input ---
-    $country = isset($_POST['country']) ? trim($_POST['country']) : '';
 
     // Basic validations
     if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
@@ -28,35 +58,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Password must be at least 8 characters.';
     }
 
-    // Check for duplicate email
-    if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $errors[] = "An account with this email already exists.";
-        }
-        $stmt->close();
-    }
+
 
 
     if (empty($errors)) {
         // Hash password
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+         // Generate OTP and expiration
+        $otp = rand(100000, 999999);
+        $otp_expires_at = (new DateTime('+10 minutes'))->format('Y-m-d H:i:s');
+        
         // --- NEW: Update the database INSERT command ---
         // We add the `country` column to the query
-        $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, country, email, phone, password) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, country, email, phone, password,auth_provider, status, verification_otp, otp_expires_at) VALUES (?, ?, ?, ?, ?, ?, 'local', 'unverified', ?, ?)");
 
         // Add the $country variable and update the types to "ssssss" (6 strings)
-        $stmt->bind_param("ssssss", $first_name, $last_name, $country, $email, $phone, $hashed_password);
+        $stmt->bind_param("ssssssss", $first_name, $last_name, $country, $email, $phone, $hashed_password, $otp, $otp_expires_at);
 
         if ($stmt->execute()) {
             $success = "Account created successfully! You can now log in.";
+            $mail = new PHPMailer(true);
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host       = $_ENV['SMTP_HOST'];
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $_ENV['SMTP_USERNAME'];
+                $mail->Password   = $_ENV['SMTP_PASSWORD'];
+                $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+                $mail->Port       = $_ENV['SMTP_PORT'];
+
+                // Recipients
+                $mail->setFrom($_ENV['SMTP_USERNAME'], 'Manpreet Singh');
+                $mail->addAddress($email, "{$first_name} {$last_name}");
+
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = 'Verify Your Account - PNB Classifieds';
+                $mail->Body    = "Hello {$first_name},<br><br>Thank you for registering. Your verification code is: <b>{$otp}</b><br><br>This code will expire in 10 minutes.";
+                $mail->AltBody = "Your verification code is: {$otp}";
+                $mail->send();
+
+                // Store email in session and redirect to the verification page
+                $_SESSION['verification_email'] = $email;
+                header('Location: verify.php');
+                exit();
+                
+            } catch (Exception $e) {
+                $errors[] = "Registration was successful, but the verification email could not be sent. Please contact support. Mailer Error: {$mail->ErrorInfo}";
+            }
             // header("Location: login.php"); // Redirect to login page
-        } else {
-            $errors[] = "An error occurred during registration. Please try again.";
+        }else {
+            $errors[] = "Database error: Could not register the account.";
+            error_log("User registration failed: " . $stmt->error);
         }
 
         $stmt->close();
@@ -66,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php
 include_once('partials/header.php');
 include('partials/google-login.php'); // Include Google login logic
+include('partials/github-login.php'); // Include GitHub login logic
 ?>
 
 
@@ -135,6 +191,10 @@ include('partials/google-login.php'); // Include Google login logic
                             <div class="form-text">Use 8 or more characters with a mix of letters, numbers & symbols
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                        </div>
                         <div class="mb-24 d-flex gap-2">
                             <input type="checkbox" required id="accept-login" />
                             <label for="accept-login">By creating an account, I agree to our Terms of use and Privacy
@@ -154,7 +214,7 @@ include('partials/google-login.php'); // Include Google login logic
                             <a href="<?php echo htmlspecialchars($google_login_url); ?>"
                                 class="w-100 theme-btn text-decoration-none text-center">Continue with
                                 Google</a>
-                        </div>s
+                        </div>
                         <div class="mb-32 d-flex flex-column justify-content-center align-items-center">
                             <h6 class="poppins-medium">Sign in With</h6>
                             <a href="<?php echo htmlspecialchars($github_login_url); ?>">

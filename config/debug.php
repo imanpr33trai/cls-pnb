@@ -1,127 +1,154 @@
 <?php
-// /config/debug.php (Enhanced Version)
+// /config/debug.php (Complete, Self-Contained Debugging System)
 
 // =================================================================
 //  PHP DEBUGGING & ERROR HANDLING SETUP
 // =================================================================
 
-// --- Core Settings ---
+// --- MASTER SWITCH: Set to `false` when your site goes live ---
 define('IS_DEVELOPMENT_MODE', true);
-define('DEBUG_LOG_FILE', __DIR__ . '/../logs/debug.log');
 
-// --- Error and Exception Handling ---
-ini_set('display_errors', '0'); // We use our custom handler, so disable default display.
-ini_set('log_errors', '1'); // Log errors, but not to the default file.
-ini_set('error_log', DEBUG_LOG_FILE); // Send PHP's internal logs here too.
+// --- LOG FILE SETUP ---
+define('DEBUG_LOG_FILE', __DIR__ . '/../logs/debug.log');
+ini_set('log_errors', '1');
+ini_set('error_log', DEBUG_LOG_FILE);
+ini_set('display_errors', '0'); // We use our own handler for display
 error_reporting(E_ALL);
 
-/**
- * Custom error handler to format errors and log them.
- */
-function customErrorHandler(int $errno, string $errstr, string $errfile, int $errline): bool
-{
-    $message = "Error: [{$errno}] {$errstr} in {$errfile} on line {$errline}";
-    error_log($message); // Use the built-in logger which respects error_log directive
-
-    if (IS_DEVELOPMENT_MODE && !headers_sent()) {
-        http_response_code(500);
-        echo "<div style='position: fixed; top: 0; left: 0; width: 100%; padding: 15px; background-color: #ffbaba; border-bottom: 2px solid #d8000c; color: #d8000c; font-family: monospace; z-index: 9999;'>";
-        echo "<b>PHP Error:</b> " . htmlspecialchars($errstr, ENT_QUOTES, 'UTF-8') . "<br>";
-        echo "<b>File:</b> " . htmlspecialchars($errfile, ENT_QUOTES, 'UTF-8') . " on line <b>{$errline}</b>";
-        echo "</div>";
-    }
-    // Returning false lets PHP's internal error handler continue, which we want for logging.
-    // To completely silence it, return true.
-    return false;
-}
+// --- CONSOLE COMMUNICATION CORE ---
 
 /**
- * Custom exception handler to format exceptions and log them.
+ * A self-contained function to send data to the browser console.
+ * It's the engine for all other debug functions.
  */
-function customExceptionHandler(Throwable $exception): void
-{
-    $message = "Uncaught Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
-    error_log($message);
-    error_log("Stack Trace: " . $exception->getTraceAsString());
-
-    if (IS_DEVELOPMENT_MODE && !headers_sent()) {
-        http_response_code(500);
-        echo "<div style='position: fixed; top: 0; left: 0; width: 100%; padding: 15px; background-color: #ffbaba; border-bottom: 2px solid #d8000c; color: #d8000c; font-family: monospace; z-index: 9999;'>";
-        echo "<b>PHP Uncaught Exception:</b> " . htmlspecialchars($exception->getMessage(), ENT_QUOTES, 'UTF-8') . "<br>";
-        echo "<b>File:</b> " . htmlspecialchars($exception->getFile(), ENT_QUOTES, 'UTF-8') . " on line <b>" . $exception->getLine() . "</b>";
-        echo "<pre style='white-space: pre-wrap; word-wrap: break-word; margin-top: 10px;'>" . htmlspecialchars($exception->getTraceAsString(), ENT_QUOTES, 'UTF-8') . "</pre>";
-        echo "</div>";
-    }
-}
-
-set_error_handler('customErrorHandler');
-set_exception_handler('customExceptionHandler');
-
-// --- JavaScript Console Logging Functions ---
-
-/**
- * Logs a PHP variable directly to the browser's console.
- * Use this on pages that render HTML and do NOT redirect.
- */
-function console_log($data, string $label = 'PHP Debug'): void
-{
-    if (!IS_DEVELOPMENT_MODE)
+function _send_to_console(array $payload) {
+    if (!IS_DEVELOPMENT_MODE || headers_sent()) {
         return;
-    $json_data = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
-    if ($json_data === false) {
-        $json_data = json_encode("JSON Error: " . json_last_error_msg());
     }
-    echo "<script>
-        console.groupCollapsed('{$label} (at " . date('H:i:s') . ")');
-        console.log({$json_data});
+    $json_payload = json_encode($payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+    if ($json_payload === false) {
+        $json_payload = json_encode(['JSON_ENCODE_ERROR' => json_last_error_msg()]);
+    }
+    // This is a self-invoking JS function to avoid polluting the global scope
+    echo "<script>(function(){
+        const payload = {$json_payload};
+        const label = payload.label || 'PHP Debug';
+        const color = payload.color || '#1e90ff';
+        const timestamp = new Date().toLocaleTimeString();
+        
+        console.groupCollapsed(`%c[${label}] %c@ ${timestamp}`, `color: ${color}; font-weight: bold;`, 'color: gray; font-weight: normal;');
+        if (payload.data && payload.data.JSON_ENCODE_ERROR) {
+            console.warn('PHP data could not be JSON encoded:', payload.data.JSON_ENCODE_ERROR);
+        } else {
+            console.dir(payload.data);
+        }
+        
+        if (payload.trace) {
+            console.groupCollapsed('Stack Trace');
+            console.log(payload.trace);
+            console.groupEnd();
+        }
         console.groupEnd();
-    </script>";
+    })();</script>";
+}
+
+// --- PHP ERROR AND EXCEPTION HANDLERS ---
+
+/**
+ * Catches all PHP errors, warnings, and notices.
+ */
+function custom_error_handler(int $errno, string $errstr, string $errfile, int $errline): bool {
+    $log_message = "PHP Error: [{$errno}] {$errstr} in {$errfile} on line {$errline}";
+    error_log($log_message);
+
+    _send_to_console([
+        'label' => 'PHP Error',
+        'color' => '#dc3545',
+        'data' => [
+            'message' => $errstr,
+            'file' => "{$errfile} on line {$errline}",
+            'level' => $errno
+        ]
+    ]);
+    return true; // Stop PHP's default handler
 }
 
 /**
- * [NEW] Stores debug data in the session to be displayed on the NEXT page load.
- * Use this in scripts that will perform a header() redirect.
+ * Catches all uncaught exceptions.
  */
-function debug_to_session($data, string $label = 'Redirect Debug')
-{
-    if (!IS_DEVELOPMENT_MODE)
-        return;
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        error_log("Debug Warning: Cannot debug to session because session is not active.");
-        return;
-    }
-    if (!isset($_SESSION['debug_messages'])) {
-        $_SESSION['debug_messages'] = [];
-    }
-    // Use print_r for objects/arrays to get a string representation
-    $output = is_string($data) ? $data : print_r($data, true);
-    $_SESSION['debug_messages'][] = ['label' => $label, 'data' => $output];
+function custom_exception_handler(Throwable $exception): void {
+    $log_message = "Uncaught Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
+    error_log($log_message);
+    error_log("Stack Trace:\n" . $exception->getTraceAsString());
+    
+    _send_to_console([
+        'label' => 'PHP FATAL EXCEPTION',
+        'color' => '#d8000c',
+        'data' => [
+            'message' => $exception->getMessage(),
+            'file' => $exception->getFile() . ' on line ' . $exception->getLine(),
+        ],
+        'trace' => $exception->getTraceAsString()
+    ]);
 }
 
 /**
- * [NEW] Renders all debug messages from the session into the console.
- * Call this function just before the closing </body> tag in a common footer.
+ * Catches fatal errors that other handlers miss.
  */
-function render_session_debug_to_console(): void
-{
-    if (!IS_DEVELOPMENT_MODE || empty($_SESSION['debug_messages'])) {
-        return;
+function custom_shutdown_handler(): void {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
+        // We can't send to console here as output has likely closed.
+        // But the error is already logged to the file by `error_log`.
+        // This ensures fatal errors are always recorded.
     }
-
-    echo "<script>";
-    echo "console.group('%cDebug Logs from Previous Request', 'color: #1e90ff; font-weight: bold;');";
-    foreach ($_SESSION['debug_messages'] as $msg) {
-        $label = addslashes($msg['label']);
-        // Encode data to be a valid JavaScript string literal
-        $data_json = json_encode($msg['data']);
-        echo "console.log('%c{$label}:', 'font-weight: bold;', {$data_json});";
-    }
-    echo "console.groupEnd();";
-    echo "</script>";
-
-    // Clear messages after displaying them
-    unset($_SESSION['debug_messages']);
 }
 
-// --- End of Debug Setup ---
+set_error_handler('custom_error_handler');
+set_exception_handler('custom_exception_handler');
+register_shutdown_function('custom_shutdown_handler');
+
+
+// --- PUBLIC-FACING DEBUG FUNCTIONS ---
+
+/**
+ * The main function you will use to debug variables on normal pages.
+ */
+function console_log($data, string $label = 'PHP Debug') {
+    _send_to_console(['label' => $label, 'data' => $data]);
+}
+
+/**
+ * The main function you will use to debug variables on pages that redirect.
+ */
+function debug_to_session($data, string $label = 'Redirect Debug') {
+    if (!IS_DEVELOPMENT_MODE || session_status() !== PHP_SESSION_ACTIVE) return;
+    if (!isset($_SESSION['php_to_console_debug'])) $_SESSION['php_to_console_debug'] = [];
+    $_SESSION['php_to_console_debug'][] = ['label' => $label, 'data' => $data];
+}
+
+/**
+ * Call this in your footer to print debug messages from the previous page.
+ */
+function render_session_debug_to_console() {
+    if (!IS_DEVELOPMENT_MODE || empty($_SESSION['php_to_console_debug'])) return;
+    foreach ($_SESSION['php_to_console_debug'] as $msg) {
+        console_log($msg['data'], $msg['label'] . ' (from previous request)');
+    }
+    unset($_SESSION['php_to_console_debug']); // Clear after rendering
+}
+
+// --- AUTOMATIC SUPERGLOBAL LOGGING ---
+if (IS_DEVELOPMENT_MODE) {
+    if (!empty($_GET)) {
+        console_log($_GET, '$_GET Data');
+    }
+    if (!empty($_POST)) {
+        console_log($_POST, '$_POST Data');
+    }
+    if (!empty($_FILES)) {
+        console_log($_FILES, '$_FILES Data');
+    }
+}
 ?>
+

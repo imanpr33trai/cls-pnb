@@ -3,7 +3,7 @@
 include_once('partials/header.php');
 include_once('config/config.php'); // always load this first
 include_once('config/functions.php'); // load functions after config
-require_once __DIR__ . '/config/debug.php';
+
 require_once 'products.php'; // load products after functions
 
 ?>

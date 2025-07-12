@@ -1,1 +1,278 @@
-Hello from PHP!
+<?php
+// /register.php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Redirect logged-in users to the homepage
+if (isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
+
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config/config.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+use Dotenv\Dotenv;
+
+$errors = [];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. Sanitize and Validate Inputs
+    $first_name = trim($_POST['first_name'] ?? '');
+    $last_name = trim($_POST['last_name'] ?? '');
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    if (empty($first_name)) $errors[] = "First name is required.";
+    if (empty($last_name)) $errors[] = "Last name is required.";
+    if (!$email) $errors[] = "A valid email address is required.";
+    if (strlen($password) < 8) $errors[] = "Password must be at least 8 characters long.";
+    if ($password !== $confirm_password) $errors[] = "Passwords do not match.";
+
+    // 2. Check if email already exists
+    if (empty($errors)) {
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows > 0) {
+            $errors[] = "An account with this email address already exists.";
+        }
+        $stmt->close();
+    }
+
+    // 3. If all checks pass, proceed
+    if (empty($errors)) {
+        // Hash the password for security
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Generate OTP and expiration
+        $otp = rand(100000, 999999);
+        $otp_expires_at = (new DateTime('+10 minutes'))->format('Y-m-d H:i:s');
+        
+        // Insert the new user with an 'unverified' status
+        $stmt = $conn->prepare(
+            "INSERT INTO users (first_name, last_name, email, password, auth_provider, status, verification_otp, otp_expires_at) 
+             VALUES (?, ?, ?, ?, 'local', 'unverified', ?, ?)"
+        );
+        $stmt->bind_param("ssssss", $first_name, $last_name, $email, $hashed_password, $otp, $otp_expires_at);
+        
+        if ($stmt->execute()) {
+            // Send the verification email
+            $mail = new PHPMailer(true);
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host       = $_ENV['SMTP_HOST'];
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $_ENV['SMTP_USERNAME'];
+                $mail->Password   = $_ENV['SMTP_PASSWORD'];
+                $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+                $mail->Port       = $_ENV['SMTP_PORT'];
+
+                // Recipients
+                $mail->setFrom($_ENV['SMTP_USERNAME'], 'Manpreet Singh');
+                $mail->addAddress($email, "{$first_name} {$last_name}");
+
+                // Content
+                $mail->isHTML(true);
+                $mail->Subject = 'Verify Your Account - PNB Classifieds';
+                $mail->Body    = "Hello {$first_name},<br><br>Thank you for registering. Your verification code is: <b>{$otp}</b><br><br>This code will expire in 10 minutes.";
+                $mail->AltBody = "Your verification code is: {$otp}";
+                $mail->send();
+
+                // Store email in session and redirect to the verification page
+                $_SESSION['verification_email'] = $email;
+                header('Location: verify.php');
+                exit();
+                
+            } catch (Exception $e) {
+                $errors[] = "Registration was successful, but the verification email could not be sent. Please contact support. Mailer Error: {$mail->ErrorInfo}";
+            }
+        } else {
+            $errors[] = "Database error: Could not register the account.";
+            error_log("User registration failed: " . $stmt->error);
+        }
+        $stmt->close();
+    }
+}
+
+include 'partials/header.php';
+?>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4">Create Your Account</h3>
+                    
+                    <?php if (!empty($errors)): ?>
+                        <div class="alert alert-danger">
+                            <?php foreach ($errors as $error) echo "<p class='mb-1'>$error</p>"; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form action="register.php" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                    <hr>
+                    <p class="text-center">Already have an account? <a href="login.php">Log in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php include 'partials/footer.php'; ?>
+
+
+<?php
+require 'vendor/autoload.php';
+include 'config/config.php';
+
+session_start();
+
+$errors = [];
+$success = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
+    $first_name = trim($_POST['first_name']);
+    $last_name = trim($_POST['last_name']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $phone = trim($_POST['phone']);
+    $country = isset($_POST['country']) ? trim($_POST['country']) : '';
+
+    if (empty($first_name) || empty($last_name) || empty($email) || empty($password)) {
+        $errors[] = 'All required fields must be filled.';
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Invalid email format.';
+    }
+
+    if (strlen($password) < 8) {
+        $errors[] = 'Password must be at least 8 characters.';
+    }
+
+    if (empty($errors)) {
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $errors[] = "An account with this email already exists.";
+        }
+        $stmt->close();
+    }
+
+    if (empty($errors)) {
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+        $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, country, email, phone, password) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $first_name, $last_name, $country, $email, $phone, $hashed_password);
+
+        if ($stmt->execute()) {
+            $success = "Account created successfully! You can now log in.";
+            // Redirect to login page after a short delay
+            header("refresh:3;url=login.php");
+        } else {
+            $errors[] = "An error occurred during registration. Please try again.";
+        }
+        $stmt->close();
+    }
+}
+
+include_once('partials/header.php');
+include('partials/google-login.php');
+?>
+
+<section class="account-main">
+    <div class="container">
+        <div class="row">
+            <div class="inner-section form-section d-flex flex-lg-row flex-column">
+                <div class="col-lg-7">
+                    <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="w-100" />
+                </div>
+                <div class="col-lg-5 login-sec-2">
+                    <h1 class="fos-32 poppins-medium">Sign up now</h1>
+                    <?php if (!empty($errors)):
+                        echo '<div class="alert alert-danger">';
+                        foreach ($errors as $err) {
+                            echo "<p>$err</p>";
+                        }
+                        echo '</div>';
+                    endif; ?>
+                    <?php if (!empty($success)):
+                        echo '<div class="alert alert-success"><p>' . $success . '</p></div>';
+                    else: ?>
+                    <form action="" method="POST" class="text-start mt-40" id="registerForm">
+                        <div class="row mb-24">
+                            <div class="col-lg-6">
+                                <label for="firstnameid" class="form-label">First name*</label>
+                                <input type="text" name="first_name" class="form-control" id="firstnameid" placeholder="Enter Your Name" required />
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="lastnameid" class="form-label">Last name*</label>
+                                <input type="text" name="last_name" class="form-control" id="lastnameid" placeholder="Enter Your Last Name" required />
+                            </div>
+                        </div>
+                        <div class="mb-24">
+                            <label for="emailid" class="form-label">Email address</label>
+                            <input type="email" name="email" class="form-control" id="emailid" placeholder="Enter Your Email" required />
+                        </div>
+                        <div class="mb-24">
+                            <label for="phonenumbid" class="form-label">Phone Number (Optional)</label>
+                            <input type="tel" name="phone" class="form-control" id="phonenumbid" placeholder="Enter Your Phone Number" />
+                            <input type="hidden" name="country" id="country_name_hidden">
+                        </div>
+                        <div class="mb-24">
+                            <div class="password-options d-flex justify-content-between">
+                                <label class="form-label">Password</label>
+                            </div>
+                            <input type="password" name="password" id="inputPassword5" class="form-control" placeholder="Enter Your Password" required />
+                        </div>
+                        <div class="mb-24 d-flex gap-2">
+                            <input type="checkbox" required id="accept-login" />
+                            <label for="accept-login">By creating an account, I agree to our Terms of use and Privacy Policy </label>
+                        </div>
+                        <div class="d-flex gap-2 mb-32">
+                            <button type="submit" name="register" class="w-100 theme-btn text-decoration-none text-center btn btn-primary">Sign Up</button>
+                        </div>
+                    </form>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php
+include_once('partials/footer.php');
+?>

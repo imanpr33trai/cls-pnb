@@ -31,7 +31,7 @@ function render_product_card(array $product): string
         <div class="card product-card w-100 h-100 position-relative">
             <div class="ad-tag">Ad</div>
             <div class="product-image-wrapper">
-                <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image"></a>
+                <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image img-fluid"></a>
             </div>
             <div class="card-body product-content d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -66,7 +66,7 @@ HTML;
  */
 function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8, int $offset = 0): string
 {
-    $html = '';
+    $html = '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">';
 
     // The SQL query is now a template for a prepared statement
     $sql = "SELECT * FROM ad_form WHERE status = 'live' AND expires_at > NOW() ORDER BY id DESC LIMIT ? OFFSET ?";
@@ -98,6 +98,7 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
     }
     
     $stmt->close();
+    $html .= '</div>';
     return $html;
 }
 ?>

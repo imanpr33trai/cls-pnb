@@ -611,41 +611,7 @@ header select option {
 /* section 3 search */
 /* section 3 search */
 
-/* section 4 posts */
-/* section 4 posts */
-.card .ad-tag {
-  position: absolute;
-  top: 8px;
-  left: 10px;
-  background-color: var(--theme-color-pink);
-  padding: 3px 12px;
-  color: white;
-  font-size: 14px;
-}
-.card .card-img-ad {
-  min-height: 238px;
-}
-.card .card-img-ad img {
-  height: 100%;
-}
-.card .card-body {
-  padding: 20px 20px;
-}
-.card .card-price-det {
-  display: flex;
-  justify-content: space-between;
-}
-.card .wish-heart {
-  padding: 8px 12px;
-  background: #e6e6e6;
-  border-radius: 50px;
-}
-.price-post {
-  color: var(--theme-color-pink);
-  font-size: 24px;
-}
-/* section 4 posts */
-/* section 4 posts */
+
 
 /* Login & register page */
 /* Login & register page */
