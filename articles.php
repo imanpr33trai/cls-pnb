@@ -1,5 +1,5 @@
 <?php
-include_once('config/config.php'); // always load this first
+include_once(__DIR__ . '/config/config.php'); // always load this first
 include_once('partials/header.php');
 ?>
 <!-- Breadcrump -->
@@ -77,7 +77,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         echo '<div class="col-12 col-sm-6 col-lg-4 mb-4">
                 <div class="article-card position-relative">
                     <div class="card-img-blog">
-                    <a href="articles/' . $blog['blog_slug'] . '">
+                    <a href="<?= $base_url ?>articles/' . $blog['blog_slug'] . '">
                         <img src="' . $firstImage . '" class="img-fluid" alt="" />
                           </a>
                     </div>

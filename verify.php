@@ -2,7 +2,7 @@
 // /verify.php
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    
 }
 
 // If user is not in the verification process, redirect them away.

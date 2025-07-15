@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 
 include_once('config/config.php'); // always load this first
 include_once('partials/header.php');

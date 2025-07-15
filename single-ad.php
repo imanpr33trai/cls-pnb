@@ -4,7 +4,7 @@
 // =========================================================================
 
 // CRUCIAL: Must be the very first line of the file.
-session_start();
+
 include_once('config/config.php');
 
 // --- 1. INITIALIZE ALL VARIABLES ---

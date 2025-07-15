@@ -16,9 +16,23 @@ require_once __DIR__ . '/debug.php';
 
 
 // Start session globally
+$customSessionPath = __DIR__ . '/../sessions';
 
+// Ensure the session directory exists and is writable
+if (!is_dir($customSessionPath)) {
+    // Attempt to create the directory with appropriate permissions
+    // The umask will be applied, so 0777 usually results in 0755 or 0700 depending on system umask.
+    // It's important that the web server user has write permissions.
+    if (!mkdir($customSessionPath, 0777, true) && !is_dir($customSessionPath)) {
+        // If directory creation fails, trigger an error. This is a critical configuration problem.
+        trigger_error("Failed to create session directory: {$customSessionPath}", E_USER_WARNING);
+    }
+}
 
+// Set session save path ONLY if a session is not already active
+// This prevents the "session_save_path(): Session save path cannot be changed when a session is active" warning
 if (session_status() == PHP_SESSION_NONE) {
+    session_save_path($customSessionPath);
     session_start();
 }
 
@@ -28,7 +42,7 @@ if (session_status() == PHP_SESSION_NONE) {
 date_default_timezone_set("Asia/Kolkata");
 
 
-$dotenv = Dotenv::createMutable(__DIR__. '/../');
+$dotenv = Dotenv::createMutable(__DIR__ . '/../');
 
 $dotenv->load();
 
@@ -77,4 +91,3 @@ $conn->set_charset("utf8mb4");
 // ✅ Fix path to functions.php
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'functions.php');
 
-?>

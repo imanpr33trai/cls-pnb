@@ -1,5 +1,6 @@
 <?php
-// ... (The top part of the file and the render_ads_from_database function are unchanged) ...
+include_once(__DIR__ . '/config/config.php');
+
 
 /**
  * Renders a single, static product card.
@@ -12,7 +13,7 @@
 function render_product_card(array $product): string
 {
     // ... (all the data preparation and sanitization code is the same) ...
-    $defaults = [ 'name' => 'Ad Title Missing', 'price' => 0.00, 'image' => 'assets/images/test-img.png', 'location' => 'Not specified', 'ad_link' => '#', 'currencySymbol' => '$' ];
+    $defaults = ['name' => 'Ad Title Missing', 'price' => 0.00, 'image' => 'assets/images/test-img.png', 'location' => 'Not specified', 'ad_link' => '#', 'currencySymbol' => ''];
     $product = array_merge($defaults, $product);
     $name = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
     $image = htmlspecialchars($product['image'], ENT_QUOTES, 'UTF-8');
@@ -51,8 +52,6 @@ HTML;
     return $html;
 }
 
-// ... (The render_ads_from_database function is unchanged) ...
-
 /**
  * Function 2: The Database API
  * UPGRADED to accept limit and offset for pagination.
@@ -66,7 +65,7 @@ HTML;
  */
 function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8, int $offset = 0): string
 {
-    echo "DEBUG: render_ads_from_database called.<br>";
+
     $html = '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">';
 
     // The SQL query is now a template for a prepared statement
@@ -107,9 +106,11 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
     } else {
         echo "DEBUG: Query failed: " . $conn->error . "<br>";
     }
-    
+
     $stmt->close();
     $html .= '</div>';
     return $html;
 }
-?>
+
+// Call the function to render ads when products.php is accessed directly
+
