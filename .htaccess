@@ -1,12 +1,28 @@
 # Enable the rewrite engine
 RewriteEngine On
 
-# To prevent a rewrite loop, make sure the request is not for an existing file
-RewriteCond %{REQUEST_FILENAME} !-f
-# And make sure the request is not for an existing directory
-RewriteCond %{REQUEST_FILENAME} !-d
+# If the request is for a file or directory that exists, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# THE REWRITE RULE
-# This rule captures the slug from the URL `category/the-slug-is-here`
-# and passes it to `single-category.php` as a `slug` parameter.
+# Rewrite rule for single-category.php
 RewriteRule ^category/([a-zA-Z0-9-]+)/?$ single-category.php?slug=$1 [L,QSA]
+
+# Rewrite rule for product.php (now listing ads)
+RewriteRule ^products/?$ products.php [L,QSA]
+
+# Rewrite rule for single-article.php
+RewriteRule ^articles/([a-zA-Z0-9-]+)/?$ single-article.php?slug=$1 [L,QSA]
+
+# Rewrite rule for single-ad.php
+RewriteRule ^ads/([a-zA-Z0-9-]+)/?$ single-ad.php?slug=$1 [L,QSA]
+
+# Remove .php extension for other files and redirect (301 Permanent Redirect)
+RewriteCond %{THE_REQUEST} ^GET\s([^\s]+)\.php\sHTTP/
+RewriteRule ^([^\s]+)\.php$ /$1 [L,R=301]
+
+# Handle requests for files without .php extension (internal rewrite)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]

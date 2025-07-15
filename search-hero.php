@@ -7,7 +7,7 @@ $location = isset($_POST['location']) ? mysqli_real_escape_string($conn, $_POST[
 $results = [];
 
 // Search Ads
-$ad_query = "SELECT 'ad' AS type, id, ad_title AS title, description, phone, email, location, created_at 
+$ad_query = "SELECT 'ad' AS type, id, ad_title AS title, description, phone, email, location, created_at, ad_slug 
              FROM ad_form 
              WHERE (
                  ad_title LIKE '%$keyword%' OR
@@ -24,7 +24,7 @@ if (!empty($location)) {
 }
 
 // Search Blogs
-$blog_query = "SELECT 'blog' AS type, id, title, description, phone, email, created_at 
+$blog_query = "SELECT 'blog' AS type, id, title, description, phone, email, created_at, blog_slug 
                FROM blog_posts 
                WHERE (
                    title LIKE '%$keyword%' OR
@@ -64,7 +64,7 @@ if (empty($results)) {
         $id = $item['id'];
 
         // Set URL
-        $url = ($type === 'ad') ? "single-ad.php?id=$id" : "single-article.php?id=$id";
+        $url = ($type === 'ad') ? "ads/" . $item['ad_slug'] : "articles/" . $item['blog_slug'];
 
         echo "<div class='result-item mb-3 p-3 bg-light rounded'>";
         echo "<a href='$url' class='text-dark text-decoration-none'>";

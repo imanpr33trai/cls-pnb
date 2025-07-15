@@ -17,7 +17,7 @@ if ($cat !== 'all') {
     $condition .= " AND category = '$cat'";
 }
 
-$query = "SELECT id, ad_title, image FROM ad_form $condition ORDER BY created_at DESC LIMIT 10";
+        $query = "SELECT id, ad_title, image, ad_slug FROM ad_form $condition ORDER BY created_at DESC LIMIT 10";
 $result = $conn->query($query);
 
 if ($result->num_rows > 0) {
@@ -26,9 +26,9 @@ if ($result->num_rows > 0) {
             ? $base_url . "assets/uploads/ads_form/" . $row['image'] 
             : $base_url . "assets/images/test-img.png";
         $title = htmlspecialchars($row['ad_title']);
-        $id = $row['id'];
+        $slug = $row['ad_slug'];
         echo <<<HTML
-            <a href="single-ad.php?id=$id" class="text-decoration-none">
+            <a href="ads/$slug" class="text-decoration-none">
                 <div class="search-result-item">
                     <img src="$img" alt="Ad Image">
                     <h6>$title</h6>

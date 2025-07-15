@@ -30,29 +30,38 @@ function _send_to_console(array $payload) {
         $json_payload = json_encode(['JSON_ENCODE_ERROR' => json_last_error_msg()]);
     }
     // This is a self-invoking JS function to avoid polluting the global scope
-    echo "<script>(function(){
-        const payload = {$json_payload};
-        const label = payload.label || 'PHP Debug';
-        const color = payload.color || '#1e90ff';
-        const timestamp = new Date().toLocaleTimeString();
+    // echo "<script>(function(){
+    //     const payload = {$json_payload};
+    //     const label = payload.label || 'PHP Debug';
+    //     const color = payload.color || '#1e90ff';
+    //     const timestamp = new Date().toLocaleTimeString();
         
-        console.groupCollapsed(`%c[${label}] %c@ ${timestamp}`, `color: ${color}; font-weight: bold;`, 'color: gray; font-weight: normal;');
-        if (payload.data && payload.data.JSON_ENCODE_ERROR) {
-            console.warn('PHP data could not be JSON encoded:', payload.data.JSON_ENCODE_ERROR);
-        } else {
-            console.dir(payload.data);
-        }
+    //     console.groupCollapsed(`%c[${label}] %c@ ${timestamp}`, `color: ${color}; font-weight: bold;`, 'color: gray; font-weight: normal;');
+    //     if (payload.data && payload.data.JSON_ENCODE_ERROR) {
+    //         console.warn('PHP data could not be JSON encoded:', payload.data.JSON_ENCODE_ERROR);
+    //     } else {
+    //         console.dir(payload.data);
+    //     }
         
-        if (payload.trace) {
-            console.groupCollapsed('Stack Trace');
-            console.log(payload.trace);
-            console.groupEnd();
-        }
-        console.groupEnd();
-    })();</script>";
+    //     if (payload.trace) {
+    //         console.groupCollapsed('Stack Trace');
+    //         console.log(payload.trace);
+    //         console.groupEnd();
+    //     }
+    //     console.groupEnd();
+    // })();</script>";
 }
 
+use Whoops\Run;
+use Whoops\Handler\PrettyPageHandler;
+
 // --- PHP ERROR AND EXCEPTION HANDLERS ---
+
+if (IS_DEVELOPMENT_MODE) {
+    $whoops = new Run;
+    $whoops->pushHandler(new PrettyPageHandler);
+    $whoops->register();
+}
 
 /**
  * Catches all PHP errors, warnings, and notices.

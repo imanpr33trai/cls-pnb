@@ -15,19 +15,20 @@ $related_posts_result = null;
 $nextArticle = null;
 $prevArticle = null;
 
-// --- 2. VALIDATE THE AD ID FROM THE URL ---
-$blog_id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+// --- 2. VALIDATE THE BLOG SLUG FROM THE URL ---
+$blog_slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 
-// --- 3. FETCH ALL DATA IF WE HAVE A VALID AD ID ---
-if ($blog_id > 0) {
+// --- 3. FETCH ALL DATA IF WE HAVE A VALID BLOG SLUG ---
+if (!empty($blog_slug)) {
     // --- A. FETCH THE MAIN BLOG POST DETAILS ---
-    $stmt = $conn->prepare("SELECT * FROM blog_posts WHERE id = ?");
-    $stmt->bind_param("i", $blog_id);
+    $stmt = $conn->prepare("SELECT * FROM blog_posts WHERE blog_slug = ?");
+    $stmt->bind_param("s", $blog_slug);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result && $result->num_rows === 1) {
         $blog = $result->fetch_assoc();
+        $blog_id = $blog['id']; // Get the ID after fetching the blog
 
         // --- B. PARSE DESCRIPTION FOR TABLE OF CONTENTS ---
         if (!empty($blog['description'])) {
@@ -57,13 +58,13 @@ if ($blog_id > 0) {
         $related_posts_result = $related_stmt->get_result();
         
         // --- D. FETCH PAGINATION (NEXT/PREVIOUS POSTS) ---
-        $next_stmt = $conn->prepare("SELECT id, title FROM blog_posts WHERE id > ? ORDER BY id ASC LIMIT 1");
+        $next_stmt = $conn->prepare("SELECT id, title, blog_slug FROM blog_posts WHERE id > ? ORDER BY id ASC LIMIT 1");
         $next_stmt->bind_param("i", $blog_id);
         $next_stmt->execute();
         $nextArticle = $next_stmt->get_result()->fetch_assoc();
         $next_stmt->close();
         
-        $prev_stmt = $conn->prepare("SELECT id, title FROM blog_posts WHERE id < ? ORDER BY id DESC LIMIT 1");
+        $prev_stmt = $conn->prepare("SELECT id, title, blog_slug FROM blog_posts WHERE id < ? ORDER BY id DESC LIMIT 1");
         $prev_stmt->bind_param("i", $blog_id);
         $prev_stmt->execute();
         $prevArticle = $prev_stmt->get_result()->fetch_assoc();
@@ -214,7 +215,7 @@ if ($nextArticle) {
     $shortDesc = implode(' ', array_slice($descWords, 0, 15)) . (count($descWords) > 15 ? '...' : '');
 
     echo '<div class="next-post-sidebar mb-40">';
-    echo '    <a href="single-article.php?id=' . $nextArticle['id'] . '">';
+    echo '    <a href="articles/' . $nextArticle['blog_slug'] . '">';
     echo '        <img src="' . $nextImage . '" class="img-next-post mb-24" alt="" />';
     echo '        <h1 class="poppins-medium fos-20 mb-20">' . htmlspecialchars($nextArticle['title']) . '</h1>';
     echo '    </a>';
@@ -287,13 +288,11 @@ if (!$current_result || mysqli_num_rows($current_result) == 0) {
 $current_article = mysqli_fetch_assoc($current_result);
 $current_category = $current_article['category_id']; // or 'cat_id'
 
-$related_query = "SELECT * FROM blog_posts 
+$related_query = "SELECT id, title, description, created_at, blog_slug FROM blog_posts 
                   WHERE category_id = '$current_category' AND id != $article_id 
                   ORDER BY created_at DESC LIMIT 3";
 
 $related_result = mysqli_query($conn, $related_query);
-$relatedImages = json_decode($related['image'], true);
-$relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $relatedImages[0] : $base_url . 'assets/images/test-img.png';
 ?>
 
 <section class="related-blog">
@@ -305,17 +304,22 @@ $relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_for
                     
                    
                 <?php if ($related_result && mysqli_num_rows($related_result) > 0) {
-    while ($related = mysqli_fetch_assoc($related_result)) {?>
+    while ($related = mysqli_fetch_assoc($related_result)){
+        $relatedImages = json_decode($related['image'], true);
+        $relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $relatedImages[0] : $base_url . 'assets/images/test-img.png';
+        $related_user_image = !empty($related['user_image']) ? $base_url . $related['user_image'] : $base_url . 'assets/images/userimage.png';
+        $related_user_name = !empty($related['author_name']) ? $related['author_name'] : 'Anonymous';
+        ?>
     <div class="col-12 col-sm-6 col-lg-4 mb-4 px-2">
         <div class="article-card position-relative">
             <div class="card-img-blog">
-                <a href="<?= $base_url; ?>single-article.php?id=<?= $related['id']; ?>">
+                <a href="<?= $base_url; ?>articles/<?= $related['blog_slug']; ?>">
                 <img src="<?= $relatedImage ?>" class="img-fluid" alt="">
                 </a>
             </div>
             <div class="card-body-blog">
                 <h1 class="fos-20 poppins-regular mb-20">
-                    <a href="<?= $base_url; ?>single-article.php?id=<?= $related['id']; ?>" class="text-dark text-decoration-none">
+                    <a href="<?= $base_url; ?>articles/<?= $related['blog_slug']; ?>" class="text-dark text-decoration-none">
                         <?= htmlspecialchars($related['title']); ?>
                     </a>
                 </h1>
@@ -324,8 +328,8 @@ $relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_for
                 </p>
             </div>
             <div class="card-foot-blog d-flex align-items-center gap-2">
-                <img src="<?= $base_url . $related['user_image']; ?>" alt="" class="user-image-blog">
-                <h1 class="fos-12 usernameblog m-0"><?= $related['user_name']; ?></h1>
+                <img src="<?= $related_user_image ?>" alt="" class="user-image-blog">
+                <h1 class="fos-12 usernameblog m-0"><?= $related_user_name ?></h1>
                 <h1 class="fos-12 usernameblog m-0">|</h1>
                 <h1 class="fos-12 dateblog m-0"><?= date('jS F, Y', strtotime($related['created_at'])); ?></h1>
             </div>
@@ -379,13 +383,13 @@ $prevArticle = mysqli_fetch_assoc($prevResult);
         <div class="row">
             <div class="col d-flex align-items-center justify-content-between">
                 <?php if ($prevArticle): ?>
-                    <a href="single-article.php?id=<?php echo $prevArticle['id']; ?>" class="pagination-btn">&larr; Previous</a>
+                    <a href="articles/<?php echo $prevArticle['blog_slug']; ?>" class="pagination-btn">&larr; Previous</a>
                 <?php else: ?>
                     <span class="pagination-btn disabled">&larr; Previous</span>
                 <?php endif; ?>
 
                 <?php if ($nextArticle): ?>
-                    <a href="single-article.php?id=<?php echo $nextArticle['id']; ?>" class="pagination-btn">Next &rarr;</a>
+                    <a href="articles/<?php echo $nextArticle['blog_slug']; ?>" class="pagination-btn">Next &rarr;</a>
                 <?php else: ?>
                     <span class="pagination-btn disabled">Next &rarr;</span>
                 <?php endif; ?>

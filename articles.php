@@ -77,13 +77,13 @@ if ($result && mysqli_num_rows($result) > 0) {
         echo '<div class="col-12 col-sm-6 col-lg-4 mb-4">
                 <div class="article-card position-relative">
                     <div class="card-img-blog">
-                    <a href="single-article.php?id=' . $blog['id'] . '">
+                    <a href="articles/' . $blog['blog_slug'] . '">
                         <img src="' . $firstImage . '" class="img-fluid" alt="" />
                           </a>
                     </div>
                     <div class="card-body-blog">
                           <h1 class="fos-20 poppins-regular mb-20">
-        <a href="single-article.php?id=' . $blog['id'] . '" class="text-dark text-decoration-none">'
+        <a href="articles/' . $blog['blog_slug'] . '" class="text-dark text-decoration-none">''
             . htmlspecialchars($blog['title']) .
         '</a>
     </h1>

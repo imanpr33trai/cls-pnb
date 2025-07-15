@@ -16,19 +16,21 @@ $total_reviews = 0;
 $reviews_per_page = 5;
 $related_ads_result = null;
 
-// --- 2. VALIDATE THE AD ID FROM THE URL ---
-$ad_id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+// --- 2. VALIDATE THE AD SLUG FROM THE URL ---
+$ad_slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 
-// --- 3. FETCH ALL DATA IF WE HAVE A VALID AD ID ---
-if ($ad_id > 0) {
+// --- 3. FETCH ALL DATA IF WE HAVE A VALID AD SLUG ---
+if (!empty($ad_slug)) {
+    echo "DEBUG: Ad Slug from URL: " . htmlspecialchars($ad_slug) . "<br>"; // Add this line
     // --- A. FETCH THE MAIN AD DETAILS ---
-    $stmt = $conn->prepare("SELECT * FROM ad_form WHERE id = ?");
-    $stmt->bind_param("i", $ad_id);
+    $stmt = $conn->prepare("SELECT * FROM ad_form WHERE ad_slug = ?");
+    $stmt->bind_param("s", $ad_slug);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result && $result->num_rows === 1) {
         $ad = $result->fetch_assoc();
+        $ad_id = $ad['id']; // Get the ID after fetching the ad
 
         // --- B. EXPIRATION CHECK ---
         if (isset($ad['expires_at'], $ad['status'])) {
@@ -140,13 +142,13 @@ include_once('partials/header.php');
             <div class="text-center mt-5 mb-5">
                 <h1>Ad Not Found</h1>
                 <p>The ad you are looking for does not exist or may have been removed.</p>
-                <a href="index.php" class="theme-btn">Back to Homepage</a>
+                <a href="<?= $base_url ?>index.php" class="theme-btn">Back to Homepage</a>
             </div>
         <?php elseif ($ad['status'] === 'expired'): // Case 2: Ad was found but is expired ?>
             <div class="text-center mt-5 mb-5">
                 <h1 class="text-danger">This Ad Has Expired</h1>
                 <p>This listing is no longer available.</p>
-                <a href="index.php" class="theme-btn">Back to Homepage</a>
+                <a href="<?= $base_url ?>index.php" class="theme-btn">Back to Homepage</a>
             </div>
         <?php else: // Case 3: Ad is live and ready to display ?>
         <div class="row">
@@ -417,7 +419,7 @@ include_once('partials/header.php');
                         $related_title = htmlspecialchars($related['ad_title']);
                         $related_price = htmlspecialchars($related['asking_price']);
                         $related_location = htmlspecialchars($related['location']);
-                        $related_link = $base_url . "single-ad.php?id=" . $related['id'];
+                        $related_link = $base_url . "ads/" . $related['ad_slug'];
                         // --- END OF FIX ---
                     ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">

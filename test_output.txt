@@ -1,3 +1,130 @@
+I. New Files Added
+
+   * `schema-update.sql`:
+       * Added: A new SQL file created to contain only the ALTER TABLE statements necessary for adding the new slug columns to the database.
+         This separates schema updates from the main schema.sql dump.
+
+  II. Files Edited and Improved
+
+
+   * `.htaccess`
+       * Edited/Improved:
+           * Modified the rewrite rule for category to ensure it correctly captures the slug and passes it to single-category.php.
+           * Updated the rewrite rule for products to point to product.php (which now lists ads) and removed the rule for single-product.php
+             (as that file was removed).
+           * Ensured the rewrite rule for articles correctly points to single-article.php using blog_slug.
+           * Ensured the rewrite rule for ads correctly points to single-ad.php using ad_slug.
+           * Maintained the general rules for removing .php extensions and redirecting.
+
+
+   * `config/functions.php`
+       * Added/Improved:
+           * Added a new PHP function generate_slug($string): This function takes a string (e.g., a title) and converts it into a URL-friendly
+             slug by converting to lowercase, replacing spaces with hyphens, removing non-alphanumeric characters, and handling multiple
+             hyphens.
+
+
+   * `schema.sql`
+       * Edited (Initial Phase - Later Moved to `schema-update.sql`):
+           * Initially, ALTER TABLE statements were added directly to this file to include product_slug, ad_slug, and blog_slug columns.
+       * Reverted/Corrected:
+           * The ALTER TABLE products statement was removed from this file (and moved to schema-update.sql) after clarification that no
+             products table exists.
+           * The ALTER TABLE ad_form and ALTER TABLE blog_posts statements were also moved to schema-update.sql to keep the main schema.sql
+             clean.
+       * Note: My interaction history shows I initially modified schema.sql directly, then created schema-update.sql to contain these ALTER 
+         TABLE statements. The final state of schema.sql should be as it was originally, with the updates in schema-update.sql.
+
+
+   * `admin_area/insert_product.php`
+       * Edited/Improved:
+           * Included require_once '../../config/functions.php'; to make the generate_slug function available.
+           * Modified the form to only accept one image (product_img1) and removed references to product_img2 and product_img3 from both the
+             HTML form and the PHP processing logic.
+           * Corrected the image upload path from product_images/ to ../../assets/uploads/ads_form/ to align with the ad_form image storage.
+           * Generated $product_slug using generate_slug($product_title).
+           * Crucially, changed the `INSERT` query:
+               * From INSERT INTO products(...) to INSERT INTO ad_form(...).
+               * Mapped the form fields (product_title, product_cat, cat, product_price, product_desc, product_img1) to the corresponding
+                 ad_form columns (ad_title, category, subcategory, asking_price, description, image).
+               * Included the newly generated ad_slug in the INSERT statement.
+               * Provided default values for ad_form columns not present in this specific form (e.g., user_name, organisation, email, phone,
+                 location, city_town_neighbourhood, postal_code, expires_in, expires_at, verification_code, platforms, platform_links).
+
+
+   * `product.php`
+       * Edited/Improved:
+           * Renamed the function render_products_from_database to render_ads_from_database to reflect its new purpose.
+           * Modified the SQL query within render_ads_from_database to select data from the ad_form table instead of a non-existent products
+             table.
+           * Updated the SELECT columns to match ad_form (ad_title, asking_price, image, ad_slug, location).
+           * Adjusted the card_data mapping to use ad_form column names.
+           * Changed the ad_link generation to use the ad_slug for clean URLs (e.g., $base_url . 'ads/' . $ad['ad_slug']).
+           * Updated the "No products found" message to "No active ads found."
+
+
+   * `single-product.php`
+       * Removed: This file was created under the mistaken assumption of a products table and was subsequently deleted.
+
+
+   * `single-ad.php`
+       * Edited/Improved:
+           * Changed the primary fetching mechanism from $_GET['id'] to $_GET['slug'] for the main ad details.
+           * Updated the SQL query to SELECT * FROM ad_form WHERE ad_slug = ? instead of WHERE id = ?.
+           * Ensured that the $ad_id variable is still set (by fetching it from the $ad array after the slug-based query) for other parts of
+             the script that rely on the ID (e.g., review system, related ads query).
+           * Modified the generation of related ad links ($related_link) to use the ad_slug (e.g., $base_url . "ads/" . $related['ad_slug']).
+
+
+   * `single-article.php`
+       * Edited/Improved:
+           * Changed the primary fetching mechanism from $_GET['id'] to $_GET['slug'] for the main blog post details.
+           * Updated the SQL query to SELECT * FROM blog_posts WHERE blog_slug = ? instead of WHERE id = ?.
+           * Ensured that the $blog_id variable is still set (by fetching it from the $blog array after the slug-based query) for other parts
+             of the script that rely on the ID (e.g., comment form, related posts query).
+           * Modified the SQL queries for fetching next/previous articles to also select the blog_slug.
+           * Updated the next/previous article links to use the blog_slug (e.g., articles/<?php echo $nextArticle['blog_slug']; ?>).
+           * Modified the related blog post links to use the blog_slug (e.g., articles/<?= $related['blog_slug']; ?>).
+           * Adjusted the SELECT statement for related posts to explicitly fetch blog_slug.
+
+
+   * `ajax/load-subcat-posts.php`
+       * Edited/Improved:
+           * Modified the SQL query to select from ad_form table (SELECT * FROM ad_form WHERE subcategory = ? ...) instead of ads table.
+           * Updated the $post_url generation to use ad_slug (e.g., $base_url . 'ads/' . $post['ad_slug']).
+           * Adjusted the htmlspecialchars calls for alt text and card-title to use ad_title and asking_price from the ad_form table.
+
+
+   * `ajax/fetch_blogs_by_category.php`
+       * Edited/Improved:
+           * Updated the link generation for individual blog posts to use blog_slug (e.g., <a href="articles/' . $blog['blog_slug'] . '">).
+
+
+   * `search.php`
+       * Edited/Improved:
+           * Modified the SQL query to include ad_slug in the SELECT statement.
+           * Updated the link generation for search results to use ad_slug (e.g., <a href="ads/$slug" ...>).
+
+
+   * `search-hero.php`
+       * Edited/Improved:
+           * Modified the ad_query to include ad_slug in the SELECT statement.
+           * Modified the blog_query to include blog_slug in the SELECT statement.
+           * Updated the URL generation logic ($url) to use ad_slug for ads and blog_slug for articles.
+
+   * `search-handler.php`
+       * Edited/Improved:
+           * Modified the JSON response to include the ad_slug for each ad result.
+
+
+   * `README.md`
+       * Edited/Improved:
+           * Updated the "URL Structure Changes" section to accurately reflect the new slug-based URLs for /products/ (now ad listings), /ads/,
+             /articles/, and /categories/.
+           * Corrected the "Database Schema Updates" section to only list ad_form and blog_posts tables for slug column additions, removing the
+             incorrect reference to a products table.
+           * Directed users to schema-update.sql for the necessary ALTER TABLE statements.
+
 <?php
 // /register.php
 

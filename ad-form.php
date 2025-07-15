@@ -2,6 +2,7 @@
 // CRUCIAL: Must be the very first thing on the page
 session_start();
 include "config/config.php";
+require_once 'config/functions.php';
 
 // --- Security: Redirect non-logged-in users ---
 if (!isset($_SESSION['user_id'])) {
@@ -113,16 +114,17 @@ if (isset($_POST['btn_save'])) {
         // *** END OF CORRECTION ***
         
         // The $image variable now correctly holds either the new filename or an empty string.
+        $ad_slug = generate_slug($adTitle); // Generate slug from ad title
         $stmt = $conn->prepare("INSERT INTO ad_form (
-            category, subcategory, other_category, ad_title, asking_price, description, user_name,
+            category, subcategory, other_category, ad_title, ad_slug, asking_price, description, user_name,
             organisation, email, phone, location, city_town_neighbourhood, postal_code,
             expires_in, expires_at, image, platforms, platform_links
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         $empty_str = ''; // For the unused platform_links column
         $stmt->bind_param(
-            "ssssisssssssisssss",
-            $category, $subcategory, $other, $adTitle, $askingPrice, $description, $name,
+            "sssssisssssssisssss",
+            $category, $subcategory, $other, $adTitle, $ad_slug, $askingPrice, $description, $name,
             $organization, $email, $phone, $location, $city, $postalCode,
             $expireIn, $expires_at, $image, $platform_json, $empty_str
         );

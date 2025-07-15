@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php'; 
 require_once __DIR__ . '/config/config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;

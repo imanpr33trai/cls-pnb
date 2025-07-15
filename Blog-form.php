@@ -6,6 +6,7 @@
 // CRUCIAL: Must be the very first thing on the page.
 session_start();
 include_once('config/config.php');
+include_once('config/functions.php');
 
 // --- 1. Security: Redirect non-logged-in users ---
 if (!isset($_SESSION['user_id'])) {
@@ -80,9 +81,10 @@ if (isset($_POST['btn_save_2'])) {
         $platform_json = json_encode($platform_data);
         
         // Insert into DB
-        $stmt = $conn->prepare("INSERT INTO blog_posts (title, author_name, category_id, description, email, phone, image, platform, platform_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $blog_slug = generate_slug($blogtitle);
+        $stmt = $conn->prepare("INSERT INTO blog_posts (title, blog_slug, author_name, category_id, description, email, phone, image, platform, platform_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $empty_str = ''; // platform_link is no longer used individually
-        $stmt->bind_param("ssissssss", $blogtitle, $blogusername, $blogcategory, $blogdiscription, $blogemail, $blogmob, $encodedImages, $platform_json, $empty_str);
+        $stmt->bind_param("sssissssss", $blogtitle, $blog_slug, $blogusername, $blogcategory, $blogdiscription, $blogemail, $blogmob, $encodedImages, $platform_json, $empty_str);
      
         if ($stmt->execute()) {
             $_SESSION['form_success'] = "Your blog post has been submitted successfully!";

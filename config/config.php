@@ -1,11 +1,22 @@
 <?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // ==========================================
 // ✅ Basic Site Config for Punjab Classified
 // ==========================================
 
+require_once __DIR__ . '/debug.php';
+
+
+
 // Start session globally
 
-use Dotenv\Dotenv;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -16,7 +27,6 @@ if (session_status() == PHP_SESSION_NONE) {
 // Set default timezone (optional)
 date_default_timezone_set("Asia/Kolkata");
 
-require __DIR__ . '/../vendor/autoload.php';
 
 $dotenv = Dotenv::createMutable(__DIR__. '/../');
 

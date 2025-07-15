@@ -29,7 +29,8 @@ if ($keyword || $location) {
                 'ad_title' => $row['ad_title'],
                 'description' => $row['description'],
                 'postal_code' => $row['postal_code'],
-                'city_town_neighbourhood' => $row['city_town_neighbourhood']
+                'city_town_neighbourhood' => $row['city_town_neighbourhood'],
+                'ad_slug' => $row['ad_slug']
             ];
         }
     }

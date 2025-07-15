@@ -1,101 +1,68 @@
 <?php
 
-include_once('partials/header.php');
-include_once('config/config.php'); // always load this first
-include_once('config/functions.php'); // load functions after config
+// Include essential configuration and functions first
+include_once(__DIR__ . '/config/config.php');
+include_once(__DIR__ . '/config/functions.php');
 
-require_once 'products.php'; // load products after functions
+// Get the request URI and remove the query string
+$request_uri = strtok($_SERVER['REQUEST_URI'], '?');
+
+// Define routes
+switch ($request_uri) {
+    case '/':
+        // Homepage
+        include __DIR__ . '/partials/header.php';
+        include __DIR__ . '/partials/hero-sec.php';
+        include __DIR__ . '/partials/section-1.php';
+        include __DIR__ . '/partials/category-sec.php';
+        include __DIR__ . '/partials/search-sec.php';
+        // Include the products listing (which is now ads)
+        include __DIR__ . '/products.php'; // This file now contains the render_ads_from_database function
+        include __DIR__ . '/partials/footer.php';
+        break;
+
+    case '/products':
+        echo "DEBUG: Reached /products route.<br>";
+        // Products listing (now ads listing)   
+        include __DIR__ . '/partials/header.php';
+        include __DIR__ . '/products.php';
+        include __DIR__ . '/partials/footer.php';
+        break;
+
+    case '/articles':
+        // Articles listing
+        include __DIR__ . '/articles.php';
+        break;
+
+    // Dynamic routes with slugs
+    default:
+        // Handle /ads/slug
+        if (preg_match('/^\/ads\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
+            $_GET['slug'] = $matches[1];
+            include __DIR__ . '/single-ad.php';
+        }
+        // Handle /articles/slug
+        else if (preg_match('/^\/articles\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
+            $_GET['slug'] = $matches[1];
+            include __DIR__ . '/single-article.php';
+        }
+        // Handle /category/slug
+        else if (preg_match('/^\/category\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
+            $_GET['slug'] = $matches[1];
+            include __DIR__ . '/single-category.php';
+        }
+        // Handle direct .php file requests (e.g., /ad-form.php, /login.php)
+        else if (file_exists(__DIR__ . $request_uri . '.php')) {
+            include __DIR__ . $request_uri . '.php';
+        }
+        // 404 Not Found
+        else {
+            header("HTTP/1.0 404 Not Found");
+            include __DIR__ . '/partials/header.php'; // Include header for 404 page
+            echo '<div class="container text-center my-5"><h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p><a href="/" class="theme-btn">Go to Homepage</a></div>';
+            include __DIR__ . '/partials/footer.php'; // Include footer for 404 page
+        }
+        break;
+}
 
 ?>
-
-<!-- hero section -->
-<!-- hero section -->
-
-<?php include 'partials/hero-sec.php'; ?>
-
-<!-- hero section -->
-<!-- hero section -->
-
-<!-- section-1 -->
-<!-- section-1 -->
-
-<?php include 'partials/section-1.php'; ?>
-
-<!-- section-1 -->
-<!-- section-1 -->
-
-<!-- section-2 categories -->
-<!-- section-2 categories -->
-
-<?php include 'partials/category-sec.php'; ?>
-
-<!-- section-2 categories -->
-<!-- section-2 categories -->
-
-<!-- section-3 search -->
-<!-- section-3 search -->
-
-<?php include 'partials/search-sec.php'; ?>
-
-<!-- section-3 search -->
-<!-- section-3 search -->
-
-
-
-<?php
-// ... (your includes at the top)
-require_once 'product.php';
-?>
-
-<!-- ... (your other sections: hero, categories, etc.) ... -->
-
-<!-- ADS SECTION -->
-<section class="section-4">
-    <div class="container">
-        <!-- 
-            RESPONSIVE GRID LOGIC IS NOW HERE:
-            - row-cols-1: 1 column on extra-small screens (default)
-            - row-cols-sm-2: 2 columns on small screens
-            - row-cols-md-3: 3 columns on medium screens
-            - row-cols-lg-4: 4 columns on large screens
-            - g-4: Sets a consistent gap (gutter) of 1.5rem between all items
-        -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <?php
-            // Fetch and display the first 8 ads. The function now just returns cards.
-            // The row above handles the layout.
-            echo render_ads_from_database($conn, $base_url, 8, 0);
-            ?>
-        </div>
-
-        <!-- Advertisement Images (This part is already responsive) -->
-        <div class="row">
-            <div class="section-1-advertisements mt-5 mb-5 d-flex gap-3">
-                <div class="image-1 image-secs">
-                    <img src="<?= $base_url ?>assets/images/test-image.jpg" alt="" class="w-100">
-                </div>
-                <div class="image-2 image-secs d-none d-md-block">
-                    <img src="<?= $base_url ?>assets/images/test-image-2.jpg" alt="" class="w-100">
-                </div>
-            </div>
-        </div>
-
-        <!-- You can repeat the same responsive grid for the next set of ads -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <?php
-            // Fetch and display the next 8 ads
-            echo render_ads_from_database($conn, $base_url, 8, 8);
-            ?>
-        </div>
-
-    </div>
-</section>
-
-<!-- ... (your footer) ... -->
-<!-- footer -->
-<!-- footer -->
-<?php
-include_once('partials/footer.php');
-?>
-<!-- footer -->
-<!-- footer -->

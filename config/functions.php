@@ -36,4 +36,14 @@ function get_flash($key) {
 function is_loggedin() {
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 }
+
+function generate_slug($string) {
+    $string = strtolower($string);
+    $string = preg_replace('/\s+/', '-', $string); // Replace spaces with hyphens
+    $string = preg_replace('/[^a-z0-9-]/i', '', $string); // Remove non-alphanumeric characters except hyphens
+    $string = preg_replace('/-+/', '-', $string); // Replace multiple hyphens with a single hyphen
+    $string = trim($string, '-'); // Trim hyphens from the beginning and end
+    return $string;
+}
+
 ?>
