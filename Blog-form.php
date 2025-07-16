@@ -3,8 +3,7 @@
 // PART 1: ALL PHP LOGIC - THIS IS THE ONLY PHP LOGIC BLOCK YOU NEED
 // =========================================================================
 
-// CRUCIAL: Must be the very first thing on the page.
-session_start();
+
 include_once('config/config.php');
 include_once('config/functions.php');
 
@@ -132,7 +131,7 @@ include_once('partials/header.php');
 <!-- Breadcrump -->
 <!-- Breadcrump -->
 <?php
-session_start();
+
 ?>
 
 <?php if (!isset($_SESSION['user_id'])): ?>

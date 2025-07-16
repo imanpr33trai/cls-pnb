@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 include("includes/db.php"); 
 
 if (!isset($_SESSION['admin_email'])) {

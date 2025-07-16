@@ -51,7 +51,7 @@ $dotenv->load();
 // ==========================================
 $base_url = $_ENV['BASE_URL'] ?? 'http://localhost:8000/';
 define('POST_AD_URL', $base_url . 'ad-form.php');
-define('ARTICLES_URL', $base_url . 'articles.php');
+define('ARTICLES_URL', $base_url . 'app/pages/articles.php');
 define('ARTICLES_POST_URL', $base_url . 'Blog-form.php');
 
 //google api
@@ -90,4 +90,3 @@ $conn->set_charset("utf8mb4");
 
 // ✅ Fix path to functions.php
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'functions.php');
-

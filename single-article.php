@@ -5,7 +5,7 @@
 
 // CRUCIAL: Must be the very first line of the file.
 
-include_once('config/config.php');
+include_once(__DIR__ . '/config/config.php');
 
 // --- 1. INITIALIZE ALL VARIABLES ---
 $blog = null;
@@ -84,7 +84,7 @@ if (isset($_SESSION['user_id'])) {
 }
 
 // --- 5. INCLUDE HEADER ---
-include_once('partials/header.php');
+include_once(__DIR__ . '/partials/header.php');
 
 // =========================================================================
 // PART 2: THE HTML STRUCTURE
@@ -406,7 +406,7 @@ $(document).ready(function () {
     const blogId = <?= $_GET['id'] ?>;
 
     function loadComments() {
-        $.post('ajax/fetch_comments.php', { blog_id: blogId }, function(data) {
+        $.post('<?php echo $base_url; ?>ajax/fetch_comments.php', { blog_id: blogId }, function(data) {
             $('#all-comments').html(data);
         });
     }
@@ -416,7 +416,7 @@ $(document).ready(function () {
     $('#commentForm').on('submit', function (e) {
         e.preventDefault();
         $.ajax({
-            url: 'ajax/submit_comment.php',
+            url: '<?php echo $base_url; ?>ajax/submit_comment.php',
             method: 'POST',
             data: $(this).serialize(),
             success: function (response) {

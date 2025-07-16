@@ -12,7 +12,7 @@ use Google\Client;
 use Google\Service\Oauth2;
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    
 }
 debug_to_session(null, "--- Google Callback Initiated ---");
 

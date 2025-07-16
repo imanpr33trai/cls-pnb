@@ -3,9 +3,7 @@
 
 // This file should be included on your login.php and register.php pages.
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 // Ensure the autoloader can find the League OAuth classes
 require_once __DIR__ . '/../vendor/autoload.php';

@@ -1,5 +1,5 @@
 <?php
-include_once('config/config.php'); // always load this first
+include_once(__DIR__ . '/config/config.php'); // always load this first
 
 // --- NEW LOGIC TO HANDLE SLUG-BASED URLS ---
 
@@ -8,9 +8,7 @@ include_once('config/config.php'); // always load this first
 if (!isset($_GET['slug']) || empty($_GET['slug'])) {
     // If no slug is provided, it's a bad request. Show a 404 error.
     header("HTTP/1.0 404 Not Found");
-    include('partials/header.php');
-    echo '<div class="container text-center my-5"><h1>404 - Page Not Found</h1><p>The page you are looking for does not exist.</p></div>';
-    include('partials/footer.php');
+    include(__DIR__ . '/partials/header.php');
     exit();
 }
 
@@ -26,9 +24,7 @@ $result = $stmt->get_result();
 if ($result->num_rows === 0) {
     // If no category is found with this slug, it's a 404 error.
     header("HTTP/1.0 404 Not Found");
-    include('partials/header.php');
-    echo '<div class="container text-center my-5"><h1>404 - Category Not Found</h1><p>The category you are looking for does not exist.</p></div>';
-    include('partials/footer.php');
+    include(__DIR__ . '/partials/header.php');
     exit();
 }
 
@@ -40,7 +36,7 @@ $stmt->close();
 // --- END OF NEW LOGIC ---
 
 // Now the rest of your page can proceed, because we have the correct $category_id
-include_once('partials/header.php');
+    include(__DIR__ . '/partials/header.php');
 ?>
 
 <!-- Your other partials can be included as before -->
@@ -109,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
         postContainer.innerHTML = '<div class="w-100 text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
 
         // The AJAX call remains the same, as it correctly uses the subcategory ID
-        fetch('ajax/load-subcat-posts.php?subcat_id=' + subcatID)
+        fetch(`<?php echo $base_url; ?>ajax/load-subcat-posts.php?subcat_id=${subcatID}`)
             .then(response => response.text())
             .then(html => {
                 postContainer.innerHTML = html;

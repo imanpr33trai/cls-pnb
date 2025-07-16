@@ -2,11 +2,11 @@
     <select name="cats" id="cats" class="posts-search">
         <option value="all">All Categories</option>
         <?php
-        include('config/config.php');
+        include_once(__DIR__ . '../../config/config.php');
 
         $result = $conn->query("SELECT id, name FROM ad_categories WHERE status = 'live' ORDER BY name ASC");
         while ($row = $result->fetch_assoc()):
-            ?>
+        ?>
             <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['name']) ?></option>
         <?php endwhile; ?>
     </select>

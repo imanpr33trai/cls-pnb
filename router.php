@@ -12,9 +12,10 @@ $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 // Define routes
 switch ($request_uri) {
     case '/':
-        // Homepage
-        include __DIR__ . '/products.php'; // This file now contains the render_ads_from_database function
-        echo render_ads_from_database($conn, $base_url);
+        include __DIR__ . '/app/pages/home.php';
+
+        // This file now contains the render_ads_from_database function
+
         break;
 
     case '/products':
@@ -25,28 +26,17 @@ switch ($request_uri) {
 
     case '/articles':
         // Articles listing
-        include __DIR__ . '/articles.php';
+        include __DIR__ . '/app/pages/articles.php';
         break;
 
-    // Dynamic routes with slugs
     default:
-        // Handle /ads/slug
-        if (preg_match('/^\/ads\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
-            $_GET['slug'] = $matches[1];
-            include __DIR__ . '/single-ad.php';
-        }
-        // Handle /articles/slug
-        else if (preg_match('/^\/articles\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
-            $_GET['slug'] = $matches[1];
-            include __DIR__ . '/single-article.php';
-        }
         // Handle /category/slug
-        else if (preg_match('/^\/category\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
+        if (preg_match('/^\/category\/([a-zA-Z0-9-]+)$/', $request_uri, $matches)) {
             $_GET['slug'] = $matches[1];
             include __DIR__ . '/single-category.php';
         }
         // Handle direct .php file requests (e.g., /ad-form.php, /login.php)
-        else if (file_exists(__DIR__ . $request_uri . '.php')) {
+        elseif (file_exists(__DIR__ . $request_uri . '.php')) {
             include __DIR__ . $request_uri . '.php';
         }
         // 404 Not Found
@@ -58,5 +48,3 @@ switch ($request_uri) {
         }
         break;
 }
-
-?>

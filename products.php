@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . '/config/config.php');
 
+     // Homepage
 
 /**
  * Renders a single, static product card.
@@ -83,7 +84,7 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
 
     if ($result) {
         $num_rows = $result->num_rows;
-        echo "DEBUG: Query executed. Rows found: " . $num_rows . "<br>";
+        
         if ($num_rows > 0) {
             while ($ad = $result->fetch_assoc()) {
                 // Map the database columns to the keys our component expects

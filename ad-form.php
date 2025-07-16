@@ -1,6 +1,6 @@
 <?php
 // CRUCIAL: Must be the very first thing on the page
-session_start();
+
 include "config/config.php";
 require_once 'config/functions.php';
 

@@ -9,7 +9,7 @@ use League\OAuth2\Client\Provider\Github;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    
 }
 debug_to_session(null, "--- GitHub Callback Initiated ---");
 
