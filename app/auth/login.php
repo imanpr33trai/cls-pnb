@@ -163,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                         <div class="text-center">
                             <h1 class="fos-16">Don’t have an account?
-                                <a href="<?php echo $base_url; ?>register.php"
+                                <a href="./register.php"
                                     class="color-pink text-decoration-none">Signup</a>
                             </h1>
                         </div>

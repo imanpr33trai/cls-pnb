@@ -6,7 +6,7 @@ require_once __DIR__ . '/config/debug.php';
 
 // The autoloader now knows where to find the namespaced classes
 require_once __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/config/whoops.php';
+
 
 // Import the classes at the top for cleaner code
 use Google\Client;

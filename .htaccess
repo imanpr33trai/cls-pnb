@@ -2,14 +2,16 @@ RewriteEngine On
 
 # -- 1. REDIRECT: Remove .php, but IGNORE callbacks AND the ajax folder --
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
-RewriteCond %{REQUEST_URI} !^/(google-callback|github-callback|generate_slugs)\.php$ [NC]
+RewriteCond %{REQUEST_URI} !^/(google_callback|github_callback|generate_slugs)\.php$ [NC]
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC] # <-- ADD THIS LINE
+RewriteCond %{REQUEST_URI} !^/config/ [NC] # <-- ADD THIS LINE
 RewriteRule ^ /%1 [R=301,L]
 
 # -- 2. REWRITE (Front Controller): Route to router.php, but IGNORE the ajax folder --
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC] # <-- AND ADD THIS LINE
+RewriteCond %{REQUEST_URI} !^/config/ [NC] # <-- AND ADD THIS LINE
 RewriteRule ^(.*)$ router.php [L]
 
 # -- 1. REDIRECT: Remove .php from user-facing URLs, but IGNORE callbacks --

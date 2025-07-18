@@ -59,6 +59,9 @@ switch (true) {
         echo "<p>DEBUG: Matched route: /blog-form</p>";
         include __DIR__ . '/app/pages/Blog-form.php';
         break;
+    case $request_uri === '/verify':
+        include __DIR__ . '/app/auth/verify.php';
+        break;
 
     // --- Dynamic (Pattern-Based) Routes ---
 
