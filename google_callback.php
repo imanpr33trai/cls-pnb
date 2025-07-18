@@ -6,13 +6,13 @@ require_once __DIR__ . '/config/debug.php';
 
 // The autoloader now knows where to find the namespaced classes
 require_once __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/config/whoops.php';
 
 // Import the classes at the top for cleaner code
 use Google\Client;
 use Google\Service\Oauth2;
 
 if (session_status() === PHP_SESSION_NONE) {
-    
 }
 debug_to_session(null, "--- Google Callback Initiated ---");
 
@@ -125,7 +125,6 @@ try {
     session_write_close();
     header('Location: ' . $base_url);
     exit();
-
 } catch (Exception $e) {
     debug_to_session($e->getMessage(), '!!! SCRIPT FAILED !!!');
     session_write_close();

@@ -1,5 +1,6 @@
 <?php
 include_once('../config/config.php'); // Adjust path to config file
+include_once('../config/functions.php'); // Include functions file
 
 // Check if subcat_id is provided and is a number
 if (!isset($_GET['subcat_id']) || !is_numeric($_GET['subcat_id'])) {

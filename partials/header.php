@@ -48,17 +48,17 @@ include_once(__DIR__ . '/../config/config.php');
 
     <!-- Schema.org for Google -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Punjab Classified",
-        "url": "https://punjabclassified.com/",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://punjabclassified.com/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Punjab Classified",
+            "url": "https://punjabclassified.com/",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://punjabclassified.com/search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
         }
-    }
     </script>
 
     <!-- Favicon -->
@@ -80,41 +80,41 @@ include_once(__DIR__ . '/../config/config.php');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/css/intlTelInput.css" />
     <style>
-    .intl-tel-input {
-        width: 100%;
-    }
+        .intl-tel-input {
+            width: 100%;
+        }
 
-    .is-invalid {
-        border-color: red;
-    }
+        .is-invalid {
+            border-color: red;
+        }
 
-    .is-valid {
-        border-color: green;
-    }
+        .is-valid {
+            border-color: green;
+        }
 
-    .iti {
-        width: 100%;
-    }
+        .iti {
+            width: 100%;
+        }
 
-    /* Style for the validation message */
-    .invalid-feedback {
-        display: block;
-    }
+        /* Style for the validation message */
+        .invalid-feedback {
+            display: block;
+        }
 
-    .error {
-        color: red;
-        font-size: 13px;
-        margin-top: 2px;
-    }
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 2px;
+        }
 
-    .invalid {
-        border-color: red !important;
-    }
+        .invalid {
+            border-color: red !important;
+        }
 
-    .password-strength {
-        margin-top: 5px;
-        font-weight: bold;
-    }
+        .password-strength {
+            margin-top: 5px;
+            font-weight: bold;
+        }
     </style>
 
 
@@ -144,7 +144,7 @@ include_once(__DIR__ . '/../config/config.php');
 
                 <div class="d-none d-md-flex align-items-center justify-content-between w-100 header-links-new">
                     <!-- <button type="button" class="theme-btn">Articles</button> -->
-                    <a href="<?= ARTICLES_URL ?>" class="theme-btn text-decoration-none">Articles</a>
+                    <a href="/articles" class="theme-btn text-decoration-none">Articles</a>
                     <?php include 'inner-search.php'; ?>
 
 
@@ -154,18 +154,18 @@ include_once(__DIR__ . '/../config/config.php');
 
 
                     <?php if (isset($_SESSION['user_id'])): ?>
-                    <!-- User is logged in -->
-                    <a href="<?php echo $base_url; ?>logout.php" class="ms-3 text-white text-decoration-none"><img
-                            src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Logout</a>
+                        <!-- User is logged in -->
+                        <a href="<?php echo $base_url; ?>logout.php" class="ms-3 text-white text-decoration-none"><img
+                                src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Logout</a>
                     <?php else: ?>
-                    <!-- Not logged in -->
-                    <a href="<?php echo $base_url; ?>login.php" class="text-white text-decoration-none">
-                        <img src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Login
-                    </a>
+                        <!-- Not logged in -->
+                        <a href="<?php echo $base_url; ?>login.php" class="text-white text-decoration-none">
+                            <img src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Login
+                        </a>
                     <?php endif; ?>
 
                     <!-- <button type="button" class="theme-btn">+ Post Ad</button> -->
-                    <a href="<?= POST_AD_URL ?>" class="theme-btn  text-decoration-none ">+ Post
+                    <a href="<?= POST_AD_URL ?>" class="theme-btn text-decoration-none ">+ Post
                         Ad</a>
                 </div>
 
@@ -185,9 +185,9 @@ include_once(__DIR__ . '/../config/config.php');
                         </li>
                         <li class="nav-item">
                             <?php if (isset($_SESSION['user_id'])): ?>
-                            <a class="nav-link" href="<?php echo $base_url; ?>logout.php">Logout</a>
+                                <a class="nav-link" href="/logout">Logout</a>
                             <?php else: ?>
-                            <a class="nav-link" href="<?php echo $base_url; ?>login.php">Login</a>
+                                <a class="nav-link" href="<?php echo $base_url; ?>login.php">Login</a>
                             <?php endif; ?>
                         </li>
 

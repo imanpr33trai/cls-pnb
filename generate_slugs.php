@@ -1,6 +1,9 @@
 <?php
 include_once(__DIR__ . '/config/config.php');
 
+// This line is crucial to make sure mysqli throws exceptions instead of warnings
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 // A function to create a URL-friendly slug from a string
 function generateSlug($text) {
     // Convert to lowercase
@@ -33,23 +36,27 @@ if ($query_categories->num_rows > 0) {
         $id = $cat['id'];
         $name = $cat['name'];
         $slug = generateSlug($name);
+        $stmt = null; // Initialize stmt to null
 
-        // Prepare an update statement to prevent SQL injection
-        $stmt = $conn->prepare("UPDATE ad_categories SET slug = ? WHERE id = ?");
-        $stmt->bind_param("si", $slug, $id);
-        
-        if ($stmt->execute()) {
+        try {
+            $stmt = $conn->prepare("UPDATE ad_categories SET slug = ? WHERE id = ?");
+            $stmt->bind_param("si", $slug, $id);
+            $stmt->execute();
             echo "SUCCESS: Updated category '{$name}' (ID: {$id}) with slug '{$slug}'\n<br>";
-        } else {
-            // If the slug already exists (due to UNIQUE constraint), make it unique
-            $newSlug = $slug . '-' . $id;
-            $stmt_unique = $conn->prepare("UPDATE ad_categories SET slug = ? WHERE id = ?");
-            $stmt_unique->bind_param("si", $newSlug, $id);
-            $stmt_unique->execute();
-             echo "NOTICE: Slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
-            $stmt_unique->close();
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) { // 1062 is the error code for a duplicate entry
+                $newSlug = $slug . '-' . $id;
+                $stmt_unique = $conn->prepare("UPDATE ad_categories SET slug = ? WHERE id = ?");
+                $stmt_unique->bind_param("si", $newSlug, $id);
+                $stmt_unique->execute();
+                echo "NOTICE: Slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
+                $stmt_unique->close();
+            } else {
+                echo "ERROR: Could not update category ID {$id}. Reason: " . $e->getMessage() . "\n<br>";
+            }
+        } finally {
+            if ($stmt) $stmt->close();
         }
-        $stmt->close();
     }
 } else {
     echo "No ad_categories needed updating.\n<br>";
@@ -64,23 +71,27 @@ if ($query_ads->num_rows > 0) {
         $id = $ad['id'];
         $ad_title = $ad['ad_title'];
         $slug = generateSlug($ad_title);
+        $stmt = null;
 
-        // Prepare an update statement to prevent SQL injection
-        $stmt = $conn->prepare("UPDATE ad_form SET ad_slug = ? WHERE id = ?");
-        $stmt->bind_param("si", $slug, $id);
-        
-        if ($stmt->execute()) {
+        try {
+            $stmt = $conn->prepare("UPDATE ad_form SET ad_slug = ? WHERE id = ?");
+            $stmt->bind_param("si", $slug, $id);
+            $stmt->execute();
             echo "SUCCESS: Updated ad '{$ad_title}' (ID: {$id}) with slug '{$slug}'\n<br>";
-        } else {
-            // If the slug already exists (due to UNIQUE constraint), make it unique
-            $newSlug = $slug . '-' . $id;
-            $stmt_unique = $conn->prepare("UPDATE ad_form SET ad_slug = ? WHERE id = ?");
-            $stmt_unique->bind_param("si", $newSlug, $id);
-            $stmt_unique->execute();
-             echo "NOTICE: Ad slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
-            $stmt_unique->close();
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                $newSlug = $slug . '-' . $id;
+                $stmt_unique = $conn->prepare("UPDATE ad_form SET ad_slug = ? WHERE id = ?");
+                $stmt_unique->bind_param("si", $newSlug, $id);
+                $stmt_unique->execute();
+                echo "NOTICE: Ad slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
+                $stmt_unique->close();
+            } else {
+                echo "ERROR: Could not update ad ID {$id}. Reason: " . $e->getMessage() . "\n<br>";
+            }
+        } finally {
+            if ($stmt) $stmt->close();
         }
-        $stmt->close();
     }
 } else {
     echo "No ad_form entries needed updating.\n<br>";
@@ -95,23 +106,27 @@ if ($query_blogs->num_rows > 0) {
         $id = $blog['id'];
         $title = $blog['title'];
         $slug = generateSlug($title);
+        $stmt = null;
 
-        // Prepare an update statement to prevent SQL injection
-        $stmt = $conn->prepare("UPDATE blog_posts SET blog_slug = ? WHERE id = ?");
-        $stmt->bind_param("si", $slug, $id);
-        
-        if ($stmt->execute()) {
+        try {
+            $stmt = $conn->prepare("UPDATE blog_posts SET blog_slug = ? WHERE id = ?");
+            $stmt->bind_param("si", $slug, $id);
+            $stmt->execute();
             echo "SUCCESS: Updated blog post '{$title}' (ID: {$id}) with slug '{$slug}'\n<br>";
-        } else {
-            // If the slug already exists (due to UNIQUE constraint), make it unique
-            $newSlug = $slug . '-' . $id;
-            $stmt_unique = $conn->prepare("UPDATE blog_posts SET blog_slug = ? WHERE id = ?");
-            $stmt_unique->bind_param("si", $newSlug, $id);
-            $stmt_unique->execute();
-             echo "NOTICE: Blog slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
-            $stmt_unique->close();
+        } catch (mysqli_sql_exception $e) {
+            if ($e->getCode() == 1062) {
+                $newSlug = $slug . '-' . $id;
+                $stmt_unique = $conn->prepare("UPDATE blog_posts SET blog_slug = ? WHERE id = ?");
+                $stmt_unique->bind_param("si", $newSlug, $id);
+                $stmt_unique->execute();
+                echo "NOTICE: Blog slug '{$slug}' existed. Created unique slug '{$newSlug}' for ID: {$id}\n<br>";
+                $stmt_unique->close();
+            } else {
+                echo "ERROR: Could not update blog post ID {$id}. Reason: " . $e->getMessage() . "\n<br>";
+            }
+        } finally {
+            if ($stmt) $stmt->close();
         }
-        $stmt->close();
     }
 } else {
     echo "No blog_posts needed updating.\n<br>";

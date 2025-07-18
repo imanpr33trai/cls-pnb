@@ -504,7 +504,7 @@ $(document).ready(function() {
 });
 </script>
 
-<?php include_once('partials/footer.php'); ?>
+<?php include_once(__DIR__ . '/../../partials/footer.php'); ?>
 
 <!-- form section -->
 <!-- form section -->
@@ -512,7 +512,7 @@ $(document).ready(function() {
 <!-- footer -->
 <!-- footer -->
 <?php
- include_once('partials/footer.php');
+ include_once(__DIR__ . '/../../partials/footer.php');
  ?>
 <!-- footer -->
 <!-- footer -->

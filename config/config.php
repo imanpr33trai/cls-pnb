@@ -50,18 +50,36 @@ $dotenv->load();
 // ✅ Base URL (adjust this if you're in subfolder)
 // ==========================================
 $base_url = $_ENV['BASE_URL'] ?? 'http://localhost:8000/';
-define('POST_AD_URL', $base_url . 'ad-form.php');
-define('ARTICLES_URL', $base_url . 'app/pages/articles.php');
-define('ARTICLES_POST_URL', $base_url . 'Blog-form.php');
+if (!defined('POST_AD_URL')) {
+    define('POST_AD_URL', $base_url . 'ad-form');
+}
+if (!defined('ARTICLES_URL')) {
+    define('ARTICLES_URL', $base_url . 'article');
+}
+if (!defined('ARTICLES_POST_URL')) {
+    define('ARTICLES_POST_URL', $base_url . 'blog-form');
+}
 
 //google api
-define('GOOGLE_CLIENT_ID', $_ENV['GOOGLE_CLIENT_ID']);
-define('GOOGLE_CLIENT_SECRET', $_ENV['GOOGLE_CLIENT_SECRET']);
-define('GOOGLE_REDIRECT_URL', $_ENV['GOOGLE_REDIRECT_URL']);
+if (!defined('GOOGLE_CLIENT_ID')) {
+    define('GOOGLE_CLIENT_ID', $_ENV['GOOGLE_CLIENT_ID']);
+}
+if (!defined('GOOGLE_CLIENT_SECRET')) {
+    define('GOOGLE_CLIENT_SECRET', $_ENV['GOOGLE_CLIENT_SECRET']);
+}
+if (!defined('GOOGLE_REDIRECT_URL')) {
+    define('GOOGLE_REDIRECT_URL', $_ENV['GOOGLE_REDIRECT_URL']);
+}
 
-define('GITHUB_CLIENT_ID', $_ENV['GITHUB_CLIENT_ID']);
-define('GITHUB_CLIENT_SECRET', $_ENV['GITHUB_CLIENT_SECRET']);
-define('GITHUB_REDIRECT_URL', $_ENV['GITHUB_REDIRECT_URL']);
+if (!defined('GITHUB_CLIENT_ID')) {
+    define('GITHUB_CLIENT_ID', $_ENV['GITHUB_CLIENT_ID']);
+}
+if (!defined('GITHUB_CLIENT_SECRET')) {
+    define('GITHUB_CLIENT_SECRET', $_ENV['GITHUB_CLIENT_SECRET']);
+}
+if (!defined('GITHUB_REDIRECT_URL')) {
+    define('GITHUB_REDIRECT_URL', $_ENV['GITHUB_REDIRECT_URL']);
+}
 
 
 

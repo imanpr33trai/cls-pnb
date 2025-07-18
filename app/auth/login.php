@@ -5,9 +5,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-include_once(__DIR__ . '/config/config.php');
-include(__DIR__ . '../../../partials/google-login.php');
-include(__DIR__ . '../../../partials/github-login.php');
+
+include_once(__DIR__ . '/../../config/config.php');
+include(__DIR__ . '/../../partials/github_login.php');
+include(__DIR__ . '/../../partials/google-login.php');
+
+include_once(__DIR__ . '/../../config/functions.php');
+require __DIR__ . '/../../config/whoops.php';
 
 
 // USE $errors array to match your HTML block

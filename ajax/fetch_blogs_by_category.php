@@ -1,5 +1,7 @@
 <?php
-include('../config/config.php');
+
+include_once(__DIR__ . '../../config/config.php');
+include_once(__DIR__ . '../../config/functions.php');
 
 $categoryId = isset($_POST['category_id']) ? intval($_POST['category_id']) : 0;
 $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
@@ -29,15 +31,15 @@ if ($result && mysqli_num_rows($result) > 0) {
         echo '<div class="col-12 col-sm-6 col-lg-4 mb-4">
                 <div class="article-card position-relative">
                     <div class="card-img-blog">
-                         <a href="articles/' . $blog['blog_slug'] . '">
+                         <a href="article/' . $blog['blog_slug'] . '">
         <img src="' . $firstImage . '" class="img-fluid" alt="" />
     </a>
                     </div>
                     <div class="card-body-blog">
                          <h1 class="fos-20 poppins-regular mb-20">
-        <a href="articles/' . $blog['blog_slug'] . '" class="text-dark text-decoration-none">'
+        <a href="article/' . $blog['blog_slug'] . '" class="text-dark text-decoration-none">'
             . htmlspecialchars($blog['title']) .
-        '</a>
+            '</a>
     </h1>
                         <p>' . htmlspecialchars($excerpt) . '</p>
                     </div>
@@ -53,4 +55,3 @@ if ($result && mysqli_num_rows($result) > 0) {
 } else {
     echo '<p>No blog posts found.</p>';
 }
-?>

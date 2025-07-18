@@ -78,13 +78,13 @@ include_once(__DIR__ . '/../../config/functions.php');
                     echo '<div class="col-12 col-sm-6 col-lg-4 mb-4">
                 <div class="article-card position-relative">
                     <div class="card-img-blog">
-                    <a href="<?= $base_url ?>articles/' . $blog['blog_slug'] . '">
+                    <a href="/article/' . $blog['blog_slug'] . '">
                         <img src="' . $firstImage . '" class="img-fluid" alt="" />
                           </a>
                     </div>
                     <div class="card-body-blog">
                           <h1 class="fos-20 poppins-regular mb-20">
-        <a href="articles/' . $blog['blog_slug'] . '" class="text-dark text-decoration-none">'
+        <a href="/article/' . $blog['blog_slug'] . '" class="text-dark text-decoration-none">'
                         . htmlspecialchars($blog['title']) .
                         '</a>
     </h1>
