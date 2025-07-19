@@ -1,5 +1,5 @@
 <?php
-include_once('config/config.php');
+include_once('../config/config.php');
 header('Content-Type: application/json');
 
 $keyword = strtolower(trim($_POST['keyword'] ?? ''));

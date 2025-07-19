@@ -57,6 +57,77 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/js/intlTelInput.min.js"></script>
     <!-- New, separate script JUST for the phone number country dropdown -->
+
+    <script>
+        $(document).ready(function() {
+
+            // Get references to our HTML elements
+            const searchInput = $('#header-search-input');
+            const categorySelect = $('#header-category-select');
+            const resultsBox = $('#header-search-results');
+            let searchTimeout; // This is for debouncing, to avoid too many requests
+
+            // --- Main function to fetch and display search results ---
+            function fetchSearchResults() {
+                const query = searchInput.val().trim();
+                const category = categorySelect.val();
+
+                // 1. If the search box is empty or too short, hide the results and stop
+                if (query.length < 2) {
+                    resultsBox.addClass('d-none').html(''); // Hide and clear
+                    return;
+                }
+
+                // 2. Perform the AJAX request to our backend script
+                $.ajax({
+                    url: 'ajax/search.php', // This should be the path to your PHP script
+                    method: 'GET',
+                    data: {
+                        q: query, // The search term
+                        cat: category // The selected category
+                    },
+                    success: function(response) {
+                        // 3. When we get a successful response...
+                        resultsBox.html(response); // Put the HTML from PHP into our results box
+                        resultsBox.removeClass('d-none'); // Make the results box visible
+                    },
+                    error: function() {
+                        // Optional: Handle errors
+                        resultsBox.html("<div class='text-danger text-center p-2'>Search failed.</div>");
+                        resultsBox.removeClass('d-none');
+                    }
+                });
+            }
+
+            // --- Event Listeners ---
+
+            // When a user types in the search input
+            searchInput.on('keyup', function() {
+                clearTimeout(searchTimeout); // Reset the timer on each keypress
+                // Wait 300ms after the user stops typing, then perform the search.
+                // This is called "debouncing" and is critical for performance.
+                searchTimeout = setTimeout(fetchSearchResults, 300);
+            });
+
+            // When the user changes the category dropdown
+            categorySelect.on('change', function() {
+                // If the user has already typed something, re-run the search immediately
+                if (searchInput.val().trim().length >= 2) {
+                    fetchSearchResults();
+                }
+            });
+
+            // Hide the results box if the user clicks anywhere else on the page
+            $(document).on('click', function(e) {
+                // If the click is not on the search input or the results box...
+                if (!$(e.target).closest('#header-search-input, #header-search-results').length) {
+                    resultsBox.addClass('d-none'); // ...hide the results.
+                }
+            });
+
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             const phoneInputField = document.querySelector("#phonenumbid");
@@ -177,7 +248,7 @@
             resultsContainer.innerHTML = '';
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'search-handler.php', true);
+            xhr.open('POST', 'partials/search-handler.php', true);
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
             xhr.onload = function() {

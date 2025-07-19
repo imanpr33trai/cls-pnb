@@ -1,5 +1,5 @@
 <?php
-include 'config/config.php';
+include '../config/config.php';
 
 $keyword = isset($_POST['keyword']) ? mysqli_real_escape_string($conn, $_POST['keyword']) : '';
 $location = isset($_POST['location']) ? mysqli_real_escape_string($conn, $_POST['location']) : '';

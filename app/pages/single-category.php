@@ -43,7 +43,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 <?php include 'partials/hero-sec.php'; ?>
 <?php include 'partials/section-1.php'; ?>
 <?php include 'partials/category-sec.php'; ?>
-<?php include 'partials/search-sec.php'; ?>
+<?php include __DIR__ . '/../../partials/search-sec.php'; ?>
 
 <!-- section-4 posts -->
 <section class="section-4 pb-100">

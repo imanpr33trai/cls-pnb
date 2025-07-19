@@ -7,13 +7,7 @@ include_once(__DIR__ . '/config/config.php');
 include_once(__DIR__ . '/config/functions.php');
 require __DIR__ . '/config/whoops.php'; // For better error handling
 
-// --- DEBUGGING: Show current request URI ---
-echo "<div style='background-color: #f0f0f0; padding: 10px; border: 1px solid #ccc; margin-bottom: 15px;'>";
-echo "<strong>DEBUG INFO:</strong><br>";
-echo "Request URI: " . htmlspecialchars($_SERVER['REQUEST_URI']) . "<br>";
-$request_uri = strtok($_SERVER['REQUEST_URI'], '?');
-echo "Processed URI (for routing): " . htmlspecialchars($request_uri) . "<br>";
-echo "</div>";
+
 
 
 // Get the request URI and remove the query string
@@ -63,7 +57,13 @@ switch (true) {
         include __DIR__ . '/app/auth/verify.php';
         break;
 
-    // --- Dynamic (Pattern-Based) Routes ---
+    // --- AJAX/API Handlers ---
+    case $request_uri === '/search':
+        // This route should only include the backend logic file.
+        // Ensure search.php is in your project's root directory.
+        include __DIR__ . 'ajax/search.php';
+        break;
+
 
     // Handles URLs like /article/some-cool-slug
     case preg_match('/^\/article\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):

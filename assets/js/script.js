@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputField.value = transcript;
 
         // Fetch search results from server
-        fetch('voice-search.php?q=' + encodeURIComponent(transcript))
+        fetch('partials/voice-search.php?q=' + encodeURIComponent(transcript))
             .then(res => res.text())
             .then(data => {
                 resultsBox.innerHTML = data;

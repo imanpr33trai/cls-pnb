@@ -142,7 +142,7 @@ if (isset($_POST['btn_save'])) {
 }
 
 // --- Must include header AFTER all PHP logic ---
-include "partials/header.php";
+include_once(__DIR__ . '/../../partials/header.php');
 ?>
 <style>
 /* Add styles for validation feedback */

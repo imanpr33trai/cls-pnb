@@ -1,15 +1,18 @@
+<?php
+include_once(__DIR__ . '/../config/config.php');
 
-               <?php
-include_once(__DIR__ . '/../config/config.php'); // Adjust path as needed
-$query = $conn->query("SELECT * FROM ad_categories WHERE LOWER(status) = 'live' ORDER BY id DESC LIMIT 6");
+// ***MODIFICATION 1: Select the new 'slug' column***
+$query = $conn->query("SELECT id, name, image, slug FROM ad_categories WHERE LOWER(status) = 'live' ORDER BY id DESC LIMIT 8");
 
 while ($cat = $query->fetch_assoc()):
-    $img = !empty($cat['image']) ? $base_url . 'assets/uploads/' . $cat['image'] : $base_url . 'assets/images/cats/default.svg';
-?>
-                <a href="single-category.php?category=<?= $cat['id'] ?>"
-                   >
-                
-                    <span class=""><?= htmlspecialchars($cat['name']) ?></span>
-                </a>
-                <?php endwhile; ?>
 
+
+    // Define the new URL. We use $base_url to make it absolute.
+    // ***MODIFICATION 2: Change the href structure***
+    $category_url = $base_url . 'category/' . $cat['slug'];
+?>
+    <a href="<?= $category_url ?>">
+
+        <span class=""><?= htmlspecialchars($cat['name']) ?></span>
+    </a>
+<?php endwhile; ?>
