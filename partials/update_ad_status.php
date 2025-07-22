@@ -3,7 +3,7 @@
 // It connects to the DB and updates the status of any expired ads.
 
 // Include your database configuration
-include 'config/config.php';
+include '../config/config.php';
 
 // Prepare the SQL UPDATE statement.
 // Find all ads that are currently 'live' but their expiration date is in the past.
@@ -27,4 +27,3 @@ $stmt->close();
 $conn->close();
 
 echo "Ad status update complete. Updated $updated_count ads.";
-?>

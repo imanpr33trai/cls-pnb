@@ -23,7 +23,7 @@ $ad_slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 
 // --- 3. FETCH ALL DATA IF WE HAVE A VALID AD SLUG ---
 if (!empty($ad_slug)) {
-    echo "DEBUG: Ad Slug from URL: " . htmlspecialchars($ad_slug) . "<br>"; // Add this line
+
     // --- A. FETCH THE MAIN AD DETAILS ---
     $stmt = $conn->prepare("SELECT * FROM ad_form WHERE ad_slug = ?");
     $stmt->bind_param("s", $ad_slug);

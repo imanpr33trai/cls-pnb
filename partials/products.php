@@ -1,7 +1,7 @@
 <?php
-include_once(__DIR__ . '/config/config.php');
+include_once(__DIR__ . '../config/config.php');
 
-     // Homepage
+// Homepage
 
 /**
  * Renders a single, static product card.
@@ -27,23 +27,24 @@ function render_product_card(array $product): string
     $iconLocation = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
 
     // --- HTML Structure ---
-    // The outer div now has NO `col-` classes. It is just a placeholder for the card.
     $html = <<<HTML
-    <div class="col">
-        <div class="card product-card w-100 h-100 position-relative">
-            <div class="ad-tag">Ad</div>
-            <div class="product-image-wrapper">
-                <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image img-fluid"></a>
-            </div>
-            <div class="card-body product-content d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="product-price">{$formattedPrice}</h5>
-                    <a href="#" class="wish-heart">{$iconHeart}</a>
+    <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
+        <div class="bg-white shadow-md overflow-hidden product-card h-full flex flex-col">
+            <div class="relative">
+                <div class="ad-tag absolute top-2.5 left-2.5 text-white px-3 py-1 rounded-sm text-sm z-10">Ad</div>
+                <div class="product-image-wrapper overflow-hidden">
+                    <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image w-full h-48 object-cover transition-transform duration-300 ease-in-out"></a>
                 </div>
-                <a href="{$ad_link}" class="text-decoration-none"><p class="product-name">{$name}</p></a>
-                <hr class="my-2">
-                <div class="mt-auto d-flex align-items-center text-muted small">
-                    <div class="location-icon">{$iconLocation}</div>
+            </div>
+            <div class="p-4 flex flex-col flex-grow">
+                <div class="flex justify-between items-center mb-2">
+                    <h5 class="product-price text-lg font-bold">{$formattedPrice}</h5>
+                    <a href="#" class="wish-heart p-2 rounded-full"><span class="icon">{$iconHeart}</span></a>
+                </div>
+                <a href="{$ad_link}" class="text-decoration-none"><p class="product-name text-gray-800 hover:text-blue-600 transition-colors duration-200">{$name}</p></a>
+                <hr class="my-3">
+                <div class="mt-auto flex items-center text-gray-500 text-sm">
+                    <div class="location-icon mr-1">{$iconLocation}</div>
                     <span>{$location}</span>
                 </div>
             </div>
@@ -67,7 +68,7 @@ HTML;
 function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8, int $offset = 0): string
 {
 
-    $html = '<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">';
+    $html = '<div class="flex flex-wrap -mx-2">';
 
     // The SQL query is now a template for a prepared statement
     $sql = "SELECT ad_title, asking_price, image, ad_slug, location FROM ad_form WHERE status = 'live' AND expires_at > NOW() ORDER BY id DESC LIMIT ? OFFSET ?";
@@ -84,7 +85,7 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
 
     if ($result) {
         $num_rows = $result->num_rows;
-        
+
         if ($num_rows > 0) {
             while ($ad = $result->fetch_assoc()) {
                 // Map the database columns to the keys our component expects
@@ -101,7 +102,7 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
         } else {
             // Only show this message if it's the very first batch (offset=0) and no ads are found.
             if ($offset === 0) {
-                $html = '<div class="col-12"><p class="text-center">No active ads found.</p></div>';
+                $html = '<div class="w-full"><p class="text-center text-gray-500">No active ads found.</p></div>';
             }
         }
     } else {
@@ -114,4 +115,3 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
 }
 
 // Call the function to render ads when products.php is accessed directly
-

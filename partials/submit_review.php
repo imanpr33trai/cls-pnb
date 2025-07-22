@@ -1,8 +1,8 @@
 <?php
 
 
-include_once('config/config.php'); // always load this first
-include_once('partials/header.php');
+include_once('../config/config.php'); // always load this first
+include_once('../partials/header.php');
 
 $ad_id = isset($_POST['ad_id']) ? intval($_POST['ad_id']) : 0;
 $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
@@ -14,8 +14,8 @@ if ($ad_id && $user_id && $rating >= 1 && $rating <= 5 && !empty($comment)) {
     $stmt->bind_param("iiis", $ad_id, $user_id, $rating, $comment);
 
     if ($stmt->execute()) {
-       header("Location: single-ad.php?id=$ad_id&review=success");
-    exit;
+        header("Location: single-ad.php?id=$ad_id&review=success");
+        exit;
     } else {
         header("Location: single-ad.php?id=$ad_id&review=error");
         exit;

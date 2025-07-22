@@ -6,7 +6,7 @@
 include_once(__DIR__ . '/../../partials/header.php');
 include_once(__DIR__ . '/../../config/config.php');
 include_once(__DIR__ . '/../../config/functions.php');
-require_once(__DIR__ . '/../../products.php'); // Contains the render_ads_from_database function
+require_once(__DIR__ . '/../../partials/products.php'); // Contains the render_ads_from_database function
 
 // Page content sections
 include(__DIR__ . '/../../partials/hero-sec.php');
@@ -18,7 +18,7 @@ include(__DIR__ . '/../../partials/search-sec.php');
 <!-- ADS SECTION -->
 <section class="section-4">
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="">
             <?php
             // Fetch and display the first 8 ads.
             echo render_ads_from_database($conn, $base_url, 8, 0);
@@ -38,7 +38,7 @@ include(__DIR__ . '/../../partials/search-sec.php');
         </div>
 
         <!-- More Ads -->
-        <div class_="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class_="">
             <?php
             // Fetch and display the next 8 ads
             echo render_ads_from_database($conn, $base_url, 8, 8);

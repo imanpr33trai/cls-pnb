@@ -4,7 +4,7 @@
 
 .product-card .product-image {
   width: 100%;
-  /* aspect-ratio: 4 / 3; */
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
@@ -14,14 +14,14 @@
 }
 
 .product-card .ad-tag {
+  font-size: 14px;
+  background-color: var(--theme-color-pink);
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: var(--theme-color-pink);
   color: white;
   padding: 3px 12px;
   border-radius: 4px;
-  font-size: 14px;
   z-index: 1;
 }
 

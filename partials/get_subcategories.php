@@ -1,5 +1,5 @@
 <?php
-include_once("config/config.php");
+include_once("../config/config.php");
 
 if (isset($_POST['category_id'])) {
     $category_id = intval($_POST['category_id']);
@@ -10,10 +10,8 @@ if (isset($_POST['category_id'])) {
         echo '<option value="">Select Subcategory</option>';
         while ($row = $result->fetch_assoc()) {
             echo '<option value="' . $row['id'] . '">' . $row['title'] . '</option>';
-
         }
     } else {
         echo '<option value="">No subcategories found</option>';
     }
 }
-?>

@@ -226,7 +226,7 @@ a:hover {
   flex-wrap: nowrap;
   height: 50px;
   display: flex;
-  /* width: fit-content; */
+
   justify-content: center;
   align-items: center;
 }
@@ -610,8 +610,6 @@ header select option {
 }
 /* section 3 search */
 /* section 3 search */
-
-
 
 /* Login & register page */
 /* Login & register page */
@@ -1035,7 +1033,7 @@ footer {
     min-width: 100%;
   }
 }
-@media screen and (max-width: 768px) {
+@media (width>=768px) {
   .pb-100 {
     padding: 0 0 30px 0;
   }
@@ -1121,6 +1119,14 @@ footer {
   .single-article-details.mb-50 {
     margin-bottom: 20px;
   }
+  header nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .theme-btn {
+    height: 40px;
+    font-size: 0.675rem;
+  }
 }
 @media screen and (max-width: 500px) {
   .posts-search-con {
@@ -1130,5 +1136,15 @@ footer {
   }
   .line-head {
     display: none;
+  }
+}
+@media (width>=1024px) {
+  .theme-btn {
+    height: 40px;
+    font-size: 12px;
+  }
+  .main-search-con {
+    height: 40px;
+    padding: 0px 10px;
   }
 }

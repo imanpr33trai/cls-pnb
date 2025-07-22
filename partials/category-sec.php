@@ -1,7 +1,7 @@
 <section class="sec-categories">
     <div class="container">
         <div class="row">
-            <div class="all-cats d-flex flex-wrap">
+            <div class="all-cats flex justify-center  flex-wrap">
                 <?php
                 include_once(__DIR__ . '/../config/config.php');
 

@@ -8,22 +8,22 @@
                 </h6>
                 <div
                     class="d-flex justify-content-center head-searching-content align-items-md-center align-items-start flex-column flex-md-row" id="search-form">
-                    <input type="text" id="keyword" placeholder="Enter keyword">
-                    <input type="text" id="location" placeholder="City or Postal Code">
+                    <input type="text" id="keyword" class="bg-white" placeholder="Enter keyword">
+                    <input type="text" id="location" class="bg-white" placeholder="City or Postal Code">
                     <a href="#" id="search-btn" class="theme-btn d-flex">
                         <img src="<?php echo $base_url; ?>assets/images/search-icon.svg" alt="" class="me-2">
                         Search
                     </a>
-                
+
                 </div>
-          <!-- Overlay Result Area -->
-            <div id="overlay" class="voice-overlay">
-              <div class="close-btn" onclick="document.getElementById('overlay').style.display='none';">&times;</div>
-              <div class="loader" id="loader">
-                <img src="<?php echo $base_url; ?>assets/images/loader.svg" alt="Loading...">
-              </div>
-              <div id="results"></div>
-            </div>
+                <!-- Overlay Result Area -->
+                <div id="overlay" class="voice-overlay">
+                    <div class="close-btn" onclick="document.getElementById('overlay').style.display='none';">&times;</div>
+                    <div class="loader" id="loader">
+                        <img src="<?php echo $base_url; ?>assets/images/loader.svg" alt="Loading...">
+                    </div>
+                    <div id="results"></div>
+                </div>
 
             </div>
         </div>

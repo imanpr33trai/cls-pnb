@@ -1,5 +1,5 @@
 <!-- This component should be included once in your site header -->
-<div class="d-flex align-items-center main-search-con position-relative">
+<div class="flex items-center main-search-con px-3 bg-[#383838] text-white h-[50px]  position-relative">
     <select name="cat" id="header-category-select" class="posts-search">
         <option value="all">All Categories</option>
         <?php
@@ -18,7 +18,7 @@
 
     <div class="search-posts-input-cont">
         <img src="<?php echo $base_url; ?>assets/images/search-icon.svg" alt="Search">
-        <input type="text" id="header-search-input" placeholder="Search for ads...">
+        <input type="text" id="header-search-input" class="w-100" placeholder="Search for ads...">
         <!-- We will ignore the voice search JS for now to keep it simple -->
         <img src="<?php echo $base_url; ?>assets/images/microphone.svg" alt="Voice Search" style="cursor:pointer;">
     </div>

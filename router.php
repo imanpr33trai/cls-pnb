@@ -17,44 +17,46 @@ $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 switch (true) {
     // --- Static Routes ---
     case $request_uri === '/':
-        echo "<p>DEBUG: Matched route: / (home)</p>";
+
         include __DIR__ . '/app/pages/home.php';
         break;
 
     case $request_uri === '/products':
-        echo "<p>DEBUG: Matched route: /products</p>";
+
         include __DIR__ . '/products.php';
         break;
 
     case $request_uri === '/articles':
-        echo "<p>DEBUG: Matched route: /articles</p>";
+
         include __DIR__ . '/app/pages/articles.php';
         break;
 
     case $request_uri === '/login':
-        echo "<p>DEBUG: Matched route: /login</p>";
         include __DIR__ . '/app/auth/login.php';
         break;
 
     case $request_uri === '/register':
-        echo "<p>DEBUG: Matched route: /register</p>";
+
         include __DIR__ . '/app/auth/register.php';
         break;
 
     case $request_uri === '/logout':
-        echo "<p>DEBUG: Matched route: /logout</p>";
         include __DIR__ . '/app/auth/logout.php';
         break;
     case $request_uri === '/ad-form':
-        echo "<p>DEBUG: Matched route: /ad-form</p>";
+
         include __DIR__ . '/app/pages/ad-form.php';
         break;
     case $request_uri === '/blog-form':
-        echo "<p>DEBUG: Matched route: /blog-form</p>";
+
         include __DIR__ . '/app/pages/Blog-form.php';
         break;
     case $request_uri === '/verify':
         include __DIR__ . '/app/auth/verify.php';
+        break;
+
+    case $request_uri === '/test':
+        include __DIR__ . '/partials/header.php';
         break;
 
     // --- AJAX/API Handlers ---
@@ -67,24 +69,24 @@ switch (true) {
 
     // Handles URLs like /article/some-cool-slug
     case preg_match('/^\/article\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
-        echo "<p>DEBUG: Matched route: /article/{slug}</p>";
-        echo "<p>DEBUG: Slug found: " . htmlspecialchars($matches[1]) . "</p>";
+
+
         $_GET['slug'] = $matches[1]; // Extract slug from URL
         include __DIR__ . '/app/pages/single-article.php';
         break;
 
     // Handles URLs like /category/gadgets
     case preg_match('/^\/category\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
-        echo "<p>DEBUG: Matched route: /category/{slug}</p>";
-        echo "<p>DEBUG: Slug found: " . htmlspecialchars($matches[1]) . "</p>";
+
+
         $_GET['slug'] = $matches[1]; // Extract slug from URL
         include __DIR__ . '/app/pages/single-category.php';
         break;
 
     // Handles URLs like /ad/my-awesome-product
     case preg_match('/^\/ads\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
-        echo "<p>DEBUG: Matched route: /ads/{slug}</p>";
-        echo "<p>DEBUG: Slug found: " . htmlspecialchars($matches[1]) . "</p>";
+
+
         $_GET['slug'] = $matches[1]; // Extract slug from URL
         include __DIR__ . '/app/pages/single-ad.php';
         break;

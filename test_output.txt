@@ -1,41 +1,116 @@
---- Additional Changes (Current Session) ---
+<?php
+include_once(__DIR__ . '../config/config.php');
 
-I. Files Modified and Improved:
+// Homepage
 
-   * `.htaccess`
-       * Added: `RewriteRule ^(google_callback|github_callback)\.php$ - [L]` at the top to exclude OAuth callback files from all rewrite rules.
+/**
+ * Renders a single, static product card.
+ * UPDATED: The 'col-*' classes have been REMOVED from the outer div.
+ * The component is now just the card itself.
+ *
+ * @param array $product An associative array of product data.
+ * @return string The complete HTML for the product card.
+ */
+function render_product_card(array $product): string
+{
+    // ... (all the data preparation and sanitization code is the same) ...
+    $defaults = ['name' => 'Ad Title Missing', 'price' => 0.00, 'image' => 'assets/images/test-img.png', 'location' => 'Not specified', 'ad_link' => '#', 'currencySymbol' => ''];
+    $product = array_merge($defaults, $product);
+    $name = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
+    $image = htmlspecialchars($product['image'], ENT_QUOTES, 'UTF-8');
+    $currencySymbol = htmlspecialchars($product['currencySymbol'], ENT_QUOTES, 'UTF-8');
+    $location = htmlspecialchars($product['location'], ENT_QUOTES, 'UTF-8');
+    $ad_link = htmlspecialchars($product['ad_link'], ENT_QUOTES, 'UTF-8');
+    $price = is_numeric($product['price']) ? (float) $product['price'] : 0;
+    $formattedPrice = $currencySymbol . number_format($price, 2);
+    $iconHeart = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
+    $iconLocation = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
 
-   * `router.php`
-       * Updated include paths for `products.php`, `single-article.php`, `single-category.php`, `single-ad.php`, and `articles.php` to point to their new locations within `/app/pages/`.
+    // --- HTML Structure ---
+    // The outer div now has NO `col-` classes. It is just a placeholder for the card.
+    $html = <<<HTML
+    <div class="col">
+        <div class="card product-card hover:scale-[1.05] w-100 h-100 position-relative">
+            <div class="ad-tag absolute top-2.5 left-2.5 text-white px-1 py-3 rounded-xs z-10">Ad</div>
+            <div class="product-image-wrapper overflow-hidden">
+                <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image w-100 object-cover transition duration-300 ease-in-out "></a>
+            </div>
+            <div class="card-body product-content d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="product-price">{$formattedPrice}</h5>
+                    <a href="#" class="wish-heart">{$iconHeart}</a>
+                </div>
+                <a href="{$ad_link}" class="text-decoration-none"><p class="product-name">{$name}</p></a>
+                <hr class="my-2">
+                <div class="mt-auto d-flex align-items-center text-muted small">
+                    <div class="location-icon">{$iconLocation}</div>
+                    <span>{$location}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+HTML;
+    return $html;
+}
 
-   * `app/pages/ad-form.php`
-       * Updated internal `include` and `require_once` paths to correctly reference `config/config.php`, `config/functions.php`, `partials/header.php`, and `partials/footer.php` from its new location.
+/**
+ * Function 2: The Database API
+ * UPGRADED to accept limit and offset for pagination.
+ * UPGRADED to use prepared statements for security.
+ *
+ * @param mysqli $conn The database connection object.
+ * @param string $base_url The base URL for constructing paths.
+ * @param int $limit The number of ads to fetch.
+ * @param int $offset The starting point for the ads (for pagination).
+ * @return string HTML content of all the ad cards.
+ */
+function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8, int $offset = 0): string
+{
 
-   * `app/pages/Blog-form.php`
-       * Updated internal `include_once` paths to correctly reference `config/config.php`, `config/functions.php`, `partials/header.php`, and `partials/footer.php` from its new location.
+    $html = '<div class="">';
 
-   * `app/pages/single-article.php`
-       * Updated internal `include_once` paths to correctly reference `config/config.php`, `config/functions.php`, `partials/header.php`, and `partials/footer.php` from its new location.
+    // The SQL query is now a template for a prepared statement
+    $sql = "SELECT ad_title, asking_price, image, ad_slug, location FROM ad_form WHERE status = 'live' AND expires_at > NOW() ORDER BY id DESC LIMIT ? OFFSET ?";
 
-   * `app/pages/single-category.php`
-       * Updated internal `include_once` paths to correctly reference `config/config.php` and `partials/header.php` from its new location.
+    // Prepare, bind parameters, and execute. This prevents SQL injection.
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        echo "DEBUG: Prepare failed: " . $conn->error . "<br>";
+        return $html . '</div>';
+    }
+    $stmt->bind_param("ii", $limit, $offset); // "ii" means two integer parameters
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-   * `app/pages/single-ad.php`
-       * Updated internal `include_once` paths to correctly reference `config/config.php`, `partials/header.php`, and `partials/footer.php` from its new location.
-       * Corrected AJAX call URLs for `submit_review_ajax.php` and `load_more_reviews.php` to use `$base_url`.
+    if ($result) {
+        $num_rows = $result->num_rows;
 
-   * `app/pages/articles.php`
-       * Updated internal `include_once` paths to correctly reference `config/config.php`, `config/functions.php`, `partials/header.php`, and `partials/footer.php` from its new location.
+        if ($num_rows > 0) {
+            while ($ad = $result->fetch_assoc()) {
+                // Map the database columns to the keys our component expects
+                $card_data = [
+                    'name'      => $ad['ad_title'],
+                    'price'     => $ad['asking_price'],
+                    'location'  => $ad['location'],
+                    'image'     => !empty($ad['image']) ? $base_url . 'assets/uploads/ads_form/' . $ad['image'] : $base_url . 'assets/images/test-img.png',
+                    'ad_link'   => $base_url . 'ads/' . $ad['ad_slug']
+                ];
+                // Call the component function for each ad and append the HTML
+                $html .= render_product_card($card_data);
+            }
+        } else {
+            // Only show this message if it's the very first batch (offset=0) and no ads are found.
+            if ($offset === 0) {
+                $html = '<div class="col-12"><p class="text-center">No active ads found.</p></div>';
+            }
+        }
+    } else {
+        echo "DEBUG: Query failed: " . $conn->error . "<br>";
+    }
 
-   * `ajax/load-subcat-posts.php`
-       * Added `include_once('../config/functions.php');` to ensure `render_ads_from_database` is available.
+    $stmt->close();
+    $html .= '</div>';
+    return $html;
+}
 
-II. Files Moved:
-
-   * `products.php` -> `/app/pages/products.php`
-   * `ad-form.php` -> `/app/pages/ad-form.php`
-   * `Blog-form.php` -> `/app/pages/Blog-form.php`
-   * `single-article.php` -> `/app/pages/single-article.php`
-   * `single-category.php` -> `/app/pages/single-category.php`
-   * `single-ad.php` -> `/app/pages/single-ad.php`
-   * `articles.php` -> `/app/pages/articles.php`
+// Call the function to render ads when products.php is accessed directly

@@ -66,8 +66,22 @@ include_once(__DIR__ . '/../config/config.php');
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
+
     <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
-        referrerpolicy="origin"></script>
+        referrerpolicy="origin"
+        onerror="tinyMceFallback()"></script>
+
+    <script>
+        function tinyMceFallback() {
+            console.error('TinyMCE CDN failed to load.');
+            // Show a message or fallback editor
+            document.getElementById('editor-container').innerHTML = `
+        <p style="color: red;">Editor failed to load. Please check your internet or try again later.</p>
+        <textarea name="content" rows="10" cols="50" placeholder="Write here..."></textarea>
+    `;
+        }
+    </script>
+
 
     <!-- other meta tags -->
     <!-- other meta tags -->
@@ -120,14 +134,32 @@ include_once(__DIR__ . '/../config/config.php');
 
 
     <title>Punjab Classified</title>
-    <style>
-
-
-    </style>
+    <!-- <style>
+        @media (max-width: 768px) {
+            header nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style> -->
     <link rel="stylesheet" href="/assets/css/product-card.css">
 </head>
 
 <body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
+        });
+    </script>
     <div id="voiceSearchOverlay" class="voice-overlay d-none">
         <div class="close-btn" onclick="document.getElementById('voiceSearchOverlay').style.display='none';">&times;
         </div>
@@ -136,63 +168,66 @@ include_once(__DIR__ . '/../config/config.php');
             <div id="voiceSearchResults"></div>
         </div>
     </div>
-    <header>
-        <nav class="navbar navbar-expand-lg">
-            <div class="container justify-content-center">
-                <a class="navbar-brand" href="<?= $base_url ?>"><img
-                        src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="" /></a>
+    <header class=" shadow-md lg:px-5 xl:px-7 bg-[#191919] lg:flex-wrap">
+        <nav class="container mx-auto px-4 sm:px-6 text-tiny lg:px-6 xl:px-8 flex items-center justify-between h-16 lg:h-14 xl:h-16 md:h-28">
+            <!-- Logo -->
+            <div class="flex-shrink-0 >
+                <a href=" <?= $base_url ?>" class="flex items-center">
+                <img class="h-10 lg:h-9 xl:h-10 w-auto" src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="Punjab Classified Logo" />
+                </a>
+            </div>
 
-                <div class="d-none d-md-flex align-items-center justify-content-between w-100 header-links-new">
-                    <!-- <button type="button" class="theme-btn">Articles</button> -->
-                    <a href="/articles" class="theme-btn text-decoration-none">Articles</a>
-                    <?php include 'inner-search.php'; ?>
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex text-tiny items-center gap-3.5 space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 xl:text-sm xl:gap-3.5 xl:space-x-4">
+                <a href="/articles" class="theme-btn ">Articles</a>
 
+                <?php include 'inner-search.php'; ?>
 
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="<?php echo $base_url; ?>logout.php" class="text-white flex items-center">
+                        <img src="<?php echo $base_url; ?>assets/images/user.svg" alt="User Icon" class="h-5 w-5 lg:h-4 lg:w-4 xl:h-5 xl:w-5 mr-1">
+                        Logout
+                    </a>
+                <?php else: ?>
+                    <a href="<?php echo $base_url; ?>login.php" class=" flex items-center text-white">
+                        <img src="<?php echo $base_url; ?>assets/images/user.svg" alt="User Icon" class="h-5 w-5 lg:h-4 lg:w-4 xl:h-5 xl:w-5 mr-1">
+                        Login
+                    </a>
+                <?php endif; ?>
 
+                <a href="<?= POST_AD_URL ?>" class="theme-btn px-4 py-2 lg:px-3 lg:py-1.5 xl:px-4 xl:py-2 shadow-sm">+ Post Ad</a>
+            </div>
 
-
-
-
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <!-- User is logged in -->
-                        <a href="<?php echo $base_url; ?>logout.php" class="ms-3 text-white text-decoration-none"><img
-                                src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Logout</a>
-                    <?php else: ?>
-                        <!-- Not logged in -->
-                        <a href="<?php echo $base_url; ?>login.php" class="text-white text-decoration-none">
-                            <img src="<?php echo $base_url; ?>assets/images/user.svg" alt="" class="me-2">Login
-                        </a>
-                    <?php endif; ?>
-
-                    <!-- <button type="button" class="theme-btn">+ Post Ad</button> -->
-                    <a href="<?= POST_AD_URL ?>" class="theme-btn text-decoration-none ">+ Post
-                        Ad</a>
-                </div>
-
-                <button class="navbar-toggler d-lg-none d-md-none" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span><img src="<?php echo $base_url; ?>assets/images/humbergar.svg" alt=""></span>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                    <span class="sr-only">Open main menu</span>
+                    <!-- Hamburger Icon -->
+                    <svg class="h-6 w-6 block" id="hamburger-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                    <!-- Close Icon -->
+                    <svg class="h-6 w-6 hidden" id="close-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
-
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav d-flex d-md-none">
-                        <li class="nav-item ">
-                            <a class="nav-link" href="#">Articles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Post Ads</a>
-                        </li>
-                        <li class="nav-item">
-                            <?php if (isset($_SESSION['user_id'])): ?>
-                                <a class="nav-link" href="/logout">Logout</a>
-                            <?php else: ?>
-                                <a class="nav-link" href="<?php echo $base_url; ?>login.php">Login</a>
-                            <?php endif; ?>
-                        </li>
-
-                    </ul>
-                </div>
             </div>
         </nav>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="/articles" class="block px-3 py-2  text-base font-medium text-white ">Articles</a>
+
+
+
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="<?php echo $base_url; ?>logout.php" class="block px-3 py-2  text-base text-white font-medium>Logout</a>
+                <?php else: ?>
+                    <a href=" <?php echo $base_url; ?>login.php" class="block px-3 py-2 text-white hover:text-white/9 hover:bg-brand-100 text-base font-medium">Login</a>
+                <?php endif; ?>
+
+                <a href="<?= POST_AD_URL ?>" class="block w-full text-left  text-white px-3 py-2 text-base font-medium mt-2">+ Post Ad</a>
+            </div>
+        </div>
     </header>
