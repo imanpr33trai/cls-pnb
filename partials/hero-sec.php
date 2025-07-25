@@ -2,9 +2,9 @@
     <div class="container">
         <div class="row">
             <div class="">
-                <h1 class="playfair-medium text-white fos-90 text-md-center"><span
+                <h1 class="playfair-medium text-white lg:fos-90 xs:text-4xl text-md-center"><span
                         class="playfair-medium hide-text">Free</span> Classified Ads</h1>
-                <h6 class="text-md-center  mt-4 mb-md-3 mb-5 text-white text-9xl">8,096,606 listings across 5,921 sites
+                <h6 class="text-md-center  mt-4 mb-md-3 mb-5 text-white">8,096,606 listings across 5,921 sites
                 </h6>
                 <div
                     class="d-flex justify-content-center head-searching-content align-items-md-center align-items-start flex-column flex-md-row" id="search-form">

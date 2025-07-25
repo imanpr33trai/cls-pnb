@@ -1,12 +1,12 @@
     <!-- footer -->
     <!-- footer -->
-    <footer>
+    <footer class="sm:p-5">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center text-md-start">
                     <img src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="" class="img-fluid">
                 </div>
-                <div class="col-12 d-flex flex-md-row flex-column pt-3">
+                <div class="col-12 d-flex flex-md-row flex-column pt-3 gap-5">
                     <div class="col-lg-7 footer-links">
                         <!-- <a href="#">Vehicle</a>
                         <a href="#">Townhouses</a>

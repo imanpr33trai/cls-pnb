@@ -113,18 +113,20 @@ include_once(__DIR__ . '/../../partials/header.php');
 <!-- Breadcrump -->
 
 <!-- article details -->
-<section class="single-article-details pb-100">
+<section class="single-article-details pb-20">
     <div class="container">
-        <?php if (!$blog): // Handle case where blog is not found ?>
+        <?php if (!$blog): // Handle case where blog is not found 
+        ?>
             <div class="text-center mt-5">
                 <h1>Blog Post Not Found</h1>
                 <p>The post you are looking for does not exist or may have been moved.</p>
                 <a href="<?= $base_url ?>articles" class="theme-btn">Back to Articles</a>
             </div>
-        <?php else: // Display the blog post ?>
-            <div class="row">
+        <?php else: // Display the blog post 
+        ?>
+            <div class="">
                 <div class="col-lg-9 ps-0">
-                    <div class="col-12 article-top-img mb-30">
+                    <div class="col-12 article-top-img mb-7">
                         <?php
                         $images = json_decode($blog['image'], true);
                         $firstImage = !empty($images[0]) ? $base_url . 'assets/uploads/blog_form/' . $images[0] : $base_url . 'assets/images/placeholder-blog.png';
@@ -138,12 +140,13 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
                     </div>
                     <div class="col-12">
-                        <h1 class="poppins-medium fos-30 mb-20"><?= htmlspecialchars($blog['title']); ?></h1>
+                        <h1 class="poppins-medium fos-30 mb-5"><?= htmlspecialchars($blog['title']); ?></h1>
                         <div class="article-content">
-                            <?= $blog['description']; // This is now pre-processed and safe ?>
+                            <?= $blog['description']; // This is now pre-processed and safe 
+                            ?>
                         </div>
 
-                        <div class="col mb-40">
+                        <div class="col mb-10">
                             <hr />
                         </div>
                         <div class="reviews">
@@ -154,7 +157,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 </h1>
                             <?php else: ?>
                                 <form id="commentForm">
-                                    <div class="comment-sec d-flex align-items-start gap-3 mb-3">
+                                    <div class="comment-sec d-flex align-items-start gap-3 mb-0.5">
                                         <img src="<?= $base_url; ?>assets/images/userimage.png" alt="" />
                                         <textarea name="comment" id="commentbyallusers" rows="5" class="w-100" required></textarea>
                                     </div>
@@ -164,28 +167,28 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 </form>
                             <?php endif; ?>
                         </div>
-                        <div id="all-comments" class="mt-4"></div>
+                        <div id="all-comments" class="mt-1"></div>
                     </div>
                 </div>
                 <div class="col-lg-3 m-0 pe-0">
                     <?php if ($nextArticle): ?>
-                        <div class="next-post-sidebar mb-40">
+                        <div class="next-post-sidebar mb-10">
                             <?php
-                                $nextImages = json_decode($nextArticle['image'] ?? '[]', true);
-                                $nextImage = !empty($nextImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $nextImages[0] : $base_url . 'assets/images/placeholder-blog.png';
-                                $descWords = explode(' ', strip_tags($nextArticle['description'] ?? ''));
-                                $shortDesc = implode(' ', array_slice($descWords, 0, 15)) . (count($descWords) > 15 ? '...' : '');
+                            $nextImages = json_decode($nextArticle['image'] ?? '[]', true);
+                            $nextImage = !empty($nextImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $nextImages[0] : $base_url . 'assets/images/placeholder-blog.png';
+                            $descWords = explode(' ', strip_tags($nextArticle['description'] ?? ''));
+                            $shortDesc = implode(' ', array_slice($descWords, 0, 15)) . (count($descWords) > 15 ? '...' : '');
                             ?>
                             <a href="<?= $base_url ?>article/<?= $nextArticle['blog_slug'] ?>">
-                                <img src="<?= $nextImage ?>" class="img-next-post mb-24" alt="" />
-                                <h1 class="poppins-medium fos-20 mb-20"><?= htmlspecialchars($nextArticle['title']) ?></h1>
+                                <img src="<?= $nextImage ?>" class="img-next-post mb-6" alt="" />
+                                <h1 class="poppins-medium fos-20 mb-5"><?= htmlspecialchars($nextArticle['title']) ?></h1>
                             </a>
                             <p class="fos-14"><?= htmlspecialchars($shortDesc) ?></p>
                         </div>
                     <?php endif; ?>
 
-                    <div class="share-with-community mb-50">
-                        <h1 class="fos-20 poppins-medium mb-24">Share with your community</h1>
+                    <div class="share-with-community mb-12">
+                        <h1 class="fos-20 poppins-medium mb-6">Share with your community</h1>
                         <div class="social-share d-flex justify-content-between">
                             <a href="https://www.instagram.com/?url=<?= urlencode($currentUrl) ?>" target="_blank"><img src="<?= $base_url; ?>assets/images/insta.svg" alt="Instagram" /></a>
                             <a href="https://twitter.com/intent/tweet?url=<?= urlencode($currentUrl) ?>" target="_blank"><img src="<?= $base_url; ?>assets/images/tweetr.svg" alt="Twitter" /></a>
@@ -197,12 +200,12 @@ include_once(__DIR__ . '/../../partials/header.php');
                     </div>
 
                     <?php if (!empty($table_of_contents)):
-                        ?>
+                    ?>
                         <div class="inthisarticle">
-                            <h1 class="fos-30 poppins-medium mb-30">In this article</h1>
+                            <h1 class="fos-30 poppins-medium mb-7">In this article</h1>
                             <ul class="inthisarticlelist list-unstyled">
                                 <?php foreach ($table_of_contents as $item): ?>
-                                    <li class="article-list-item mb-2">
+                                    <li class="article-list-item mb-1">
                                         <a href="#<?= $item['id'] ?>" class="toc-link text-decoration-none"><?= htmlspecialchars($item['text']) ?></a>
                                     </li>
                                 <?php endforeach; ?>
@@ -218,51 +221,51 @@ include_once(__DIR__ . '/../../partials/header.php');
 
 <!-- Related blogs -->
 <?php if (!empty($related_posts)): ?>
-<section class="related-blog">
-    <div class="container">
-        <div class="row">
-            <div class="">
-                <h1 class="poppins-medium fos-30 mb-30">Related Blog Post</h1>
-                <div class="p-0 d-flex flex-wrap">
-                    <?php foreach ($related_posts as $related): ?>
-                        <div class="col-12 col-sm-6 col-lg-4 mb-4 px-2">
-                            <div class="article-card position-relative">
-                                <?php
+    <section class="related-blog">
+        <div class="container">
+            <div class="row">
+                <div class="">
+                    <h1 class="poppins-medium fos-30 mb-7">Related Blog Post</h1>
+                    <div class="p-0 d-flex flex-wrap">
+                        <?php foreach ($related_posts as $related): ?>
+                            <div class="col-12 col-sm-6 col-lg-4 mb-1 px-2">
+                                <div class="article-card position-relative">
+                                    <?php
                                     $relatedImages = json_decode($related['image'], true);
                                     $relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $relatedImages[0] : $base_url . 'assets/images/placeholder-blog.png';
-                                ?>
-                                <div class="card-img-blog">
-                                    <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>">
-                                        <img src="<?= $relatedImage ?>" class="img-fluid" alt="<?= htmlspecialchars($related['title']); ?>">
-                                    </a>
-                                </div>
-                                <div class="card-body-blog">
-                                    <h1 class="fos-20 poppins-regular mb-20">
-                                        <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>" class="text-dark text-decoration-none">
-                                            <?= htmlspecialchars($related['title']); ?>
+                                    ?>
+                                    <div class="card-img-blog">
+                                        <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>">
+                                            <img src="<?= $relatedImage ?>" class="img-fluid" alt="<?= htmlspecialchars($related['title']); ?>">
                                         </a>
-                                    </h1>
-                                    <p><?= substr(strip_tags($related['description']), 0, 100); ?>...</p>
-                                </div>
-                                <div class="card-foot-blog d-flex align-items-center gap-2">
-                                    <img src="<?= $base_url; ?>assets/images/userimage.png" alt="" class="user-image-blog">
-                                    <h1 class="fos-12 usernameblog m-0"><?= htmlspecialchars($related['author_name']); ?></h1>
-                                    <h1 class="fos-12 usernameblog m-0">|</h1>
-                                    <h1 class="fos-12 dateblog m-0"><?= date('jS F, Y', strtotime($related['created_at'])); ?></h1>
+                                    </div>
+                                    <div class="card-body-blog">
+                                        <h1 class="fos-20 poppins-regular mb-5">
+                                            <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>" class="text-dark text-decoration-none">
+                                                <?= htmlspecialchars($related['title']); ?>
+                                            </a>
+                                        </h1>
+                                        <p><?= substr(strip_tags($related['description']), 0, 100); ?>...</p>
+                                    </div>
+                                    <div class="card-foot-blog d-flex align-items-center gap-2">
+                                        <img src="<?= $base_url; ?>assets/images/userimage.png" alt="" class="user-image-blog">
+                                        <h1 class="fos-12 usernameblog m-0"><?= htmlspecialchars($related['author_name']); ?></h1>
+                                        <h1 class="fos-12 usernameblog m-0">|</h1>
+                                        <h1 class="fos-12 dateblog m-0"><?= date('jS F, Y', strtotime($related['created_at'])); ?></h1>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 <!-- Related blogs -->
 
 <!-- Pagination -->
-<section class="pagination-sec pb-100">
+<section class="pagination-sec pb-24">
     <div class="container">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-between">
@@ -287,54 +290,54 @@ include_once(__DIR__ . '/../../partials/header.php');
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-    <?php if ($blog): ?>
-    const blogId = <?= $blog['id'] ?>;
+    $(document).ready(function() {
+        <?php if ($blog): ?>
+            const blogId = <?= $blog['id'] ?>;
 
-    function loadComments() {
-        $.post('<?= $base_url ?>ajax/fetch_comments.php', {
-            blog_id: blogId
-        }, function(data) {
-            $('#all-comments').html(data);
-        }).fail(function() {
-            $('#all-comments').html('<p>Error loading comments.</p>');
-        });
-    }
+            function loadComments() {
+                $.post('<?= $base_url ?>ajax/fetch_comments.php', {
+                    blog_id: blogId
+                }, function(data) {
+                    $('#all-comments').html(data);
+                }).fail(function() {
+                    $('#all-comments').html('<p>Error loading comments.</p>');
+                });
+            }
 
-    loadComments();
+            loadComments();
 
-    $('#commentForm').on('submit', function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: '<?= $base_url ?>ajax/submit_comment.php',
-            method: 'POST',
-            data: $(this).serialize(),
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    $('#commentbyallusers').val('');
-                    loadComments();
-                } else {
-                    alert(response.message || 'An error occurred.');
-                }
-            },
-            error: function() {
-                alert('Could not submit comment. Please try again.');
+            $('#commentForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '<?= $base_url ?>ajax/submit_comment.php',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#commentbyallusers').val('');
+                            loadComments();
+                        } else {
+                            alert(response.message || 'An error occurred.');
+                        }
+                    },
+                    error: function() {
+                        alert('Could not submit comment. Please try again.');
+                    }
+                });
+            });
+        <?php endif; ?>
+
+        // Smooth scroll for Table of Contents
+        $('.toc-link').on('click', function(e) {
+            e.preventDefault();
+            const targetId = $(this).attr('href');
+            const targetElement = $(targetId);
+            if (targetElement.length) {
+                $('html, body').animate({
+                    scrollTop: targetElement.offset().top - 100
+                }, 500);
             }
         });
     });
-    <?php endif; ?>
-
-    // Smooth scroll for Table of Contents
-    $('.toc-link').on('click', function(e) {
-        e.preventDefault();
-        const targetId = $(this).attr('href');
-        const targetElement = $(targetId);
-        if (targetElement.length) {
-            $('html, body').animate({
-                scrollTop: targetElement.offset().top - 100
-            }, 500);
-        }
-    });
-});
 </script>

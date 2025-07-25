@@ -110,6 +110,7 @@
 .container {
   max-width: 1440px;
   padding: 0px 72px;
+  overflow-x: hidden;
 }
 .fos-90 {
   font-size: 90px;
@@ -201,13 +202,13 @@ input[type="checkbox"]:checked {
   min-width: 18px;
 }
 a {
-  color: #000000;
   text-decoration: none;
-  cursor: pointer;
+  color: white;
 }
+/*
 a:hover {
   color: #000000;
-}
+} */
 /* global settings */
 /* global settings */
 
@@ -219,14 +220,14 @@ a:hover {
 .theme-btn {
   background-color: var(--theme-color-pink);
   color: var(--theme-color-white);
-  border: 1px solid var(--theme-color-pink);
+  border: 2px solid var(--theme-color-pink);
   padding: 0px 20px;
   transition: all ease 0.5s;
   font-size: 16px;
   flex-wrap: nowrap;
   height: 50px;
   display: flex;
-
+  max-width: 50%;
   justify-content: center;
   align-items: center;
 }
@@ -467,12 +468,7 @@ header select option {
   border: none;
   max-height: 50px;
 }
-.head-searching-content :nth-child(1) {
-  width: 20%;
-}
-.head-searching-content :nth-child(2) {
-  width: 30%;
-}
+
 /* hero sec */
 /* hero sec */
 
@@ -493,9 +489,10 @@ header select option {
   background-color: #f0f0f0;
 }
 .single-cat {
-  padding: 60px 30px 57px 30px;
+  padding: 60px 30px 60px 30px;
   max-width: 11.11%;
   min-width: 11.11%;
+
   transition: all ease 0.2s;
   gap: 14px;
 }
@@ -514,6 +511,17 @@ header select option {
   transition: all ease 0.4s;
 }
 .single-cat:hover img {
+  filter: invert(1);
+}
+.single-cat.active-category {
+  background-color: var(--theme-color-pink);
+  outline: 2px solid var(--theme-color-pink);
+  outline-offset: 2px;
+}
+.single-cat.active-category h3 {
+  color: var(--theme-color-white);
+}
+.single-cat.active-category img {
   filter: invert(1);
 }
 /* categories sec */
@@ -623,10 +631,10 @@ header select option {
   padding: 22px 22px;
   border: 1px solid #6666665e;
 }
-label {
+/* label {
   margin-bottom: 7px;
   font-size: 16px;
-}
+} */
 .hide a h6 {
   color: #666666;
 }
@@ -690,9 +698,9 @@ label {
 
 /* Breadcrump all pages */
 /* Breadcrump all pages */
-.breadcrump {
+/* .breadcrump {
   padding: 50px 0 30px 0;
-}
+} */
 .breadcrump-link-1 {
   color: #a3a3a3;
 }
@@ -773,32 +781,6 @@ textarea {
 .all-blog-cats a:active::after,
 .all-blog-cats a:hover::after {
   background-color: var(--theme-color-pink);
-}
-.article-card {
-  border: 1px solid #e5e5e5;
-  min-height: 440px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.card-img-blog img {
-  width: 100%;
-  max-height: 147px;
-  object-fit: cover;
-}
-.card-body-blog {
-  padding: 20px 20px 0px 24px;
-}
-.card-foot-blog {
-  padding: 0 20px 24px 24px;
-}
-.user-image-blog {
-  max-width: 45px;
-  max-height: 45px;
-}
-.usernameblog,
-.dateblog {
-  color: #6d7d8b;
 }
 .articles-blogs {
   padding-bottom: 50px;
@@ -997,13 +979,13 @@ footer {
 /* search header */
 /* search header */
 
-@media screen and (max-width: 1065px) {
+@media (min-width: 1065px) {
   .single-cat {
     max-width: 25%;
     min-width: 25%;
   }
 }
-@media screen and (max-width: 991px) {
+@media (min-width: 992px) {
   .container {
     padding: 0px 50px;
   }
@@ -1033,7 +1015,7 @@ footer {
     min-width: 100%;
   }
 }
-@media (width>=768px) {
+@media (min-width: 768px) {
   .pb-100 {
     padding: 0 0 30px 0;
   }
@@ -1059,12 +1041,12 @@ footer {
   .hero-sec .fos-16 {
     font-size: 12px;
   }
-  .head-searching-content :nth-child(1) {
+  /* .head-searching-content :nth-child(1) {
     width: 100%;
   }
   .head-searching-content :nth-child(2) {
     width: 100%;
-  }
+  } */
   .section-1 {
     padding: 50px 0px;
   }
@@ -1125,7 +1107,15 @@ footer {
   }
   .theme-btn {
     height: 40px;
-    font-size: 0.675rem;
+    font-size: 0.775rem;
+  }
+  .main-search-con {
+    height: 40px;
+    padding: 0px 10px;
+    flex-wrap: nowrap;
+  }
+  .head-searching-content input {
+    height: 40px;
   }
 }
 @media screen and (max-width: 500px) {
@@ -1138,7 +1128,7 @@ footer {
     display: none;
   }
 }
-@media (width>=1024px) {
+@media (min-width: 1024px) {
   .theme-btn {
     height: 40px;
     font-size: 12px;
@@ -1147,4 +1137,472 @@ footer {
     height: 40px;
     padding: 0px 10px;
   }
+  /* header nav{
+    justify-content: ;
+  } */
 }
+@media (width: 360px) {
+  .container {
+    padding: 15px;
+  }
+  .single-cat {
+    max-width: 50%;
+    min-width: 48%;
+    padding: 20px 10px 20px 10px;
+  }
+  .container {
+    padding: 0px 15px;
+  }
+  .fos-90 {
+    font-size: 50px;
+  }
+  .fos-40 {
+    font-size: 30px;
+  }
+  .fos-32 {
+    font-size: 22px;
+  }
+  .fos-30 {
+    font-size: 20px;
+  }
+  .fos-24 {
+    font-size: 18px;
+  }
+  .fos-20 {
+    font-size: 16px;
+  }
+  .fos-18 {
+    font-size: 14px;
+  }
+  .fos-16 {
+    font-size: 12px;
+  }
+  .fos-14 {
+    font-size: 11px;
+  }
+  .fos-12 {
+    font-size: 10px;
+  }
+  .single-article-details {
+    padding-bottom: 50px;
+  }
+  .user-info {
+    padding: 10px 15px;
+  }
+  .next-post-sidebar {
+    padding: 20px;
+  }
+  .share-with-community {
+    padding: 20px;
+  }
+  .inthisarticlelist li {
+    margin-bottom: 20px;
+  }
+  .pagination-btn,
+  .pagination-nums {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .related-blog .article-card .card-body-blog {
+    padding: 1rem;
+  }
+  .related-blog .article-card .card-foot-blog {
+    padding: 0.75rem 1rem;
+  }
+  .related-blog .article-card .card-title {
+    font-size: 1rem;
+  }
+  .related-blog .article-card .card-excerpt {
+    font-size: 0.8rem;
+  }
+  .related-blog .article-card .user-image-blog {
+    width: 24px;
+    height: 24px;
+  }
+  .related-blog .article-card .usernameblog,
+  .related-blog .article-card .dateblog {
+    font-size: 0.7rem;
+  }
+  .related-blog .col-12.col-sm-6.col-lg-4 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  /* .col-lg-9.ps-0,
+  .col-lg-3.pe-0 {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  } */
+  /* .user-info {
+    justify-content: center !important;
+  } */
+  .social-share {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  .pagination-sec .col {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .form-section input {
+    height: 40px;
+    padding: 10px 15px;
+    font-size: 12px;
+  }
+  .account-main {
+    padding: 40px 0;
+  }
+  .login-sec-2 {
+    padding: 20px 0;
+  }
+  .theme-btn {
+    font-size: 12px;
+    max-width: 100%;
+    height: 40px;
+  }
+  .form-section input,
+  .form-section select,
+  .form-section textarea {
+    padding: 0px 5px;
+  }
+  .upload-image-placeholder-area {
+    padding: 50px 0;
+  }
+  .form-section select {
+    height: 40px;
+    padding: 0px 10px;
+  }
+}
+@media (width<= 640px) {
+  footer {
+    padding: 20px;
+  }
+}
+
+/* --- Custom Article Grid (Conflict-Free) --- */
+
+/* 1. The main container for all the cards */
+.article-grid {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line */
+  gap: 2rem; /* Creates space between cards (adjust as needed) */
+}
+
+/* 2. The individual article card */
+.article-card {
+  display: flex;
+  flex-direction: column; /* Stacks card content vertically */
+  background-color: #ffffff;
+  border-radius: 0.3rem; /* 12px */
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+}
+
+/* 3. Responsive sizing for the cards */
+/* Mobile First: Cards are full width by default */
+.article-card {
+  flex-basis: 100%;
+}
+
+/* Tablet: Two columns */
+@media (min-width: 768px) {
+  .article-card {
+    /* 50% width minus half the gap */
+    flex-basis: calc(50% - 1rem);
+  }
+}
+
+/* Desktop: Three columns */
+@media (min-width: 1024px) {
+  .article-card {
+    /* 33.33% width minus two-thirds of the gap */
+    flex-basis: calc(33.333% - 1.34rem);
+  }
+}
+
+/* --- Card Content Styling --- */
+.card-img-blog img {
+  width: 100%;
+  height: 220px; /* Fixed height for uniform look */
+  object-fit: cover; /* Ensures image fills the space without distortion */
+}
+
+.card-body-blog {
+  padding: 1.5rem;
+  flex-grow: 1; /* This is key: makes the body take up available space */
+}
+
+.card-body-blog .card-title {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  line-height: 1.4;
+  color: #1f2937; /* Dark gray */
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+}
+
+.card-body-blog .card-excerpt {
+  color: #4b5563; /* Medium gray */
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.card-foot-blog {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb; /* Very light gray */
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.card-foot-blog .user-image-blog {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+/* --- Responsive Page Header & Category Filters --- */
+
+/* Main container for the entire header block */
+.page-header {
+  margin-bottom: 20px;
+}
+
+/* Container for the top row (Title and Button) */
+.page-header-top {
+  display: flex;
+  justify-content: space-between; /* Pushes title and button to opposite ends */
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap; /* Allows items to wrap on very small screens */
+  gap: 1rem; /* Adds space if they wrap */
+}
+
+/* Styling for the main page title */
+.page-title {
+  font-size: 2.5rem; /* 40px */
+  font-family: "Playfair Display", serif; /* Assuming this from your class name */
+  font-weight: 500; /* medium */
+  margin: 0;
+  color: #1f2937; /* A modern dark gray */
+}
+
+/* The container for the category filter links */
+.category-filters-container {
+  display: flex;
+  flex-wrap: wrap; /* THIS IS THE KEY: allows filters to wrap to the next line */
+  gap: 0.75rem; /* Creates space between and below the filter tags */
+}
+
+/* Styling for each individual category filter link */
+.category-filter-link {
+  display: inline-block;
+  padding: 0.6rem 1.25rem;
+  background-color: #f3f4f6; /* Light gray */
+  color: #374151; /* Darker gray text */
+  border-radius: 9999px; /* Creates the "pill" shape */
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover and Active states for the filters */
+.category-filter-link:hover {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.category-filter-link.active {
+  background-color: #007bff; /* Example active color (blue) */
+  color: #ffffff;
+  border-color: #0056b3;
+}
+
+/* --- Media Query for Mobile Responsiveness --- */
+/* On screens smaller than 768px (tablets/phones) */
+@media (max-width: 768px) {
+  .page-header-top {
+    /* Stack the title and button vertically */
+    flex-direction: column;
+    align-items: flex-start; /* Align them to the left */
+  }
+
+  .page-title {
+    font-size: 2rem; /* Make title slightly smaller on mobile */
+    /* margin-bottom: 1rem; Add space below the title when stacked */
+  }
+
+  .theme-btn {
+    text-align: center;
+  }
+}
+.blog-category-filter:hover {
+  color: var(--theme-color-pink);
+}
+@media (min-width: 1536px) {
+  .head-searching-content :nth-child(1) {
+    width: 100%;
+  }
+  .head-searching-content :nth-child(2) {
+    width: 100%;
+  }
+}
+
+/* =================================================================== */
+/* 1. Standard Media Query Breakpoints (Mobile-First)                */
+/* =================================================================== */
+
+/* Base styles are the default (for mobile) */
+
+/* Small (sm) Breakpoint - 576px and UP */
+/* @media (min-width: 576px) {
+}
+
+
+@media (min-width: 768px) {
+  .search-results-box {
+    left: 0;
+    right: 0;
+  }
+  .container {
+    padding: 0px 16px;
+  }
+  .navbar-brand img {
+    max-width: 250px;
+  }
+  .hero-sec {
+    min-height: 389px;
+  }
+  .hide-text {
+    display: none;
+  }
+  .hero-sec .fos-90 {
+    font-size: 40px;
+  }
+  .hero-sec .fos-16 {
+    font-size: 12px;
+  }
+  .section-1 {
+    padding: 50px 0px;
+  }
+  .section-1-text .fos-40 {
+    font-size: 24px;
+  }
+  .single-cat {
+    max-width: 50%;
+    min-width: 50%;
+  }
+  .account-main {
+    padding: 30px 0;
+  }
+  .login-sec-2 {
+    padding: 25px 0;
+  }
+  footer {
+    padding: 30px 16px 30px 16px;
+  }
+  .footer-links {
+    text-align: center;
+  }
+  .sec-search .fos-40 {
+    font-size: 30px;
+  }
+  .search-posts-input-cont {
+    display: flex;
+  }
+  .theme-btn {
+    height: 40px;
+    font-size: 0.775rem;
+  }
+  .main-search-con {
+    height: 40px;
+    padding: 0px 10px;
+    flex-wrap: nowrap;
+  }
+  .head-searching-content input {
+    height: 40px;
+  }
+  .article-card {
+    flex-basis: calc(50% - 1rem);
+  }
+  .page-header-top {
+    flex-direction: row;
+    align-items: center;
+  }
+  .page-title {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+  }
+  .theme-btn {
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding: 0px 50px;
+  }
+  .hero-sec .fos-90 {
+    font-size: 70px;
+  }
+  .section-1 {
+    padding: 60px 0px;
+  }
+  .section-1-text .fos-40 {
+    font-size: 30px;
+  }
+  .single-cat {
+    max-width: 33.33%;
+    min-width: 33.33%;
+  }
+  .search-cont-after {
+    flex-direction: row;
+    align-items: center;
+  }
+  .posts-search-con {
+    flex-grow: 0;
+    max-width: 532px;
+    min-width: 532px;
+  }
+}
+
+
+@media (min-width: 1200px) {
+  .single-cat {
+    max-width: 25%;
+    min-width: 25%;
+  }
+  .article-card {
+    flex-basis: calc(33.333% - 1.34rem);
+  }
+}
+
+
+@media (min-width: 1400px) {
+
+}
+
+
+@media (max-width: 575.98px) {
+  .posts-search-con {
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+  }
+  .line-head {
+    display: none;
+  }
+  footer {
+    padding: 20px;
+  }
+} */

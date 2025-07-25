@@ -66,7 +66,7 @@ include_once(__DIR__ . '/../config/config.php');
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"
         onerror="tinyMceFallback()"></script>
@@ -87,7 +87,6 @@ include_once(__DIR__ . '/../config/config.php');
     <!-- other meta tags -->
     <!-- other meta tags -->
     <!-- other meta tags -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/output.css">
     <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
@@ -142,7 +141,6 @@ include_once(__DIR__ . '/../config/config.php');
             }
         }
     </style> -->
-    <link rel="stylesheet" href="/assets/css/product-card.css">
 </head>
 
 <body>
@@ -169,16 +167,16 @@ include_once(__DIR__ . '/../config/config.php');
         </div>
     </div>
     <header class=" shadow-md lg:px-5 xl:px-7 bg-[#191919] lg:flex-wrap">
-        <nav class="container mx-auto px-4 sm:px-6 text-tiny lg:px-6 xl:px-8 flex items-center justify-between h-16 lg:h-14 xl:h-16 md:h-28">
+        <nav class="container mx-auto px-4 sm:px-6 sm:justify-between lg:text-tiny lg:px-6 xl:px-8 flex items-center  justify-between h-16 lg:h-14 xl:h-16 md:h-28">
             <!-- Logo -->
-            <div class="flex-shrink-0 >
+            <div class="flex-shrink-0 ">
                 <a href=" <?= $base_url ?>" class="flex items-center">
-                <img class="h-10 lg:h-9 xl:h-10 w-auto" src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="Punjab Classified Logo" />
+                    <img class="h-10 lg:h-9 xl:h-10 w-auto" src="<?php echo $base_url; ?>assets/images/pnb-logo-full.svg" alt="Punjab Classified Logo" />
                 </a>
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex text-tiny items-center gap-3.5 space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 xl:text-sm xl:gap-3.5 xl:space-x-4">
+            <div class="hidden md:flex lg:text-tiny items-center gap-3.5 space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 xl:text-sm xl:gap-3.5 xl:space-x-4">
                 <a href="/articles" class="theme-btn ">Articles</a>
 
                 <?php include 'inner-search.php'; ?>
@@ -199,8 +197,8 @@ include_once(__DIR__ . '/../config/config.php');
             </div>
 
             <!-- Mobile Menu Button -->
-            <div class="md:hidden flex items-center">
-                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+            <div class="md:hidden flex  items-center">
+                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white  hover:bg-pink transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink">
                     <span class="sr-only">Open main menu</span>
                     <!-- Hamburger Icon -->
                     <svg class="h-6 w-6 block" id="hamburger-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -216,18 +214,18 @@ include_once(__DIR__ . '/../config/config.php');
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="/articles" class="block px-3 py-2  text-base font-medium text-white ">Articles</a>
+            <div class="px-2 pt-2 pb-3 text-tiny space-y-1 sm:px-3">
+                <a href="/articles" class="block px-3 py-2 hover:text-pink  font-medium text-white ">Articles</a>
 
 
 
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="<?php echo $base_url; ?>logout.php" class="block px-3 py-2  text-base text-white font-medium>Logout</a>
+                    <a href="<?php echo $base_url; ?>logout.php" class="block hover:text-pink px-3 py-2   text-white font-medium">Logout</a>
                 <?php else: ?>
-                    <a href=" <?php echo $base_url; ?>login.php" class="block px-3 py-2 text-white hover:text-white/9 hover:bg-brand-100 text-base font-medium">Login</a>
+                    <a href=" <?php echo $base_url; ?>login.php" class="block px-3 py-2 text-white hover:text-pink hover:bg-brand-100  font-medium">Login</a>
                 <?php endif; ?>
 
-                <a href="<?= POST_AD_URL ?>" class="block w-full text-left  text-white px-3 py-2 text-base font-medium mt-2">+ Post Ad</a>
+                <a href="<?= POST_AD_URL ?>" class="block w-full text-left hover:text-pink text-white px-3 py-2  font-medium mt-2">+ Post Ad</a>
             </div>
         </div>
     </header>

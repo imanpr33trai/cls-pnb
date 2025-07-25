@@ -165,13 +165,13 @@ include_once(__DIR__ . '/../../partials/header.php');
 <!-- login page Start -->
 <section class="account-main">
     <div class="container">
-        <div class="row">
+        <div class="">
             <div class="inner-section form-section d-flex flex-lg-row flex-column">
                 <div class="col-lg-7">
-                    <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="w-100" />
+                    <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="" />
                 </div>
-                <div class="col-lg-5 login-sec-2">
-                    <h1 class="fos-32 poppins-medium">Sign up now</h1>
+                <div class="col-lg-5 items-center login-sec-2">
+                    <h1 class="fos-7 text-center poppins-medium">Sign up now</h1>
                     <!-- <h6 class="fos-16">Welcome to Punjab Classified enter your details below.</h6> -->
 
                     <?php if (!empty($success)): ?>
@@ -185,25 +185,24 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
                     <?php endif; ?>
 
-                    <form action="" method="POST" class="text-start mt-40" id="registerForm">
-                        <div class="row mb-24">
-                            <div class="col-lg-6">
-                                <label for="firstnameid" class="form-label">First name*</label>
-                                <input type="text" name="first_name" class="form-control" id="firstnameid"
-                                    placeholder="Enter Your Name" required />
-                            </div>
-                            <div class="col-lg-6">
-                                <label for="lastnameid" class="form-label">Last name*</label>
-                                <input type="text" name="last_name" class="form-control" id="lastnameid"
-                                    placeholder="Enter Your Last Name" required />
-                            </div>
+                    <form action="" method="POST" class="text-start mt-10 xs:text-xs" id="registerForm">
+                        <div class="col-lg-6 mb-6">
+                            <label for="firstnameid" class="form-label">First name*</label>
+                            <input type="text" name="first_name" class="form-control" id="firstnameid"
+                                placeholder="Enter Your Name" required />
                         </div>
-                        <div class="mb-24">
+                        <div class="col-lg-6 mb-6">
+                            <label for="lastnameid" class="form-label">Last name*</label>
+                            <input type="text" name="last_name" class="form-control" id="lastnameid"
+                                placeholder="Enter Your Last Name" required />
+                        </div>
+
+                        <div class="mb-6">
                             <label for="emailid" class="form-label">Email address</label>
                             <input type="email" name="email" class="form-control" id="emailid"
                                 placeholder="Enter Your Email" required />
                         </div>
-                        <div class="mb-24">
+                        <div class="mb-6">
                             <label for="phonenumbid" class="form-label">Phone Number (Optional)</label>
                             <input type="tel" name="phone" class="form-control" id="phonenumbid"
                                 placeholder="Enter Your Phone Number" />
@@ -211,7 +210,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                             <input type="hidden" name="country" id="country_name_hidden">
 
                         </div>
-                        <div class="mb-24">
+                        <div class="mb-6">
                             <div class="password-options d-flex justify-content-between">
                                 <label class="form-label">Password</label>
                                 <div class="hide">
@@ -231,27 +230,27 @@ include_once(__DIR__ . '/../../partials/header.php');
                             <label for="confirm_password" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
                         </div>
-                        <div class="mb-24 d-flex gap-2">
+                        <div class="mb-6 d-flex gap-2">
                             <input type="checkbox" required id="accept-login" />
                             <label for="accept-login">By creating an account, I agree to our Terms of use and Privacy
                                 Policy </label>
                         </div>
-                        <div class="d-flex gap-2 mb-32">
+                        <div class="d-flex gap-2 mb-7">
                             <button type="submit"
-                                class="w-100 theme-btn text-decoration-none text-center btn btn-primary">Sign
+                                class="w-100 theme-btn text-decoration-none text-center">Sign
                                 Up</button>
                         </div>
-                        <div class="mb-32 d-flex align-items-center gap-2">
+                        <div class="mb-7 d-flex align-items-center gap-2">
                             <div class="divider"></div>
                             <h6 class="m-0">OR</h6>
                             <div class="divider"></div>
                         </div>
-                        <div class="mb-32 d-flex gap-2">
+                        <div class="mb-7 d-flex gap-2">
                             <a href="<?php echo htmlspecialchars($google_login_url); ?>"
                                 class="w-100 theme-btn text-decoration-none text-center">Continue with
                                 Google</a>
                         </div>
-                        <div class="mb-32 d-flex flex-column justify-content-center align-items-center">
+                        <div class="mb-7 d-flex flex-column justify-content-center align-items-center">
                             <h6 class="poppins-medium">Sign in With</h6>
                             <a href="<?php echo htmlspecialchars($github_login_url); ?>">
                                 <img src="<?php echo $base_url; ?>assets/images/sign-in-with.svg" alt="" />

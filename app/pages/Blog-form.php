@@ -174,7 +174,7 @@ include_once(__DIR__ . '/../../partials/header.php');
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1 class="fos-40 playfair-medium mb-30">Create Your Free Articles</h1>
+                    <h1 class="fos-40 playfair-medium mb-7">Create Your Free Articles</h1>
                     <!-- Display Success/Error Messages -->
                     <?php if (!empty($_SESSION['form_success'])): ?>
                         <div class="alert alert-success"><?php echo $_SESSION['form_success'];
@@ -186,19 +186,19 @@ include_once(__DIR__ . '/../../partials/header.php');
                     <form action="" method="POST" enctype="multipart/form-data">
                         <!-- form row-->
                         <div class="row">
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                                 <label for="blogtitles">Article Title*</label>
                                 <input type="text" name="blogtitle" id="blogtitles" required minlength="10" maxlength="150" />
                                 <div class="char-counter">0/150</div>
                                 <div class="invalid-feedback">Title is required (10-150 characters).</div>
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                                 <label for="blogusrname">Your Name*</label>
                                 <input type="text" name="blogusernamess" id="blogusrname" value="<?= htmlspecialchars($user_data['first_name'] . ' ' . $user_data['last_name']); ?>" readonly />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                                 <label for="categoryOfblog">Category*</label>
                                 <select name="categoryblog" id="categoryOfblog" class="form-select" required>
                                     <option value="">Select Category</option>
@@ -213,7 +213,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </div>
 
                             <!-- Description -->
-                            <!-- <div class="col-lg-12 col-sm-12 d-flex flex-column mb-30">
+                            <!-- <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                             <label for="descriptionsblogs">Description*</label>
                             <textarea name="Descriptionusrblog" id="descriptionsblogs" rows="8" required minlength="50" maxlength="5000"></textarea>
                             <div class="char-counter">0/5000</div>
@@ -221,23 +221,23 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div> -->
 
                             <!-- Inside your Blog-form.php form -->
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                                 <label for="descriptionsblogs">Article Content*</label>
                                 <!-- The ID "descriptionsblogs" is important -->
                                 <textarea name="Descriptionusrblog" id="descriptionsblogs" rows="20"></textarea>
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                                 <label for="ademailuserblog">Email*</label>
                                 <input type="email" name="ademailuserssblog" id="ademailuserblog" value="<?= htmlspecialchars($user_data['email']); ?>" readonly />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                                 <label for="teluserblog">Phone</label>
                                 <input type="tel" name="adsusermobblog" id="teluserblog" value="<?= htmlspecialchars($user_data['phone'] ?? ''); ?>" />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30 file-upload-main">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 file-upload-main">
                                 <label for="previewimagesblogs">Images (Optional, up to 5)</label>
                                 <input type="file" name="pictures[]" id="previewimagesblogs" class="file-uploads" multiple accept="image/*" />
 
@@ -251,7 +251,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 </div>
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-30 file-upload-main">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 file-upload-main">
                                 <label>Preview Images</label>
                                 <div id="multi-preview-area" class="d-flex flex-wrap gap-3"></div>
                             </div>
@@ -290,7 +290,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 <a href="#" id="add-more-platforms" class="color-pink poppins-medium">Add More Links</a>
                             </div>
 
-                            <div class="col-lg-12 col-sm-12 mb-30 text-center text-md-start">
+                            <div class="col-lg-12 col-sm-12 mb-7 text-center text-md-start">
                                 <button type="submit" name="btn_save_2" class="theme-btn">Post This Blog</button>
                             </div>
                         </div>

@@ -432,7 +432,7 @@ if (isset($_SESSION['user_id'])) {
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                             <a href="<?= $related_link ?>" class="text-decoration-none text-dark">
                                 <div class="card position-relative h-100">
-                                    <div class="ad-tag poppins-regular">Ad</div>
+                                    <div class="ad-tag absolute top-2.5 left-2.5 text-white px-3 py-1 rounded-sm text-sm z-10">Ad</div>
                                     <div class="card-img-ad">
                                         <img src="<?= $related_image ?>" class="img-fluid" alt="<?= $related_title ?>">
                                     </div>

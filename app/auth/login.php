@@ -78,13 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- login page Start -->
 <section class="account-main">
     <div class="container">
-        <div class="row">
+        <div class="">
             <div class="inner-section form-section d-flex flex-lg-row flex-column">
                 <div class="col-lg-7">
-                    <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="w-100" />
+                    <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="" />
                 </div>
                 <div class="col-lg-5 text-center login-sec-2">
-                    <h1 class="fos-32 poppins-medium">Sign In</h1>
+                    <h1 class="fos-8 poppins-medium">Sign In</h1>
                     <h6 class="fos-16">Welcome back enter your details below.</h6>
 
 
@@ -106,15 +106,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-                    <form action="login.php" method="POST" class="text-start mt-32">
+                    <form action="login.php" method="POST" class="text-start xs:text-xs mt-8">
 
-                        <div class="mb-24">
+                        <div class="mb-6">
                             <label class="form-label">Email address</label>
                             <input type="email" name="email" class="form-control"
                                 placeholder="Enter Your Registered Email" required />
                         </div>
 
-                        <div class="mb-24">
+                        <div class="mb-6">
                             <div class="password-options d-flex justify-content-between">
                                 <label class="form-label">Password</label>
                                 <div class="hide">
@@ -128,33 +128,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 placeholder="Enter Your Password" required />
                         </div>
 
-                        <div class="mb-24 text-end">
+                        <div class="mb-6 text-end">
                             <a class="poppins-medium color-pink">Forget Password</a>
                         </div>
 
-                        <div class="mb-24 d-flex gap-2">
+                        <div class="mb-6 d-flex gap-2">
                             <input type="checkbox" name="accept-login" id="accept-login" />
                             <label for="accept-login">By logging in, I agree to the Terms of Use and Privacy
                                 Policy</label>
                         </div>
 
-                        <div class="d-flex gap-2 mb-32">
+                        <div class="d-flex gap-2 mb-8 justify-center">
                             <button type="submit" class="w-100 theme-btn text-center">Log in</button>
                         </div>
 
-                        <div class="mb-32 d-flex align-items-center gap-2">
+                        <div class="mb-8 d-flex align-items-center gap-2">
                             <div class="divider"></div>
                             <h6 class="m-0">OR</h6>
                             <div class="divider"></div>
                         </div>
 
-                        <div class="mb-32 d-flex gap-2">
+                        <div class="mb-8 flex gap-2 justify-center">
                             <a href="<?php echo htmlspecialchars($google_login_url); ?>"
                                 class="w-100 theme-btn text-decoration-none text-center">Continue with
                                 Google</a>
                         </div>
 
-                        <div class="mb-32 d-flex flex-column justify-content-center align-items-center">
+                        <div class="mb-8 flex flex-column justify-center align-items-center">
                             <h6 class="poppins-medium">Sign in With</h6>
                             <a href="<?php echo htmlspecialchars($github_login_url); ?>">
                                 <img src="<?php echo $base_url; ?>assets/images/sign-in-with.svg" alt="" />
