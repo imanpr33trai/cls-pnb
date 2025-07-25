@@ -216,11 +216,11 @@ include_once(__DIR__ . '/../../partials/header.php');
     <!-- Show the form -->
     <!-- form section -->
     <!-- form section -->
-    <section class="form-section pb-24">
+    <section class="form-section pb-6">
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <h1 class="fos-40 playfair-medium mb-7">Create Your Free ads</h1>
+                    <h1 class="fos-40 playfair-medium mb-4">Create Your Free ads</h1>
                     <!-- Display Success/Error Messages -->
                     <?php if (!empty($_SESSION['form_success'])): ?>
                         <div class="alert alert-success"><?php echo $_SESSION['form_success']; ?></div>
@@ -234,10 +234,10 @@ include_once(__DIR__ . '/../../partials/header.php');
                     <form action="" method="POST" enctype="multipart/form-data">
 
                         <!-- form row-->
-                        <div class="xs:text-xs">
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                        <div class="xs:text-xs sm:text-sm">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="categoryOfads">Category*</label>
-                                <select name="adcategory" id="categoryOfads" class="form-select xs:text-xs">
+                                <select name="adcategory" id="categoryOfads" class="form-select xs:text-xs sm:text-sm">
                                     <option value="">Select Category</option>
                                     <?php
                                     $cats = $conn->query("SELECT * FROM ad_categories WHERE status = 'live'");
@@ -248,21 +248,21 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 </select>
                             </div>
 
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="subcategoryOfads">Sub Category*</label>
-                                <select name="adsubcategory" id="subcategoryOfads" class="form-select xs:text-xs">
+                                <select name="adsubcategory" id="subcategoryOfads" class="form-select xs:text-xs sm:text-sm">
                                     <option value="">Select Subcategory</option>
                                 </select>
                             </div>
 
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="otherCategory">Others (if not in list)</label>
                                 <input type="text" name="adothercat" id="otherCategory" pattern="[a-zA-Z\s\-]+" />
                                 <div class="invalid-feedback">Only letters, spaces, and hyphens are allowed.</div>
                             </div>
 
                             <!-- Ad Title -->
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="adTitle">Ad Title*</label>
                                 <input type="text" name="adTitlemytit" id="adTitle" required maxlength="200" />
                                 <div class="char-counter">0/200</div>
@@ -270,14 +270,14 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </div>
 
                             <!-- Asking Price -->
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="adPrice">Asking price*</label>
                                 <input type="number" name="askingPriceforad" id="adPrice" placeholder="Enter 0 if free" step="0.01" min="0" required />
                                 <div class="invalid-feedback">Please enter a valid price (e.g., 150.50).</div>
                             </div>
 
                             <!-- Description -->
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="descriptions">Description*</label>
                                 <textarea name="descriptionforad" id="descriptions" rows="8" required maxlength="2000"></textarea>
                                 <div class="char-counter">0/2000</div>
@@ -285,47 +285,47 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </div>
 
                             <!-- User Details (Pre-filled) -->
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="aduserName">Your Name*</label>
                                 <input type="text" name="adusername" id="aduserName" value="<?php echo htmlspecialchars($user_data['first_name'] . ' ' . $user_data['last_name']); ?>" readonly />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="aduserOrganisation">Organisation</label>
                                 <input type="text" name="adorganizationuser" id="aduserOrganisation" />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="ademailuser">Email*</label>
                                 <input type="email" name="ademailuser" id="ademailuser" value="<?php echo htmlspecialchars($user_data['email']); ?>" readonly />
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="teluserads">Phone</label>
                                 <input type="tel" name="adphoneuser" id="teluserads" value="<?php echo htmlspecialchars($user_data['phone'] ?? ''); ?>" />
                             </div>
 
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="adlocuser">Location</label>
                                 <input type="text" name="adlocationuser" id="adlocuser" placeholder="" />
                             </div>
 
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="adusercityTown">City, town, or neighborhood*</label>
                                 <input type="text" name="adcityuser" id="adusercityTown" placeholder="" />
                             </div>
 
                             <!-- Postal Code -->
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="adpostalcode">Postal code*</label>
                                 <input type="text" name="adpostalCodeuser" id="adpostalcode" required pattern="\d{6}" maxlength="6" />
                                 <div class="invalid-feedback">Must be a 6-digit postal code.</div>
                             </div>
 
                             <!-- Expires In -->
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5 ">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5 ">
                                 <label for="expiresindate">Expires In*</label>
-                                <select name="adexpireingin" id="expiresindate" class="form-select xs:text-xs" required>
+                                <select name="adexpireingin" id="expiresindate" class="form-select xs:text-xs sm:text-sm" required>
                                     <option value="">Select Duration</option>
                                     <option value="+1 week">1 Week</option>
                                     <option value="+2 weeks">2 Weeks</option>
@@ -337,13 +337,13 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </div>
 
                             <!-- Captcha -->
-                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5">
+                            <div class="col-lg-4 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5">
                                 <label for="pleaseTypeThisCode"><?php echo $_SESSION['captcha_question'] ?? 'Please solve the math problem.'; ?>*</label>
                                 <input type="number" name="adtypecode" id="pleaseTypeThisCode" required />
                                 <div class="invalid-feedback">Please answer the question.</div>
                             </div>
 
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5 file-upload-main">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5 file-upload-main">
                                 <label for="imageaduser">Image</label>
                                 <input type="file" name="picture" id="imageaduser" class="file-uploads" accept="image/*" />
                                 <div class="upload-image-placeholder-area text-center">
@@ -356,7 +356,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </div>
 
                             <!-- Preview Area -->
-                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 xs:gap-1.5 file-upload-main">
+                            <div class="col-lg-6 col-sm-12 d-flex flex-column mb-4 xs:gap-1.5 file-upload-main">
                                 <label>Preview Images</label>
                                 <div id="preview-images" class="d-flex flex-wrap gap-3"></div>
                             </div>
@@ -365,9 +365,9 @@ include_once(__DIR__ . '/../../partials/header.php');
                             <div id="platform-container">
                                 <!-- Initial Row -->
                                 <div class="row platform-row align-items-end mb-3">
-                                    <div class="col-lg-4 col-sm-12 d-flex flex-column ">
+                                    <div class="col-lg-4 col-sm-12 d-flex flex-column py-4">
                                         <label>Platform</label>
-                                        <select name="platform[]" class="form-select xs:text-xs">
+                                        <select name="platform[]" class="form-select xs:text-xs sm:text-sm">
                                             <option value="">Select Platform</option>
                                             <option value="Facebook">Facebook</option>
                                             <option value="Instagram">Instagram</option>
@@ -386,11 +386,11 @@ include_once(__DIR__ . '/../../partials/header.php');
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-10">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-2.5">
                                 <a href="#" id="add-more-platforms" class="color-pink poppins-medium">Add More Links</a>
                             </div>
 
-                            <div class="col-lg-12 col-sm-12 mb-7 text-center text-md-start">
+                            <div class="col-lg-12 col-sm-12 mb-4 text-center text-md-start">
                                 <!-- <a href="#" name="btn_save" class="theme-btn w-100 text-decoration-none">Post This Ad</a> -->
                                 <button type="submit" name="btn_save" id="btn_save" class="theme-btn">Post This Ad</button>
                             </div>

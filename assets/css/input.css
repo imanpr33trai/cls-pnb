@@ -2,6 +2,7 @@
 
 @theme {
   --text-tiny: 0.775rem;
+  --text-sm: 0.85rem;
   --color-pink: #fb295b;
   --breakpoint-xs: 360px;
   --breakpoint-sm: 640px;

@@ -214,7 +214,7 @@ include_once(__DIR__ . '/../config/config.php');
 
         <!-- Mobile Menu -->
         <div class="md:hidden hidden" id="mobile-menu">
-            <div class="px-2 pt-2 pb-3 text-tiny space-y-1 sm:px-3">
+            <div class="px-2 pt-2 pb-3 text-tiny sm:text-sm xs:text-xs space-y-1 sm:px-3">
                 <a href="/articles" class="block px-3 py-2 hover:text-pink  font-medium text-white ">Articles</a>
 
 

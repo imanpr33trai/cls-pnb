@@ -148,7 +148,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 <!-- Breadcrump -->
 <section class="breadcrump">
     <div class="container">
-        <div class="row">
+        <div class="row py-1.5">
             <div class="d-flex gap-2">
                 <a href="#" class="text-decoration-none breadcrump-links breadcrump-link-1">Home >></a>
                 <a href="#" class="text-decoration-none breadcrump-links breadcrump-link-2">Post Ad</a>
@@ -170,7 +170,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 <?php else: ?>
     <!-- form section -->
     <!-- form section -->
-    <section class="form-section pb-100">
+    <section class="form-section pb-24">
         <div class="container">
             <div class="row">
                 <div class="col">
@@ -185,7 +185,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                     <?php endif; ?>
                     <form action="" method="POST" enctype="multipart/form-data">
                         <!-- form row-->
-                        <div class="row">
+                        <div class="row xs:text-tiny sm:text-sm ">
                             <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                                 <label for="blogtitles">Article Title*</label>
                                 <input type="text" name="blogtitle" id="blogtitles" required minlength="10" maxlength="150" />
@@ -255,16 +255,16 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 <label>Preview Images</label>
                                 <div id="multi-preview-area" class="d-flex flex-wrap gap-3"></div>
                             </div>
-                            <div class="col-12 mb-2 fos-16">
+                            <div class="col-12 mb-2 playfair-medium fos-16 ">
                                 <hr>
-                                <h5>Social/Portfolio Links (Optional)</h5>
+                                <h5 class="xs:text-lg playfair-medium sm:text-xl"> Social/Portfolio Links (Optional)</h5>
                             </div>
                             <!-- Platform & Link Repeatable Section -->
 
                             <div id="platform-container" class="col-12">
                                 <!-- Initial Row -->
-                                <div class="row platform-row align-items-end mb-3">
-                                    <div class="col-lg-4 col-sm-12 d-flex flex-column">
+                                <div class="row platform-row align-items-end ">
+                                    <div class="col-lg-4 col-sm-12 d-flex flex-column mb-3">
                                         <label>Platform</label>
                                         <select name="platform[]" class="form-select">
                                             <option value="">Select Platform</option>
@@ -277,16 +277,16 @@ include_once(__DIR__ . '/../../partials/header.php');
                                             <option value="Other">Other</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-7 col-sm-12 d-flex flex-column">
+                                    <div class="col-lg-7 col-sm-12 gap-0.5 flex flex-column mb-3">
                                         <label>Link</label>
                                         <input type="url" name="link[]" class="form-control" placeholder="https://..." />
                                     </div>
-                                    <div class="col-lg-1 col-sm-12 d-flex">
+                                    <div class="col-lg-1 col-sm-12 gap-0.5 flex">
                                         <button type="button" class="btn btn-danger remove-platform-btn" style="display:none;">X</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-50">
+                            <div class="col-lg-12 col-sm-12 d-flex flex-column mb-12">
                                 <a href="#" id="add-more-platforms" class="color-pink poppins-medium">Add More Links</a>
                             </div>
 

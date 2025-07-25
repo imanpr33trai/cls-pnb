@@ -102,27 +102,27 @@ include_once(__DIR__ . '/../../config/functions.php');
             ?>
         </div>
     </div>
-</section
+</section>
 
 
 
 
-    <section class="pagination-sec pb-100">
-<div class="container">
-    <div class="row">
-        <div class="col d-flex align-items-center justify-content-between">
-            <a href="#" class="pagination-btn">&larr; Previous</a>
-            <div>
-                <a href="#" class="pagination-nums">1</a>
-                <a href="#" class="pagination-nums">2</a>
-                <a href="#" class="pagination-nums">3</a>
-                <a href="#" class="pagination-nums">4</a>
-                <a href="#" class="pagination-nums">5</a>
+<section class="pagination-sec pb-12">
+    <div class="container">
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-between">
+                <a href="#" class="pagination-btn">&larr; Previous</a>
+                <div>
+                    <a href="#" class="pagination-nums">1</a>
+                    <a href="#" class="pagination-nums">2</a>
+                    <a href="#" class="pagination-nums">3</a>
+                    <a href="#" class="pagination-nums">4</a>
+                    <a href="#" class="pagination-nums">5</a>
+                </div>
+                <a href="#" class="pagination-btn">Next &rarr;</a>
             </div>
-            <a href="#" class="pagination-btn">Next &rarr;</a>
         </div>
     </div>
-</div>
 </section>
 <!-- Pagination -->
 <!-- Pagination -->

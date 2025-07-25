@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-                    <form action="login.php" method="POST" class="text-start xs:text-xs mt-8">
+                    <form action="login.php" method="POST" class="text-start xs:text-xs sm:text-sm mt-8">
 
                         <div class="mb-6">
                             <label class="form-label">Email address</label>

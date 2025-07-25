@@ -27,7 +27,7 @@ include(__DIR__ . '/../../partials/search-sec.php');
 
         <!-- Advertisement Images -->
         <div class="row">
-            <div class="section-1-advertisements mt-5 mb-5 d-flex gap-3">
+            <div class="section-1-advertisements mt-5 mb-5 flex justify-center gap-3">
                 <div class="image-1 image-secs">
                     <img src="<?= $base_url ?>assets/images/test-image.jpg" alt="Advertisement" class="w-100">
                 </div>

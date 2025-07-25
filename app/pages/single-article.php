@@ -100,9 +100,9 @@ include_once(__DIR__ . '/../../partials/header.php');
 ?>
 
 <!-- Breadcrump -->
-<section class="breadcrump">
+<section class="breadcrump sm:py-3">
     <div class="container">
-        <div class="row">
+        <div class="">
             <div class="d-flex gap-2">
                 <a href="<?= $base_url ?>" class="text-decoration-none breadcrump-links breadcrump-link-1">Home >></a>
                 <a href="<?= $base_url ?>articles" class="text-decoration-none breadcrump-links breadcrump-link-2">Articles</a>
@@ -131,7 +131,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                         $images = json_decode($blog['image'], true);
                         $firstImage = !empty($images[0]) ? $base_url . 'assets/uploads/blog_form/' . $images[0] : $base_url . 'assets/images/placeholder-blog.png';
                         ?>
-                        <img src="<?= $firstImage; ?>" alt="<?= htmlspecialchars($blog['title']); ?>" class="w-100" />
+                        <img src="<?= $firstImage; ?>" alt="<?= htmlspecialchars($blog['title']); ?>" class="article-img" />
                         <div class="user-info d-flex gap-2 align-items-center justify-content-end">
                             <img src="<?= $base_url; ?>assets/images/userimage.png" alt="" />
                             <h1 class="fos-12 poppins-medium m-0 text-white"><?= htmlspecialchars($blog['author_name']); ?></h1>
@@ -221,53 +221,87 @@ include_once(__DIR__ . '/../../partials/header.php');
 
 <!-- Related blogs -->
 <?php if (!empty($related_posts)): ?>
-    <section class="related-blog">
-        <div class="container">
-            <div class="row">
-                <div class="">
-                    <h1 class="poppins-medium fos-30 mb-7">Related Blog Post</h1>
-                    <div class="p-0 d-flex flex-wrap">
-                        <?php foreach ($related_posts as $related): ?>
-                            <div class="col-12 col-sm-6 col-lg-4 mb-1 px-2">
-                                <div class="article-card position-relative">
-                                    <?php
-                                    $relatedImages = json_decode($related['image'], true);
-                                    $relatedImage = !empty($relatedImages[0]) ? $base_url . 'assets/uploads/blog_form/' . $relatedImages[0] : $base_url . 'assets/images/placeholder-blog.png';
-                                    ?>
-                                    <div class="card-img-blog">
-                                        <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>">
-                                            <img src="<?= $relatedImage ?>" class="img-fluid" alt="<?= htmlspecialchars($related['title']); ?>">
-                                        </a>
-                                    </div>
-                                    <div class="card-body-blog">
-                                        <h1 class="fos-20 poppins-regular mb-5">
-                                            <a href="<?= $base_url; ?>article/<?= $related['blog_slug']; ?>" class="text-dark text-decoration-none">
-                                                <?= htmlspecialchars($related['title']); ?>
-                                            </a>
-                                        </h1>
-                                        <p><?= substr(strip_tags($related['description']), 0, 100); ?>...</p>
-                                    </div>
-                                    <div class="card-foot-blog d-flex align-items-center gap-2">
-                                        <img src="<?= $base_url; ?>assets/images/userimage.png" alt="" class="user-image-blog">
-                                        <h1 class="fos-12 usernameblog m-0"><?= htmlspecialchars($related['author_name']); ?></h1>
-                                        <h1 class="fos-12 usernameblog m-0">|</h1>
-                                        <h1 class="fos-12 dateblog m-0"><?= date('jS F, Y', strtotime($related['created_at'])); ?></h1>
-                                    </div>
-                                </div>
+    <section class="related-blog bg-gray-50 py-12 md:py-16">
+        <div class="container mx-auto px-4">
+
+            <!-- Section Header -->
+            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Related Blog Posts</h2>
+
+            <!-- Responsive Grid Container -->
+            <!--
+            - Default: 1 column (mobile)
+            - sm (640px+): 2 columns
+            - lg (1024px+): 3 columns
+        -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+
+                <?php foreach ($related_posts as $related): ?>
+                    <?php
+                    // --- Prepare data inside the loop for cleaner HTML ---
+                    $relatedImages = json_decode($related['image'], true);
+                    $relatedImage = !empty($relatedImages[0])
+                        ? $base_url . 'assets/uploads/blog_form/' . rawurlencode($relatedImages[0])
+                        : $base_url . 'assets/images/placeholder-blog.png';
+
+                    $title = htmlspecialchars($related['title']);
+                    $short_title = mb_strimwidth($title, 0, 60, "...");
+
+                    $description = strip_tags($related['description']);
+                    $excerpt = mb_strimwidth($description, 0, 100, "...");
+
+                    $author_name = htmlspecialchars($related['author_name']);
+                    $created_date = date('jS F, Y', strtotime($related['created_at']));
+                    $article_url = $base_url . 'article/' . htmlspecialchars($related['blog_slug']);
+                    ?>
+
+                    <!-- Card Start: Styled entirely with Tailwind CSS -->
+                    <div class="group flex flex-col bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden mb-1">
+
+                        <!-- Image container with a fixed aspect ratio for uniformity -->
+                        <a href="<?= $article_url ?>" class="block overflow-hidden">
+                            <div class="aspect-w-16 aspect-h-9">
+                                <img src="<?= $relatedImage ?>"
+                                    alt="<?= $title ?>"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                             </div>
-                        <?php endforeach; ?>
+                        </a>
+
+                        <!-- Card Body -->
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 leading-tight">
+                                <a href="<?= $article_url ?>" class="hover:text-blue-700 transition-colors duration-200 no-underline">
+                                    <?= $short_title ?>
+                                </a>
+                            </h3>
+                            <p class="text-gray-600 text-sm flex-grow">
+                                <?= $excerpt ?>
+                            </p>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="p-4 border-t border-gray-100 bg-gray-50 flex items-center gap-3">
+                            <img src="<?= $base_url; ?>assets/images/userimage.png" alt="Author: <?= $author_name ?>" class="w-9 h-9 rounded-full">
+                            <div>
+                                <p class="text-sm font-medium text-gray-800"><?= $author_name ?></p>
+                                <p class="text-xs text-gray-500"><?= $created_date ?></p>
+                            </div>
+                        </div>
+
                     </div>
-                </div>
-            </div>
+                    <!-- Card End -->
+
+                <?php endforeach; ?>
+
+            </div> <!-- End Grid -->
         </div>
     </section>
 <?php endif; ?>
 <!-- Related blogs -->
 
 <!-- Pagination -->
-<section class="pagination-sec pb-24">
-    <div class="container">
-        <div class="row">
+<!-- <section class="pagination-sec pb-24">
+    <div class="container py-3">
+        <div class="">
             <div class="col d-flex align-items-center justify-content-between">
                 <?php if ($prevArticle): ?>
                     <a href="<?= $base_url ?>article/<?= $prevArticle['blog_slug']; ?>" class="pagination-btn">&larr; Previous</a>
@@ -283,7 +317,7 @@ include_once(__DIR__ . '/../../partials/header.php');
             </div>
         </div>
     </div>
-</section>
+</section> -->
 <!-- Pagination -->
 
 <?php include_once(__DIR__ . '/../../partials/footer.php'); ?>

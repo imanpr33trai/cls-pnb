@@ -163,7 +163,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 <!-- The HTML <section> element starts after this point -->
 
 <!-- login page Start -->
-<section class="account-main">
+<section class="account-main sm:py-14">
     <div class="container">
         <div class="">
             <div class="inner-section form-section d-flex flex-lg-row flex-column">
@@ -185,7 +185,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
                     <?php endif; ?>
 
-                    <form action="" method="POST" class="text-start mt-10 xs:text-xs" id="registerForm">
+                    <form action="" method="POST" class="text-start mt-10 xs:text-xs sm:text-sm" id="registerForm">
                         <div class="col-lg-6 mb-6">
                             <label for="firstnameid" class="form-label">First name*</label>
                             <input type="text" name="first_name" class="form-control" id="firstnameid"
@@ -235,22 +235,22 @@ include_once(__DIR__ . '/../../partials/header.php');
                             <label for="accept-login">By creating an account, I agree to our Terms of use and Privacy
                                 Policy </label>
                         </div>
-                        <div class="d-flex gap-2 mb-7">
+                        <div class="flex justify-center gap-2 mb-7">
                             <button type="submit"
                                 class="w-100 theme-btn text-decoration-none text-center">Sign
                                 Up</button>
                         </div>
-                        <div class="mb-7 d-flex align-items-center gap-2">
+                        <div class="mb-7 flex items-center gap-2">
                             <div class="divider"></div>
                             <h6 class="m-0">OR</h6>
                             <div class="divider"></div>
                         </div>
-                        <div class="mb-7 d-flex gap-2">
+                        <div class="mb-7 flex gap-2 justify-center">
                             <a href="<?php echo htmlspecialchars($google_login_url); ?>"
                                 class="w-100 theme-btn text-decoration-none text-center">Continue with
                                 Google</a>
                         </div>
-                        <div class="mb-7 d-flex flex-column justify-content-center align-items-center">
+                        <div class="mb-7 flex flex-column justify-center items-center">
                             <h6 class="poppins-medium">Sign in With</h6>
                             <a href="<?php echo htmlspecialchars($github_login_url); ?>">
                                 <img src="<?php echo $base_url; ?>assets/images/sign-in-with.svg" alt="" />

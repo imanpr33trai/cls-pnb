@@ -554,6 +554,7 @@ header select option {
   border: none;
   outline: none;
   flex-grow: 1;
+  width: 100%;
 }
 .posts-search-con select {
   background: transparent;
@@ -791,7 +792,8 @@ textarea {
 
 /* single article page */
 /* single article page */
-.article-top-img {
+.article-img {
+  width: 100%;
 }
 .user-info {
   background-color: #000000;
@@ -1117,6 +1119,8 @@ footer {
   .head-searching-content input {
     height: 40px;
   }
+  .head-search-input {
+  }
 }
 @media screen and (max-width: 500px) {
   .posts-search-con {
@@ -1142,8 +1146,17 @@ footer {
   } */
 }
 @media (width: 360px) {
-  .container {
+  /* .container {
     padding: 15px;
+  } */
+  label {
+    font-size: 12px !important;
+  }
+  input {
+    font-size: 12px !important;
+  }
+  select {
+    font-size: 12px !important;
   }
   .single-cat {
     max-width: 50%;
@@ -1151,7 +1164,7 @@ footer {
     padding: 20px 10px 20px 10px;
   }
   .container {
-    padding: 0px 15px;
+    padding: 5px 15px;
   }
   .fos-90 {
     font-size: 50px;
@@ -1200,7 +1213,7 @@ footer {
   }
   .pagination-btn,
   .pagination-nums {
-    padding: 8px 12px;
+    padding: 8px 10px;
     font-size: 12px;
   }
   .related-blog .article-card .card-body-blog {
@@ -1277,6 +1290,27 @@ footer {
   footer {
     padding: 20px;
   }
+  .container {
+    padding: 0px 30px;
+  }
+  .single-cat {
+    min-width: 32%;
+  }
+  .form-section input,
+  .form-section select,
+  .form-section textarea {
+    padding: 5px 10px;
+  }
+  .form-section input,
+  .form-section select {
+    height: 45px;
+  }
+  .account-main {
+    padding: 50px 0;
+  }
+  .upload-image-placeholder-area {
+    padding: 120px 0;
+  }
 }
 
 /* --- Custom Article Grid (Conflict-Free) --- */
@@ -1297,6 +1331,7 @@ footer {
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   overflow: hidden;
   transition: all 0.3s ease-in-out;
+  min-height: 100%;
 }
 
 .article-card:hover {
@@ -1430,7 +1465,7 @@ footer {
 
 /* --- Media Query for Mobile Responsiveness --- */
 /* On screens smaller than 768px (tablets/phones) */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .page-header-top {
     /* Stack the title and button vertically */
     flex-direction: column;

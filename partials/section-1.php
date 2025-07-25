@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="section-1-advertisements mt-54 d-flex gap-3">
+            <div class="section-1-advertisements mt-12 justify-center flex gap-3">
                 <div class="image-1 image-secs">
                     <img src="<?php echo $base_url; ?>assets/images/test-image.jpg" alt="" class="w-100" />
                 </div>
