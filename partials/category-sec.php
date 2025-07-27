@@ -1,7 +1,10 @@
 <section class="sec-categories">
-    <div class="container p-2">
+    <div class="container p-2 xs:min-w-full">
         <div class="row">
-            <div class="all-cats flex gap-2 flex-wrap">
+            <!-- The parent container uses flexbox and wrapping -->
+            <div class="all-cats ">
+                <div class=" justify-center flex flex-wrap  gap-2">
+                    
                 <?php
                 include_once(__DIR__ . '/../config/config.php');
 
@@ -15,26 +18,55 @@
                     $current_slug = $path_parts[1];
                 }
 
-                // ***MODIFICATION 1: Select the new 'slug' column***
                 $query = $conn->query("SELECT id, name, image, slug FROM ad_categories WHERE LOWER(status) = 'live' ORDER BY id DESC LIMIT 8");
 
                 while ($cat = $query->fetch_assoc()):
                     $img = !empty($cat['image']) ? $base_url . 'assets/uploads/' . $cat['image'] : $base_url . 'assets/images/cats/default.svg';
-
-                    // Define the new URL. We use $base_url to make it absolute.
-                    // ***MODIFICATION 2: Change the href structure***
                     $category_url = $base_url . 'category/' . $cat['slug'];
-
-                    // Add active-category class if the slug matches
                     $active_class = ($cat['slug'] === $current_slug) ? 'active-category' : '';
                 ?>
                     <a href="<?= $category_url ?>"
-                        class="single-cat d-flex flex-column align-items-center text-decoration-none text-dark <?= $active_class ?>">
+                        class="single-cat d-flex flex-column align-items-center text-decoration-none text-dark <?= $active_class ?> responsive-cat-box">
                         <img src="<?= $img ?>" alt="<?= htmlspecialchars($cat['name']) ?>">
-                        <h3 class="fos-16"><?= htmlspecialchars($cat['name']) ?></h3>
+                        <h3 class="fos-16 text-center mt-2"><?= htmlspecialchars($cat['name']) ?></h3>
                     </a>
                 <?php endwhile; ?>
+            </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Responsive styles for category boxes -->
+<!-- <style>
+/* Responsive category box grid - added for xs, sm, md, lg, xl breakpoints */
+.responsive-cat-box {
+    flex: 0 0 100%; /* xs: 1 per row */
+    max-width: 48%;
+}
+@media (min-width: 640px) { /* sm: 2 per row */
+    .responsive-cat-box {
+        flex: 0 0 50%;
+        max-width: 49%;
+    }
+}
+@media (min-width: 768px) { /* md: 3 per row */
+    .responsive-cat-box {
+        flex: 0 0 33.3333%;
+        max-width: 32.3333%;
+    }
+}
+@media (min-width: 1024px) { /* lg: 4 per row */
+    .responsive-cat-box {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+@media (min-width: 1280px) { /* xl: show all in one row if 8 or less */
+    .responsive-cat-box {
+        flex: 0 0 12.5%;
+        max-width: 12.5%;
+    }
+}
+</style> -->
+<!-- End responsive styles for category boxes -->

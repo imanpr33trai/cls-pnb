@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- login page Start -->
 <section class="account-main">
     <div class="container">
-        <div class="">
+        
             <div class="inner-section form-section d-flex flex-lg-row flex-column">
                 <div class="col-lg-7">
                     <img src="<?php echo $base_url; ?>assets/images/login-2.jpg" alt="" class="" />
@@ -170,7 +170,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </form>
                 </div>
 
-            </div>
+           
         </div>
     </div>
 

@@ -124,8 +124,8 @@ include_once(__DIR__ . '/../../partials/header.php');
             </div>
         <?php else: // Display the blog post 
         ?>
-            <div class="">
-                <div class="col-lg-9 ps-0">
+            <div class="lg:flex gap-7">
+                <div class="col-lg-9 article-body ps-0">
                     <div class="col-12 article-top-img mb-7">
                         <?php
                         $images = json_decode($blog['image'], true);
@@ -222,7 +222,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 <!-- Related blogs -->
 <?php if (!empty($related_posts)): ?>
     <section class="related-blog bg-gray-50 py-12 md:py-16">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto">
 
             <!-- Section Header -->
             <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Related Blog Posts</h2>

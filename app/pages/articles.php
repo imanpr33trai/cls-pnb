@@ -45,12 +45,11 @@ include_once(__DIR__ . '/../../config/functions.php');
     </div>
 </section>
 
-<section class="articles-blogs
-">
+<section class="articles-blogs">
     <div class="container">
 
 
-        <div class="article-grid" id="blog-container">
+        <div class="article-grid mb-8" id="blog-container">
             <?php
 
             $limit = 12;

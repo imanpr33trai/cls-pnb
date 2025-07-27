@@ -16,7 +16,7 @@
 
     <span class="line-head mx-2">|</span>
 
-    <div class="search-posts-input-cont">
+    <div class="search-posts-input-cont gap-2.5">
         <img src="<?php echo $base_url; ?>assets/images/search-icon.svg" alt="Search">
         <input type="text" id="header-search-input" class="2xl:w-full md:w-full" placeholder="Search for ads...">
         <!-- We will ignore the voice search JS for now to keep it simple -->

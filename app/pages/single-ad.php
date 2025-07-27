@@ -123,7 +123,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <!-- Breadcrump -->
 <!-- Breadcrump -->
-<section class="breadcrump">
+<section class="breadcrump py-2.5">
     <div class="container">
         <div class="row">
             <div class="d-flex gap-2">
@@ -138,7 +138,7 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- article details -->
 <!-- article details -->
-<section class="single-article-details pb-100 mb-50">
+<section class="single-article-details mb-12">
     <div class="container">
         <?php if (!$ad): // Case 1: Ad ID was invalid or ad not found 
         ?>
@@ -163,7 +163,7 @@ if (isset($_SESSION['user_id'])) {
                     $ad_image = !empty($ad['image']) ? $base_url . 'assets/uploads/ads_form/' . $ad['image'] : $base_url . 'assets/images/placeholder-ad.png';
                     $platforms = json_decode($ad['platforms'], true);
                     ?>
-                    <div class="user-infos d-flex align-items-center mb-30 gap-3 d-block d-lg-none">
+                    <div class="user-infos d-flex align-items-center mb-7 gap-3 d-block d-lg-none">
                         <img src="<?= $base_url ?>assets/images/userimage.png" alt="">
                         <h1 class="fos-20 poppins-regular"><?= htmlspecialchars($ad['user_name']) ?></h1>
                     </div>
@@ -171,22 +171,22 @@ if (isset($_SESSION['user_id'])) {
                     <h1 class=" single-post-title fos-24 poppins-regular mb-20 d-block d-lg-none">
                         <?= htmlspecialchars($ad['ad_title']) ?></h1>
 
-                    <img src="<?= $ad_image ?>" class="w-100 mb-60 post-image-single" alt="">
+                    <img src="<?= $ad_image ?>" class="w-100 mb-14 post-image-single" alt="">
 
 
-                    <div class="loc d-flex mb-40 d-block d-lg-none">
+                    <div class="loc d-flex mb-10 d-block d-lg-none">
                         <img src="<?php echo $base_url; ?>assets/images/location-black.svg" alt="" class="me-3">
                         <h1 class="fos-16 poppins-regular m-0"><?= htmlspecialchars($ad['location']) ?></h1>
                     </div>
 
 
-                    <div class="price-div mb-40 d-block d-lg-none">
-                        <h1 class="fos-40 poppins-medium mb-40 color-pink">$<?= htmlspecialchars($ad['asking_price']) ?>
+                    <div class="price-div mb-10 d-block d-lg-none">
+                        <h1 class="fos-40 poppins-medium mb-10 color-pink">$<?= htmlspecialchars($ad['asking_price']) ?>
                         </h1>
                     </div>
 
-                    <div class="contact-btn-div mb-50 d-block d-lg-none">
-                        <a href="#" class="theme-btn text-decoration-none mb-50">Contact Us</a>
+                    <div class="contact-btn-div mb-12 d-block d-lg-none">
+                        <a href="#" class="theme-btn text-decoration-none mb-12">Contact Us</a>
                     </div>
 
 
@@ -223,7 +223,7 @@ if (isset($_SESSION['user_id'])) {
                         </h1>
                         <!-- ** DYNAMIC CLICKABLE SOCIAL MEDIA ACCOUNTS ** -->
                         <?php if (!empty($platforms)): ?>
-                            <div class="single-ad-social fos-16 poppins-bold mb-30">
+                            <div class="single-ad-social fos-16 poppins-bold mb-7">
                                 <span class="poppins-regular">My Social Media Accounts:</span>
                                 <?php foreach ($platforms as $platform_item): ?>
                                     <a href="<?= htmlspecialchars($platform_item['link']) ?>" target="_blank" class="social-link-tag">
@@ -248,21 +248,21 @@ if (isset($_SESSION['user_id'])) {
                     </div>
                 </div>
                 <div class="col-lg-4">
-                    <div class="user-infos d-lg-flex align-items-center mb-30 gap-3 d-none">
+                    <div class="user-infos d-lg-flex align-items-center mb-7 gap-3 d-none">
                         <img src="<?php echo $base_url; ?>assets/images/userimage.png" class="" alt="">
                         <h1 class="fos-20 poppins-regular"><?= htmlspecialchars($ad['user_name']) ?></h1>
                     </div>
                     <h1 class="fos-40 poppins-regular mb-40 d-none d-lg-block"><?= htmlspecialchars($ad['ad_title']) ?></h1>
-                    <div class="loc d-lg-flex mb-40 d-none">
+                    <div class="loc d-lg-flex mb-10 d-none">
                         <img src="<?php echo $base_url; ?>assets/images/location-black.svg" alt="" class="me-3">
                         <h1 class="fos-16 poppins-regular m-0"><?= htmlspecialchars($ad['location']) ?></h1>
                     </div>
-                    <div class="price-div mb-40 d-none d-lg-block">
-                        <h1 class="fos-40 poppins-medium mb-40 color-pink">$<?= htmlspecialchars($ad['asking_price']) ?>
+                    <div class="price-div mb-10 d-none d-lg-block">
+                        <h1 class="fos-40 poppins-medium mb-10 color-pink">$<?= htmlspecialchars($ad['asking_price']) ?>
                         </h1>
                     </div>
-                    <div class="contact-btn-div mb-50 d-none d-lg-block">
-                        <a href="#" class="theme-btn text-decoration-none mb-50">Contact Us</a>
+                    <div class="contact-btn-div mb-12 d-none d-lg-block">
+                        <a href="#" class="theme-btn text-decoration-none mb-12">Contact Us</a>
                     </div>
 
 
@@ -270,7 +270,7 @@ if (isset($_SESSION['user_id'])) {
                     <!-- review system -->
 
                     <?php if (!$user): ?>
-                        <div class="text-center mt-5">
+                        <div class="text-center mt-2">
                             <p>You must be logged in to write a review.</p>
                             <a href="login.php" class="theme-btn">Login to Continue</a>
                         </div>
@@ -342,10 +342,10 @@ if (isset($_SESSION['user_id'])) {
 <!-- REVIEW VIEW SECTION -->
 <?php if ($ad && $ad['status'] === 'live'): // Only show this section if the ad is live 
 ?>
-    <section id="reviews-section" class="pb-100">
+    <section id="reviews-section" class="pb-24">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 offset-lg-2">
+                <div class="col-lg-8">
                     <h3 class="mb-4">User Reviews (<?= $total_reviews ?>)</h3>
                     <div id="reviews-list">
                         <?php if (!empty($initial_reviews)): ?>
@@ -393,17 +393,17 @@ if (isset($_SESSION['user_id'])) {
 
 <!-- advertisements -->
 <!-- advertisements -->
-<section class="mb-50">
-    <div class="container">
-        <div class="row">
-            <div class="section-1-advertisements d-flex gap-3">
-                <div class="image-1 image-secs"><img src="<?php echo $base_url; ?>assets/images/test-image.jpg" alt=""
-                        class="w-100"></div>
-                <div class="image-2 image-secs d-none d-md-block"><img
-                        src="<?php echo $base_url; ?>assets/images/test-image-2.jpg" alt="" class="w-100"></div>
+<section class="mb-12">
+    <div class="row container">
+            <div class="section-1-advertisements mt-12 justify-center flex gap-3">
+                <div class="image-1 image-secs">
+                    <img src="<?php echo $base_url; ?>assets/images/test-image.jpg" alt="" class="2xl:min-w-full 2xl:max-h-full" />
+                </div>
+                <div class="image-2 image-secs d-none d-md-block">
+                    <img src="<?php echo $base_url; ?>assets/images/test-image-2.jpg" alt="" class="2xl:min-w-full 2xl:max-h-full" />
+                </div>
             </div>
         </div>
-    </div>
 </section>
 <!-- advertisements -->
 <!-- advertisements -->
@@ -414,9 +414,9 @@ if (isset($_SESSION['user_id'])) {
 <section>
     <div class="container">
         <div class="row">
-            <h1 class="fos-40 playfair-regular text-center text-md-start mb-30">More Related Ads</h1>
+            <h1 class="fos-40 playfair-regular text-center text-md-start mb-7">More Related Ads</h1>
             <?php if ($related_ads_result && $related_ads_result->num_rows > 0): ?>
-                <div class="row mt-5">
+                <div class="row mt-5 mx-auto">
 
                     <?php while ($related = $related_ads_result->fetch_assoc()):
                         // --- THIS IS THE MISSING BLOCK THAT FIXES THE ERROR ---

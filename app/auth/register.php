@@ -186,12 +186,12 @@ include_once(__DIR__ . '/../../partials/header.php');
                     <?php endif; ?>
 
                     <form action="" method="POST" class="text-start mt-10 xs:text-xs sm:text-sm" id="registerForm">
-                        <div class="col-lg-6 mb-6">
+                        <div class="mb-6">
                             <label for="firstnameid" class="form-label">First name*</label>
                             <input type="text" name="first_name" class="form-control" id="firstnameid"
                                 placeholder="Enter Your Name" required />
                         </div>
-                        <div class="col-lg-6 mb-6">
+                        <div class="mb-6 ">
                             <label for="lastnameid" class="form-label">Last name*</label>
                             <input type="text" name="last_name" class="form-control" id="lastnameid"
                                 placeholder="Enter Your Last Name" required />

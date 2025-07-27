@@ -91,7 +91,7 @@ include_once(__DIR__ . '/../config/config.php');
     <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/css/intlTelInput.css" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/css/intlTelInput.css" /> -->
     <style>
         .intl-tel-input {
             width: 100%;
@@ -167,7 +167,7 @@ include_once(__DIR__ . '/../config/config.php');
         </div>
     </div>
     <header class=" shadow-md lg:px-5 xl:px-7 bg-[#191919] lg:flex-wrap">
-        <nav class="container mx-auto px-4 sm:px-6 sm:justify-between lg:text-tiny lg:px-6 xl:px-8 flex items-center  justify-between h-16 lg:h-14 xl:h-16 md:h-28">
+        <nav class="container mx-auto px-4 sm:px-6 xs:justify-between lg:text-tiny lg:px-6 xl:px-8 flex items-center  lg:justify-between h-16 lg:h-14 xl:h-16 md:h-28 md:justify-center 2xl:justify-between max-w-[1440px]">
             <!-- Logo -->
             <div class="flex-shrink-0 ">
                 <a href=" <?= $base_url ?>" class="flex items-center">
@@ -176,9 +176,8 @@ include_once(__DIR__ . '/../config/config.php');
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex lg:text-tiny items-center gap-3.5 space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 xl:text-sm xl:gap-3.5 xl:space-x-4">
+            <div class="hidden md:flex lg:text-tiny items-center  space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 md:gap-2 xl:text-sm xl:gap-3.5 xl:space-x-4">
                 <a href="/articles" class="theme-btn ">Articles</a>
-
                 <?php include 'inner-search.php'; ?>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
