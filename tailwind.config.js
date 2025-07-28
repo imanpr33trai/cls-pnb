@@ -1,6 +1,11 @@
 module.exports = {
   content: ["./**/*.{php,js}", "./partials/**/*.{php,js}"],
   theme: {
+    container: {
+      padding: {
+        xs,
+      },
+    },
     screens: {
       xs: "360px",
       sm: "640px",

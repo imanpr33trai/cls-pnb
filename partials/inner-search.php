@@ -1,5 +1,5 @@
 <!-- This component should be included once in your site header -->
-<div class="flex items-center main-search-con px-3 bg-[#383838] text-white 2xl:h-[50px]  position-relative">
+<div class="flex items-center main-search-con px-3  text-white max-h-[40px] position-relative">
     <select name="cat" id="header-category-select" class="posts-search">
         <option value="all">All Categories</option>
         <?php

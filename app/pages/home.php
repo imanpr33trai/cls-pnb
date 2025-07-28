@@ -16,8 +16,8 @@ include(__DIR__ . '/../../partials/search-sec.php');
 ?>
 
 <!-- ADS SECTION -->
-<section class="section-4">
-    <div class="container xs:min-w-full">
+<section class=" container">
+    <div class="section-4 xs:min-w-full">
         <div class="">
             <?php
             // Fetch and display the first 8 ads.
