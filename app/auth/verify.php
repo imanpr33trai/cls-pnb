@@ -7,8 +7,8 @@ include_once(__DIR__ . '/../config/functions.php'); // Assuming you have a funct
 
 // Explicitly include whoops and debug after config.php
 include_once(__DIR__ . '/../../config/config.php');
-include_once(__DIR__ . '/../../config/functions.php');
-require __DIR__ . '/../../config/whoops.php';
+
+
 // --- DEBUG START --- 
 echo "<!-- VERIFY.PHP SCRIPT START -->";
 // --- DEBUG END ---

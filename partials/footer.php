@@ -207,7 +207,7 @@
             $('#search-results').empty();
 
             $.ajax({
-                url: 'search-handler.php',
+                url: 'partials/search-handler.php',
                 type: 'POST',
                 data: {
                     keyword: keyword,
@@ -227,60 +227,78 @@
 
 
 
+    // /partials/footer.php (JavaScript section)
+
     <script>
-        document.getElementById('search-btn').addEventListener('click', function(e) {
-            e.preventDefault();
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('search-btn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-            const keyword = document.getElementById('keyword').value.trim();
-            const location = document.getElementById('location').value.trim();
+                    const keyword = document.getElementById('keyword').value.trim();
+                    const location = document.getElementById('location').value.trim();
 
-            if (!keyword && !location) {
-                alert('Please enter keyword or location');
-                return;
+                    const loader = document.getElementById('search-loader');
+                    const resultsContainer = document.getElementById('search-results');
+
+                    if (!keyword && !location) {
+                        resultsContainer.innerHTML = '<p class="text-warning">Please enter a keyword or location to search.</p>';
+                        return;
+                    }
+
+                    // Show loader and clear previous results
+                    loader.style.display = 'block';
+                    resultsContainer.innerHTML = '';
+
+                    // Create a FormData object for the request
+                    const formData = new FormData();
+                    formData.append('keyword', keyword);
+                    formData.append('location', location);
+
+                    // AJAX call to the correct handler path
+                    fetch('/partials/search-handler.php', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok.');
+                            }
+                            return response.json(); // Expect a JSON response
+                        })
+                        .then(results => {
+                            loader.style.display = 'none';
+
+                            if (results.length > 0) {
+                                // Use map and join for better performance than innerHTML +=
+                                const resultsHtml = results.map(ad => {
+                                    // Build the new clean URL
+                                    const adUrl = `<?php echo $base_url; ?>${ad.category_slug}/${ad.ad_slug}`;
+                                    const description = ad.description ? ad.description.substring(0, 100) + '...' : 'No description available.';
+
+                                    return `
+                            <div class="search-result-item border-bottom py-2">
+                                <a href="${adUrl}" class="text-decoration-none text-dark">
+                                    <h5>${ad.ad_title}</h5>
+                                    <p class="mb-1">${description}</p>
+                                    <small class="text-muted">${ad.city_town_neighbourhood}, ${ad.postal_code}</small>
+                                </a>
+                            </div>
+                        `;
+                                }).join('');
+                                resultsContainer.innerHTML = resultsHtml;
+                            } else {
+                                resultsContainer.innerHTML = '<p>No matching results found. Try different keywords or locations.</p>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Search Error:', error);
+                            loader.style.display = 'none';
+                            resultsContainer.innerHTML = '<p class="text-danger">An error occurred while fetching results.</p>';
+                        });
+                });
             }
-
-            const overlay = document.getElementById('overlay');
-            const loader = document.getElementById('loader');
-            const resultsContainer = document.getElementById('results');
-
-            overlay.style.display = 'block';
-            loader.style.display = 'block';
-            resultsContainer.innerHTML = '';
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', 'partials/search-handler.php', true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-            xhr.onload = function() {
-                loader.style.display = 'none';
-
-                let results;
-                try {
-                    results = JSON.parse(this.responseText);
-                } catch (e) {
-                    resultsContainer.innerHTML = "<p>Error parsing server response.</p>";
-                    return;
-                }
-
-                if (results.length > 0) {
-                    results.forEach(function(ad) {
-                        const html = `
-            <div class="single-result">
-              <a href="single-ad.php?id=${ad.id}" class="text-decoration-none">
-                <h5>${ad.ad_title}</h5>
-                <p>${ad.description.substring(0, 100)}...</p>
-                <small>${ad.city_town_neighbourhood}, ${ad.postal_code}</small>
-              </a>
-            </div>
-          `;
-                        resultsContainer.innerHTML += html;
-                    });
-                } else {
-                    resultsContainer.innerHTML = `<p>No matching results found. Try different keywords or locations.</p>`;
-                }
-            };
-
-            xhr.send(`keyword=${encodeURIComponent(keyword)}&location=${encodeURIComponent(location)}`);
         });
     </script>
 

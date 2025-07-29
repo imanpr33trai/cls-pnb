@@ -71,6 +71,7 @@ include_once(__DIR__ . '/../config/config.php');
         referrerpolicy="origin"
         onerror="tinyMceFallback()"></script>
 
+
     <script>
         function tinyMceFallback() {
             console.error('TinyMCE CDN failed to load.');

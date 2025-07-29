@@ -11,7 +11,7 @@ include(__DIR__ . '/../../partials/github_login.php');
 include(__DIR__ . '/../../partials/google-login.php');
 
 include_once(__DIR__ . '/../../config/functions.php');
-require __DIR__ . '/../../config/whoops.php';
+
 
 
 // USE $errors array to match your HTML block

@@ -13,6 +13,21 @@ require __DIR__ . '/config/whoops.php'; // For better error handling
 // Get the request URI and remove the query string
 $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
+if ($request_uri === 'api/search') {
+    // If it's a search request, include the handler and stop the script.
+    // The handler is responsible for echoing JSON and exiting.
+    require 'partials/search-handler.php';
+    exit();
+}
+
+$path_segments = $request_uri ? explode('/', $request_uri) : [];
+$segment_count = count($path_segments);
+
+
+if ($segment_count === 0) {
+    require 'home.php';
+    exit();
+}
 // Define routes using a switch for static routes and regex for dynamic ones
 switch (true) {
     // --- Static Routes ---

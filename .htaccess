@@ -1,18 +1,25 @@
+# /.htaccess (Final, Clean Version)
+
 RewriteEngine On
 
-# -- 1. REDIRECT: Remove .php, but IGNORE callbacks AND the ajax folder --
+# ----------------------------------------------------------------------
+# Rule 1: Redirect requests from "file.php" to "/file"
+# ----------------------------------------------------------------------
+# This cleans up the URL in the user's browser for direct page access.
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+# IGNORE specific files and critical folders
 RewriteCond %{REQUEST_URI} !^/(google_callback|github_callback|generate_slugs)\.php$ [NC]
-RewriteCond %{REQUEST_URI} !^/ajax/ [NC] # <-- ADD THIS LINE
-RewriteCond %{REQUEST_URI} !^/config/ [NC] # <-- ADD THIS LINE
+RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
+RewriteCond %{REQUEST_URI} !^/config/ [NC]
 RewriteRule ^ /%1 [R=301,L]
 
-# -- 2. REWRITE (Front Controller): Route to router.php, but IGNORE the ajax folder --
+# ----------------------------------------------------------------------
+# Rule 2: Front Controller for clean URLs
+# ----------------------------------------------------------------------
+# This routes all other requests to router.php, including our new API endpoint.
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/ajax/ [NC] # <-- AND ADD THIS LINE
-RewriteCond %{REQUEST_URI} !^/config/ [NC] # <-- AND ADD THIS LINE
+# IGNORE specific folders where direct access might be needed
+RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
+RewriteCond %{REQUEST_URI} !^/config/ [NC]
 RewriteRule ^(.*)$ router.php [L]
-
-# -- 1. REDIRECT: Remove .php from user-facing URLs, but IGNORE callbacks --
-# If the request contains ".php"...
