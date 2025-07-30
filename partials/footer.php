@@ -476,7 +476,121 @@
         });
     </script>
 
+<!-- /partials/footer.php -->
 
+<!-- ... other footer content and scripts like jQuery ... -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // =================================================================
+    //  GUARDED SCRIPT 1: Live Search Feature
+    //  This code will ONLY run if the search button exists on the page.
+    // =================================================================
+    const searchBtn = document.getElementById('search-btn');
+    if (searchBtn) {
+        const keywordInput = document.getElementById('keyword');
+        const locationInput = document.getElementById('location');
+        const overlay = document.getElementById('overlay');
+        const loader = document.getElementById('loader');
+        const resultsContainer = document.getElementById('search-results');
+
+        searchBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const keyword = keywordInput.value.trim();
+            const location = locationInput.value.trim();
+
+            if (!keyword && !location) {
+                alert('Please enter a keyword or location to search.');
+                return;
+            }
+
+            overlay.style.display = 'block';
+            loader.style.display = 'block';
+            resultsContainer.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('keyword', keyword);
+            formData.append('location', location);
+            
+            // This is the correct API endpoint handled by your router.php
+            const fetchUrl = `<?php echo $base_url; ?>api/search`;
+
+            fetch(fetchUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) { throw new Error(`Network Error: ${response.statusText}`); }
+                return response.json();
+            })
+            .then(data => {
+                loader.style.display = 'none';
+
+                if (data && Array.isArray(data.results) && data.results.length > 0) {
+                    const resultsHtml = data.results.map(ad => {
+                        const adUrl = `<?php echo $base_url; ?>ads/${ad.ad_slug}`;
+                        const description = ad.description ? ad.description.substring(0, 100) + '...' : '';
+                        return `
+                            <div class="search-result-item">
+                                <a href="${adUrl}" class="text-decoration-none">
+                                    <h5>${ad.ad_title}</h5>
+                                    <p>${description}</p>
+                                    <small>${ad.city_town_neighbourhood}</small>
+                                </a>
+                            </div>`;
+                    }).join('');
+                    resultsContainer.innerHTML = resultsHtml;
+                } else {
+                    resultsContainer.innerHTML = `<p>No matching results found.</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Search Error:', error);
+                loader.style.display = 'none';
+                resultsContainer.innerHTML = `<p class="text-danger">An error occurred while fetching results.</p>`;
+            });
+        });
+    } // End of search feature guard
+
+    // =================================================================
+    //  GUARDED SCRIPT 2: International Telephone Input
+    //  This code will ONLY run if the phone input field exists.
+    // =================================================================
+    const phoneInput = document.getElementById('phonenumbid');
+    if (phoneInput && typeof window.intlTelInput === 'function') {
+        const iti = window.intlTelInput(phoneInput, {
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/js/utils.js",
+            initialCountry: "auto",
+            geoIpLookup: function(callback) {
+                fetch("https://ipapi.co/json")
+                  .then(res => res.json())
+                  .then(data => callback(data.country_code))
+                  .catch(() => callback("us"));
+            }
+        });
+
+        // Example: Update a hidden input with the full number on form submit
+        const registerForm = document.getElementById('registerForm');
+        if(registerForm) {
+            registerForm.addEventListener('submit', function() {
+                const fullNumber = iti.getNumber();
+                // If you want to store the full international number, you can uncomment this
+                // phoneInput.value = fullNumber; 
+
+                // Store country name in the hidden field
+                const countryData = iti.getSelectedCountryData();
+                const countryNameInput = document.getElementById('country_name_hidden');
+                if(countryNameInput) {
+                    countryNameInput.value = countryData.name;
+                }
+            });
+        }
+    } // End of phone input guard
+
+});
+</script>
 
 
 

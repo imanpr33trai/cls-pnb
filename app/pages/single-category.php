@@ -1,6 +1,6 @@
 <?php
 include_once(__DIR__ . '/config/config.php'); // always load this first
-require __DIR__ . '/../../config/whoops.php';
+
 // --- NEW LOGIC TO HANDLE SLUG-BASED URLS ---
 
 // 1. Get the slug from the URL provided by .htaccess

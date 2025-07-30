@@ -1,7 +1,7 @@
 <?php
 // CRUCIAL: Must be the very first thing on the page
-session_start();
-include "config/config.php";
+
+include_once(__DIR__ . '/../../config/config.php');
 
 // --- Security: Redirect non-logged-in users ---
 if (!isset($_SESSION['user_id'])) {

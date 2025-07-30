@@ -5,7 +5,7 @@
 // Include essential configuration and functions first
 include_once(__DIR__ . '/config/config.php');
 include_once(__DIR__ . '/config/functions.php');
-require __DIR__ . '/config/whoops.php'; // For better error handling
+
 
 
 

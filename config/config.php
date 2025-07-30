@@ -15,26 +15,7 @@ require_once __DIR__ . '/debug.php';
 
 
 
-// Start session globally
-// $customSessionPath = __DIR__ . '/../sessions';
 
-// // Ensure the session directory exists and is writable
-// if (!is_dir($customSessionPath)) {
-//     // Attempt to create the directory with appropriate permissions
-//     // The umask will be applied, so 0777 usually results in 0755 or 0700 depending on system umask.
-//     // It's important that the web server user has write permissions.
-//     if (!mkdir($customSessionPath, 0777, true) && !is_dir($customSessionPath)) {
-//         // If directory creation fails, trigger an error. This is a critical configuration problem.
-//         trigger_error("Failed to create session directory: {$customSessionPath}", E_USER_WARNING);
-//     }
-// }
-
-// // Set session save path ONLY if a session is not already active
-// // This prevents the "session_save_path(): Session save path cannot be changed when a session is active" warning
-// if (session_status() == PHP_SESSION_NONE) {
-//     session_save_path($customSessionPath);
-//     session_start();
-// }
 
 
 
@@ -96,15 +77,23 @@ $db_name = $_ENV['DB_NAME']; // Your DB name
 
 // Connect to MySQL
 $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-// Check connection
 if ($conn->connect_error) {
     die("❌ Database connection failed: " . $conn->connect_error);
 }
-
-// Optional: Set charset
 $conn->set_charset("utf8mb4");
 
+require_once __DIR__ . '/../handler/DatabaseSessionHandler.php'; // Adjust path if you placed it elsewhere
+
+// 2. Create an instance of our handler and pass it the database connection
+$session_handler = new DatabaseSessionHandler($conn);
+
+// 3. Set PHP's session handler to use our new class
+session_set_save_handler($session_handler, true);
+
+// 4. Now, start the session as usual. PHP will now use our database methods automatically.
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // ✅ Fix path to functions.php
 include_once(__DIR__ . DIRECTORY_SEPARATOR . 'functions.php');

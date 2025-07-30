@@ -6,7 +6,7 @@
 
 include_once('config/config.php');
 include_once(__DIR__ . '/../../config/functions.php');
-require __DIR__ . '/../../config/whoops.php';
+
 // --- 1. Security: Redirect non-logged-in users ---
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['redirect_to'] = 'Blog-form.php';

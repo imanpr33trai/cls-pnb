@@ -1,8 +1,9 @@
 <?php
-// FOR DEBUGGING - REMOVE IN PRODUCTION
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// echo '<div style="background: #ffc; padding: 10px; border: 1px solid #dda; margin: 10px;"><strong>DEBUGGER:</strong> app/auth/login.php loaded.</div>';
+// // FOR DEBUGGING - REMOVE IN PRODUCTION
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 
 

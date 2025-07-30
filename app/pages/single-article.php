@@ -7,7 +7,7 @@
 session_start();
 include_once(__DIR__ . '/../../config/config.php');
 include_once(__DIR__ . '/../../config/functions.php');
-require __DIR__ . '/../../config/whoops.php';
+
 
 // --- 1. INITIALIZE ALL VARIABLES ---
 $blog = null;
@@ -44,12 +44,14 @@ if (!empty($blog_slug)) {
 
             $headings = $doc->getElementsByTagName('h2');
             foreach ($headings as $index => $heading) {
-                $id = 'toc-heading-' . $index;
-                $heading->setAttribute('id', $id);
-                $table_of_contents[] = [
-                    'text' => $heading->nodeValue,
-                    'id' => $id
-                ];
+                if ($heading instanceof DOMElement) {
+                    $id = "toc-heading-$index";
+                    $heading->setAttribute('id', $id);
+                    $table_of_contents[] = [
+                        'text' => $heading->nodeValue,
+                        'id' => $id
+                    ];
+                }
             }
             // Save the modified HTML back to the blog description
             $blog['description'] = preg_replace('~<(?:!DOCTYPE|/?(?:html|body|xml))[^>]*>\s*~i', '', $doc->saveHTML());

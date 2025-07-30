@@ -1,17 +1,17 @@
 <?php
-session_start();
+// echo '<div style="background: #ffc; padding: 10px; border: 1px solid #dda; margin: 10px;"><strong>DEBUGGER:</strong> app/auth/verify.php loaded.</div>';
+// echo '<pre><strong>SESSION:</strong> '; print_r($_SESSION); echo '</pre>';
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     echo '<div style="background: #cfc; padding: 10px; border: 1px solid #ada; margin: 10px;"><strong>DEBUGGER:</strong> POST request received in verify.php.</div>';
+//     echo '<pre><strong>POST DATA:</strong> '; print_r($_POST); echo '</pre>';
+// }
 
 // Include essential configuration and functions
-include_once(__DIR__ . '/../config/config.php');
-include_once(__DIR__ . '/../config/functions.php'); // Assuming you have a functions.php
-
-// Explicitly include whoops and debug after config.php
 include_once(__DIR__ . '/../../config/config.php');
+include_once(__DIR__ . '/../../config/functions.php'); // Assuming you have a functions.php
 
 
-// --- DEBUG START --- 
-echo "<!-- VERIFY.PHP SCRIPT START -->";
-// --- DEBUG END ---
+
 
 $errors = [];
 $success_message = '';
@@ -94,7 +94,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
                     <?php endif; ?>
 
-                    <form action="<?= $base_url ?>" method="POST">
+                    <form action="" method="POST">
                         <div class="mb-3">
                             <label for="otp" class="form-label">Verification Code (OTP)</label>
                             <input type="text" class="form-control text-center" id="otp" name="otp" required maxlength="6" pattern="\d{6}" style="font-size: 1.5rem; letter-spacing: 0.5rem;">

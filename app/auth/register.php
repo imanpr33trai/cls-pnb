@@ -1,18 +1,13 @@
 <?php
-//======================================================================
-// 1. SESSION MANAGEMENT & INITIAL SETUP
-//======================================================================
+// echo '<div style="background: #ffc; padding: 10px; border: 1px solid #dda; margin: 10px;"><strong>DEBUGGER:</strong> app/auth/register.php loaded.</div>';
+// /app/auth/register.php (Final, Refactored Version)
 
-// Start session if not already started. This must be the very first thing.
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 // Include essential configuration files.
-// config.php should define $base_url and establish the DB connection $conn.
 include_once(__DIR__ . '/../../config/config.php');
 
-// Redirect logged-in users to the homepage. They don't need to register again.
+// Redirect logged-in users to the homepage.
 if (isset($_SESSION['user_id'])) {
     header('Location: ' . $base_url);
     exit();
@@ -21,38 +16,32 @@ if (isset($_SESSION['user_id'])) {
 // Include Composer's autoloader for packages like PHPMailer.
 include_once(__DIR__ . '/../../vendor/autoload.php');
 
-// Include developer tools (optional but good practice).
-include_once(__DIR__ . '/../../config/whoops.php');
-// include_once(__DIR__ . '/../../config/debug.php'); // Uncomment for debugging
-
 // Bring PHPMailer classes into the global namespace.
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 //======================================================================
 // 2. PROCESS FORM SUBMISSION (POST REQUEST)
-// This block only runs when the form is submitted. It will always
-// end with a redirect, preventing form resubmission on reload.
+// This block only runs when the form is submitted.
 //======================================================================
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // This array will collect errors for this submission attempt.
     $errors = [];
 
-    // --- Sanitize and Validate Input ---
+    // --- Step 2a: Sanitize and Validate Input ---
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $phone = empty(trim($_POST['phone'])) ? NULL : trim($_POST['phone']);
-    $country = trim($_POST['country'] ?? '');
+    $country = empty(trim($_POST['country'])) ? NULL : trim($_POST['country']);
 
     if (empty($first_name) || empty($last_name) || empty($email) || empty($password) || empty($confirm_password)) {
         $errors[] = 'All required fields must be filled.';
     }
     if (!$email) {
-        $errors[] = 'Invalid email format.';
+        $errors[] = 'Please enter a valid email address.';
     }
     if (strlen($password) < 8) {
         $errors[] = 'Password must be at least 8 characters long.';
@@ -61,103 +50,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Passwords do not match.';
     }
 
-    // --- If validation fails, redirect back to the form ---
+    // --- Step 2b: If validation fails, redirect back with errors ---
     if (!empty($errors)) {
-        $_SESSION['form_errors'] = $errors;     // Store errors to display
-        $_SESSION['old_input'] = $_POST;       // Store input to repopulate form
-        header('Location: ' . $base_url . 'register');
+        $_SESSION['form_errors'] = $errors;
+        $_SESSION['old_input'] = $_POST;
+        header('Location: ' . $base_url . 'register.php');
         exit();
     }
 
-    // --- Check for Duplicate Email ---
+    // --- Step 2c: Check for Duplicate Email ---
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
     if ($stmt->num_rows > 0) {
-        $errors[] = "An account with this email already exists.";
+        $errors[] = "An account with this email already exists. Please <a href='login.php'>log in</a>.";
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_input'] = $_POST;
-        header('Location: ' . $base_url . 'register');
+        $stmt->close(); // Close statement here
+        header('Location: ' . $base_url . 'register.php');
         exit();
     }
     $stmt->close();
 
-    // --- All checks passed, proceed to create user ---
+    // --- Step 2d: Create User, OTP, and Send Email ---
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $otp = rand(100000, 999999);
-    $otp_expires_at = (new DateTime('+10 minutes'))->format('Y-m-d H:i:s');
+    $otp_expires_at = (new DateTime('+15 minutes'))->format('Y-m-d H:i:s');
 
     $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, country, email, phone, password, auth_provider, status, verification_otp, otp_expires_at) VALUES (?, ?, ?, ?, ?, ?, 'local', 'unverified', ?, ?)");
     $stmt->bind_param("ssssssss", $first_name, $last_name, $country, $email, $phone, $hashed_password, $otp, $otp_expires_at);
 
     if ($stmt->execute()) {
-        // --- Database Insert Successful, Send Verification Email ---
+        $stmt->close(); // Close statement here
         $mail = new PHPMailer(true);
         try {
-            // SMTP settings from your .env file
+            // SMTP settings from your config file
             $mail->isSMTP();
             $mail->Host       = $_ENV['SMTP_HOST'];
             $mail->SMTPAuth   = true;
             $mail->Username   = $_ENV['SMTP_USERNAME'];
             $mail->Password   = $_ENV['SMTP_PASSWORD'];
-            $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
+            $mail->SMTPSecure =$_ENV['SMTP_SECURE'];
             $mail->Port       = $_ENV['SMTP_PORT'];
-
             $mail->setFrom($_ENV['SMTP_USERNAME'], 'Your Site Name');
             $mail->addAddress($email, "{$first_name} {$last_name}");
-
             $mail->isHTML(true);
             $mail->Subject = 'Verify Your Account';
-            $mail->Body    = "Hello {$first_name},<br><br>Your verification code is: <b>{$otp}</b><br><br>This code will expire in 10 minutes.";
+            $mail->Body    = "Hello {$first_name},<br><br>Your verification code is: <b>{$otp}</b><br><br>This code will expire in 15 minutes.";
             $mail->send();
 
-            // Store email in session and redirect to the verification page
             $_SESSION['verification_email'] = $email;
-            header('Location: ' . $base_url . 'verify');
+            header('Location: ' . $base_url . 'verify.php');
             exit();
         } catch (Exception $e) {
-            // Email failed to send, but user is in DB. Let them know.
-            $errors[] = "Registration was successful, but the verification email could not be sent. Please contact support.";
-            // For you, the developer:
+            $errors[] = "Your account was created, but the verification email could not be sent. Please contact support.";
             error_log("PHPMailer Error for user {$email}: " . $mail->ErrorInfo);
-
             $_SESSION['form_errors'] = $errors;
-            header('Location: ' . $base_url . 'register'); // Send back to register page with error
+            header('Location: ' . $base_url . 'register.php');
             exit();
         }
     } else {
-        // --- Database Insert Failed ---
-        // This is a critical error. Show a generic message to the user.
-        $errors[] = "A critical error occurred with the database. Please try again later or contact support.";
-        // Log the real error for you, the developer.
+        $errors[] = "A critical error occurred with the database. Please try again later.";
         error_log("User registration INSERT failed for email {$email}: " . $stmt->error);
-
+        $stmt->close(); // Close statement here
         $_SESSION['form_errors'] = $errors;
-        header('Location: ' . $base_url . 'register');
+        header('Location: ' . $base_url . 'register.php');
         exit();
     }
-    $stmt->close();
 }
 
 //======================================================================
-// 3. PREPARE VIEW (GET REQUEST)
-// This block runs when the page is loaded normally.
-// It retrieves any errors or old input from the session to display.
+// 3. PREPARE VIEW (This runs on a normal page load)
 //======================================================================
 
+// Get any errors or old input from the session to display on the page
 $errors = $_SESSION['form_errors'] ?? [];
 $old_input = $_SESSION['old_input'] ?? [];
-// Clear the session variables so they don't show up on subsequent visits.
+// Clear them from the session so they don't appear again on refresh
 unset($_SESSION['form_errors'], $_SESSION['old_input']);
 
-//======================================================================
-// 4. RENDER THE PAGE
-// Finally, include the header to start rendering the HTML.
-//======================================================================
+// Helper function to safely repopulate form fields
+function oldValue(string $field, array $data): string {
+    return htmlspecialchars($data[$field] ?? '', ENT_QUOTES, 'UTF-8');
+}
 
+// Include header and social login generators
 include_once(__DIR__ . '/../../partials/header.php');
-
+include_once(__DIR__ . '/../../partials/google-login.php');
+include_once(__DIR__ . '/../../partials/github_login.php');
 ?>
 
 <!-- The HTML <section> element starts after this point -->
