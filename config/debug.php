@@ -12,15 +12,15 @@ define('IS_DEVELOPMENT_MODE', true);
 define('DEBUG_LOG_FILE', __DIR__ . '/../logs/debug.log');
 
 // Auto-create logs directory if it doesn't exist
-$log_dir = dirname(DEBUG_LOG_FILE);
-if (!is_dir($log_dir)) {
-    // Attempt to create the directory with permissions that allow the web server to write to it.
-    // The umask will be applied, so 0777 usually results in 0755.
-    if (!mkdir($log_dir, 0777, true) && !is_dir($log_dir)) {
-        // If directory creation fails, trigger an error. This is a configuration problem.
-        trigger_error("Failed to create log directory: {$log_dir}", E_USER_WARNING);
-    }
-}
+// $log_dir = dirname(DEBUG_LOG_FILE);
+// if (!is_dir($log_dir)) {
+//     // Attempt to create the directory with permissions that allow the web server to write to it.
+//     // The umask will be applied, so 0777 usually results in 0755.
+//     if (!mkdir($log_dir, 0777, true) && !is_dir($log_dir)) {
+//         // If directory creation fails, trigger an error. This is a configuration problem.
+//         trigger_error("Failed to create log directory: {$log_dir}", E_USER_WARNING);
+//     }
+// }
 
 ini_set('log_errors', '1');
 ini_set('error_log', DEBUG_LOG_FILE);

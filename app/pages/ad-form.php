@@ -442,7 +442,7 @@ $(document).ready(function() {
         var categoryId = $(this).val();
         if (categoryId) {
             $.ajax({
-                url: 'get_subcategories.php',
+                url: '/ajax/get_subcategories.php',
                 type: 'POST',
                 data: { category_id: categoryId },
                 success: function(response) {
