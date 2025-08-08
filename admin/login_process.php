@@ -1,5 +1,5 @@
 <?php
-include '../config/config.php';
+include_once(__DIR__ . '/../config/config.php');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -13,16 +13,19 @@ $query->bind_param("ss", $username, $username);
 $query->execute();
 $result = $query->get_result();
 
-echo password_hash("admin123", PASSWORD_DEFAULT);
-
 if ($user = $result->fetch_assoc()) {
     if (password_verify($password, $user['password'])) {
         $_SESSION['admin'] = $user;
         header("Location: index.php");
+        exit();
     } else {
-        echo "Invalid password!";
+        $_SESSION['login_error'] = "Invalid username or password.";
+        header("Location: login.php");
+        exit();
     }
 } else {
-    echo "Admin not found!";
+    $_SESSION['login_error'] = "Invalid username or password.";
+    header("Location: login.php");
+    exit();
 }
 ?>
