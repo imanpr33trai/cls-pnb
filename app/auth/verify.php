@@ -1,10 +1,4 @@
 <?php
-// echo '<div style="background: #ffc; padding: 10px; border: 1px solid #dda; margin: 10px;"><strong>DEBUGGER:</strong> app/auth/verify.php loaded.</div>';
-// echo '<pre><strong>SESSION:</strong> '; print_r($_SESSION); echo '</pre>';
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-//     echo '<div style="background: #cfc; padding: 10px; border: 1px solid #ada; margin: 10px;"><strong>DEBUGGER:</strong> POST request received in verify.php.</div>';
-//     echo '<pre><strong>POST DATA:</strong> '; print_r($_POST); echo '</pre>';
-// }
 
 // Include essential configuration and functions
 include_once(__DIR__ . '/../../config/config.php');
@@ -74,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include_once(__DIR__ . '/../../partials/header.php');
 ?>
 
-<div class="container my-5">
+<div class="container my-5 h-[75vh] flex justify-center flex-col">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
@@ -94,12 +88,12 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
                     <?php endif; ?>
 
-                    <form action="" method="POST">
+                    <form action="" method="POST" class="flex justify-center flex-col items-center">
                         <div class="mb-3">
                             <label for="otp" class="form-label">Verification Code (OTP)</label>
                             <input type="text" class="form-control text-center" id="otp" name="otp" required maxlength="6" pattern="\d{6}" style="font-size: 1.5rem; letter-spacing: 0.5rem;">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Verify and Log In</button>
+                        <button type="submit" class="theme-btn w-100">Verify and Log In</button>
                     </form>
                     <hr>
                     <div class="text-center">

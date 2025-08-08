@@ -53,11 +53,22 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
      * @return bool
      */
     public function write($id, $data): bool {
-        // REPLACE INTO is a MySQL-specific command that is a convenient way to do an UPSERT.
-        // It deletes the old row if it exists and inserts the new one.
-        $stmt = $this->db->prepare("REPLACE INTO sessions (id, access, data) VALUES (?, ?, ?)");
+        // Extract user_id from the session data if it exists
+        $user_id = null;
+        if (!empty($_SESSION['user_id'])) {
+            $user_id = $_SESSION['user_id'];
+        }
+
+        // Use REPLACE INTO to perform an "UPSERT" (update or insert)
+        $stmt = $this->db->prepare(
+            "REPLACE INTO sessions (id, user_id, data, access) VALUES (?, ?, ?, ?)"
+        );
+        
         $access_time = time(); // Current Unix timestamp
-        $stmt->bind_param('sis', $id, $access_time, $data);
+        
+        // Bind all four parameters
+        $stmt->bind_param('sisi', $id, $user_id, $data, $access_time);
+        
         return $stmt->execute();
     }
 

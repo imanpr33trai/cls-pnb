@@ -1,6 +1,8 @@
 <?php
 // ajax/fetch_blogs_by_category.php
 
+header('Content-Type: application/json'); // Set content type to JSON
+
 // Adjust the path to your config file. It's one level up from the /ajax/ directory.
 include_once(__DIR__ . '/../config/config.php');
 include_once(__DIR__ . '/../config/functions.php'); // Optional, if it has helper functions
@@ -11,10 +13,38 @@ $categoryId = isset($_POST['category_id']) ? intval($_POST['category_id']) : 0;
 $page = isset($_POST['page']) ? intval($_POST['page']) : 1;
 
 // Define pagination
-$limit = 12;
+$limit = 8;
 $offset = ($page > 0) ? ($page - 1) * $limit : 0;
 
-// --- 2. BUILD QUERY SECURELY WITH PREPARED STATEMENTS ---
+
+// --- 2. GET TOTAL COUNT FOR PAGINATION ---
+$count_sql_params = [];
+$count_sql_param_types = '';
+$count_sql = "SELECT COUNT(*) as total FROM blog_posts";
+
+if ($categoryId > 0) {
+    $count_sql .= " WHERE category_id = ?";
+    $count_sql_params[] = $categoryId;
+    $count_sql_param_types .= 'i';
+}
+
+$count_stmt = $conn->prepare($count_sql);
+if ($count_stmt) {
+    if (!empty($count_sql_param_types)) {
+        $count_stmt->bind_param($count_sql_param_types, ...$count_sql_params);
+    }
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result()->fetch_assoc();
+    $total_records = $count_result['total'] ?? 0;
+    $total_pages = ceil($total_records / $limit);
+    $count_stmt->close();
+} else {
+    // Handle potential error in preparing the statement
+    $total_pages = 0;
+}
+
+
+// --- 3. BUILD QUERY SECURELY WITH PREPARED STATEMENTS ---
 $sql_params = [];
 $sql_param_types = '';
 
@@ -34,7 +64,8 @@ $sql_params[] = $limit;
 $sql_params[] = $offset;
 $sql_param_types .= 'ii';
 
-// --- 3. EXECUTE THE QUERY ---
+// --- 4. EXECUTE THE QUERY AND BUFFER HTML ---
+ob_start(); // Start output buffering
 $stmt = $conn->prepare($sql);
 
 if ($stmt) {
@@ -93,3 +124,16 @@ if ($stmt) {
     }
     $stmt->close();
 }
+$html = ob_get_clean(); // Get buffered content and clean buffer
+
+
+// --- 5. PREPARE AND ECHO JSON RESPONSE ---
+$response = [
+    'html' => $html,
+    'pagination' => [
+        'totalPages' => $total_pages,
+        'currentPage' => $page
+    ]
+];
+
+echo json_encode($response);

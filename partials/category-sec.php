@@ -1,5 +1,6 @@
-<section class="sec-categories">
-    <div class="container p-2 xs:min-w-full">
+<section class="sec-categories w-full ">
+    <div class="container ">
+    <div class="  p-2 xs:min-w-full">
         <div class="row">
             <!-- The parent container uses flexbox and wrapping -->
             <div class="all-cats ">
@@ -33,6 +34,7 @@
                     <?php endwhile; ?>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </section>

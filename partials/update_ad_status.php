@@ -23,7 +23,7 @@ if ($stmt->execute()) {
     error_log(date('Y-m-d H:i:s') . " - Ad Expiration Cron Job: FAILED. Error: " . $stmt->error . "\n", 3, "cron_log.log");
 }
 
-$stmt->close();
-$conn->close();
+// $stmt->close();
+// $conn->close();
 
 echo "Ad status update complete. Updated $updated_count ads.";

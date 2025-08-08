@@ -6,7 +6,7 @@
 // =================================================================
 
 // --- MASTER SWITCH: Set to `false` when your site goes live ---
-define('IS_DEVELOPMENT_MODE', true);
+define('IS_DEVELOPMENT_MODE', false);
 
 // --- LOG FILE SETUP ---
 define('DEBUG_LOG_FILE', __DIR__ . '/../logs/debug.log');
@@ -26,7 +26,7 @@ ini_set('log_errors', '1');
 ini_set('error_log', DEBUG_LOG_FILE);
 // We use our own handlers for displaying errors, so PHP's display can be off.
 // This prevents duplicate error messages if the handler fails.
-ini_set('display_errors', '1'); 
+ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 // --- CONSOLE COMMUNICATION CORE ---
@@ -35,7 +35,8 @@ error_reporting(E_ALL);
  * A self-contained function to send data to the browser console.
  * It's the engine for all other debug functions.
  */
-function _send_to_console(array $payload) {
+function _send_to_console(array $payload)
+{
     if (!IS_DEVELOPMENT_MODE || headers_sent() || PHP_SAPI === 'cli') {
         return;
     }
@@ -68,7 +69,8 @@ function _send_to_console(array $payload) {
 /**
  * Displays a formatted error message directly on the web page.
  */
-function _display_error_on_page(string $title, string $message, string $file, int $line, ?string $trace = null) {
+function _display_error_on_page(string $title, string $message, string $file, int $line, ?string $trace = null)
+{
     if (PHP_SAPI === 'cli' || headers_sent()) {
         return; // Don't display HTML in CLI mode or if headers are already sent.
     }
@@ -92,7 +94,8 @@ function _display_error_on_page(string $title, string $message, string $file, in
  * Catches all PHP errors, warnings, and notices.
  * Logs to file, sends to console, and displays on page.
  */
-function custom_error_handler(int $errno, string $errstr, string $errfile, int $errline): bool {
+function custom_error_handler(int $errno, string $errstr, string $errfile, int $errline): bool
+{
     $log_message = "PHP Error: [{$errno}] {$errstr} in {$errfile} on line {$errline}";
     error_log($log_message);
 
@@ -116,11 +119,12 @@ function custom_error_handler(int $errno, string $errstr, string $errfile, int $
  * Catches all uncaught exceptions.
  * Logs to file, sends to console, displays on page, and halts execution.
  */
-function custom_exception_handler(Throwable $exception): void {
+function custom_exception_handler(Throwable $exception): void
+{
     $log_message = "Uncaught Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
     error_log($log_message);
     error_log("Stack Trace:\n" . $exception->getTraceAsString());
-    
+
     if (IS_DEVELOPMENT_MODE) {
         _display_error_on_page(
             'Uncaught Exception',
@@ -139,7 +143,7 @@ function custom_exception_handler(Throwable $exception): void {
             'trace' => $exception->getTraceAsString()
         ]);
     }
-    
+
     // Halt script execution after a fatal exception.
     exit(1);
 }
@@ -148,7 +152,8 @@ function custom_exception_handler(Throwable $exception): void {
  * Catches fatal errors that other handlers miss (e.g., parse errors).
  * Logs to file and attempts to display on page.
  */
-function custom_shutdown_handler(): void {
+function custom_shutdown_handler(): void
+{
     $error = error_get_last();
     if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
         $log_message = "PHP Fatal Error: [{$error['type']}] {$error['message']} in {$error['file']} on line {$error['line']}";
@@ -166,51 +171,23 @@ function custom_shutdown_handler(): void {
     }
 }
 
-set_error_handler('custom_error_handler');
-set_exception_handler('custom_exception_handler');
-register_shutdown_function('custom_shutdown_handler');
+// Only set up the handlers and automatic logging if this is NOT an AJAX request.
+// if (!defined('AJAX_REQUEST')) {
+//     set_error_handler('custom_error_handler');
+//     set_exception_handler('custom_exception_handler');
+//     register_shutdown_function('custom_shutdown_handler');
 
-
-// --- PUBLIC-FACING DEBUG FUNCTIONS ---
-
-/**
- * The main function you will use to debug variables on normal pages.
- */
-function console_log($data, string $label = 'PHP Debug') {
-    _send_to_console(['label' => $label, 'data' => $data]);
-}
-
-/**
- * The main function you will use to debug variables on pages that redirect.
- */
-function debug_to_session($data, string $label = 'Redirect Debug') {
-    if (!IS_DEVELOPMENT_MODE || session_status() !== PHP_SESSION_ACTIVE) return;
-    if (!isset($_SESSION['php_to_console_debug'])) $_SESSION['php_to_console_debug'] = [];
-    $_SESSION['php_to_console_debug'][] = ['label' => $label, 'data' => $data];
-}
-
-/**
- * Call this in your footer to print debug messages from the previous page.
- */
-function render_session_debug_to_console() {
-    if (!IS_DEVELOPMENT_MODE || empty($_SESSION['php_to_console_debug'])) return;
-    foreach ($_SESSION['php_to_console_debug'] as $msg) {
-        console_log($msg['data'], $msg['label'] . ' (from previous request)');
-    }
-    unset($_SESSION['php_to_console_debug']); // Clear after rendering
-}
-
-// --- AUTOMATIC SUPERGLOBAL LOGGING ---
-if (IS_DEVELOPMENT_MODE) {
-    if (!empty($_GET)) {
-        console_log($_GET, '$_GET Data');
-    }
-    if (!empty($_POST)) {
-        console_log($_POST, '$_POST Data');
-    }
-    if (!empty($_FILES)) {
-        console_log($_FILES, '$_FILES Data');
-    }
-}
+//     // --- AUTOMATIC SUPERGLOBAL LOGGING ---
+//     if (IS_DEVELOPMENT_MODE) {
+//         if (!empty($_GET)) {
+//             console_log($_GET, '$_GET Data');
+//         }
+//         if (!empty($_POST)) {
+//             console_log($_POST, '$_POST Data');
+//         }
+//         if (!empty($_FILES)) {
+//             console_log($_FILES, '$_FILES Data');
+//         }
+//     }
+// }
 ?>
-

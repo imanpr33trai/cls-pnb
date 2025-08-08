@@ -201,7 +201,7 @@ input[type="checkbox"]:checked {
 }
 a {
   text-decoration: none;
-  color: white;
+  /* color: white; */
 }
 /*
 a:hover {
@@ -215,6 +215,15 @@ a:hover {
 
 /* theme btns */
 /* theme btns */
+.review-item {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+.review-item.new {
+  opacity: 0;
+}
+
 .theme-btn {
   background-color: var(--theme-color-pink);
   color: var(--theme-color-white);
@@ -274,11 +283,6 @@ a:hover {
   color: var(--theme-color-white);
 }
 
-header select {
-  /* height: 40px; */
-  /* border: none !important; */
-  /* padding: 5px 10px; */
-}
 /* Target the select dropdown */
 
 /* Style the options inside the dropdown */
@@ -1043,6 +1047,9 @@ footer {
   height: 220px; /* Fixed height for uniform look */
   object-fit: cover; /* Ensures image fills the space without distortion */
 }
+.card-img-ad img-fluid {
+  min-height: 200px;
+}
 
 .card-body-blog {
   padding: 1.5rem;
@@ -1253,11 +1260,11 @@ footer {
     justify-content: center;
     gap: 15px;
   }
-  .pagination-sec .col {
+  /* .pagination-sec .col {
     gap: 15px;
     max-width: 400px;
     margin: auto;
-  }
+  } */
   .form-section input {
     height: 40px;
     padding: 10px 15px;
@@ -1384,6 +1391,11 @@ footer {
   .section-1-text .fos-40 {
     font-size: 24px;
   }
+  .pagination-sec .col {
+    gap: 15px;
+
+    margin: auto;
+  }
   /* .single-cat {
     max-width: 50%;
     min-width: 50%;
@@ -1417,10 +1429,9 @@ footer {
   .single-post-title.mb-20 {
     margin-bottom: 20px;
   }
-  .post-image-single {
-    max-height: 30vh;
+  /* .post-image-single {
     object-fit: contain;
-  }
+  } */
   .post-image-single.mb-60 {
     margin-bottom: 36px;
   }
@@ -1431,7 +1442,7 @@ footer {
     margin-bottom: 40px;
   }
   .single-ad-platform-link {
-    margin-bottom: 50px;
+    margin-bottom: 15px;
   }
   .single-article-details.mb-50 {
     margin-bottom: 20px;
@@ -1448,8 +1459,6 @@ footer {
   }
   .head-searching-content input {
     height: 40px;
-  }
-  .head-search-input {
   }
 }
 @media (min-width: 992px) {
@@ -1553,7 +1562,7 @@ footer {
     max-width: 30%;
   }
   .theme-btn {
-    height: 50px;
+    height: 45px;
     font-size: 16px;
   }
   .responsive-cat-box {
@@ -1717,3 +1726,11 @@ footer {
   }
 } */
 /* Global styles for the section */
+
+.img-ads {
+  width: 100%;
+  min-height: 200px;
+  max-height: 200px;
+  height: 200px;
+  object-fit: cover;
+}

@@ -1,5 +1,5 @@
 <?php
-include_once(__DIR__ . '/config/config.php'); // always load this first
+include_once(__DIR__ . '/../../config/config.php'); // always load this first
 
 // --- NEW LOGIC TO HANDLE SLUG-BASED URLS ---
 
@@ -67,7 +67,7 @@ include_once(__DIR__ . '/../../partials/header.php');
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 mb-md-0">
                 <div class="sidebar-category">
                     <!-- Display the dynamic category name we fetched -->
-                    <h1 class="poppins-regular fos-20 mb-30">Subcategories of <?= htmlspecialchars($category_name) ?></h1>
+                    <h1 class="poppins-regular fos-20 mb-7">Subcategories of <?= htmlspecialchars($category_name) ?></h1>
                     <div class="col fos-16 subcats-fetched">
 
                         <?php if (!empty($subcategories)): ?>
@@ -85,7 +85,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-8 col-lg-9 d-flex justify-content-between flex-wrap" id="subcat-posts">
+            <div class="col-12 col-sm-6 col-md-8 col-lg-9 d-flex gap-3 flex-wrap" id="subcat-posts">
                 <!-- Initial loading message, JavaScript will replace this -->
                 <div class="w-100 text-center">
                     <p>Loading posts...</p>
@@ -108,7 +108,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 
             // The AJAX call remains the same, as it correctly uses the subcategory ID
             fetch(`<?php echo $base_url; ?>ajax/load-subcat-posts.php?subcat_id=${subcatID}`)
-                .then(response => response.text())
+                .then(response => response.text())  
                 .then(html => {
                     postContainer.innerHTML = html;
                 })

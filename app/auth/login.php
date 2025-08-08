@@ -20,7 +20,7 @@ $errors = [];
 
 // If user is already logged in, redirect them away
 if (isset($_SESSION['user_id'])) {
-    header("Location: index.php");
+    header("Location: " . $base_url);
     exit();
 }
 
@@ -52,14 +52,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user = $res->fetch_assoc();
 
             if (password_verify($password, $user['password'])) {
-                // Login is successful! Set session variables.
+                // Login is successful! Set session variables.  
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_image'] = $user['image'];
 
                 // Redirect to index.php
-                header("Location: index.php");
+                header("Location: " . $base_url);
                 exit; // Crucial to stop the script here
             } else {
                 // **Security Improvement**: Use a generic error
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 ?>
 
-<?php include_once('partials/header.php'); ?>
+<?php include_once(__DIR__ . '/../../partials/header.php'); ?>
 <!-- login page Start -->
 <!-- login page Start -->
 <section class=" container">
@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-                <form action="login.php" method="POST" class="text-start xs:text-xs sm:text-sm mt-8">
+                <form action="/login" method="POST" class="text-start xs:text-xs sm:text-sm mt-8">
 
                     <div class="mb-6">
                         <label class="form-label">Email address</label>
@@ -183,7 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!-- footer -->
 <!-- footer -->
 <?php
-include_once('partials/footer.php');
+include_once(__DIR__ . '/../../partials/footer.php');
 ?>
 <!-- footer -->
 <!-- footer -->

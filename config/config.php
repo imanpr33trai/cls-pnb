@@ -82,17 +82,20 @@ if ($conn->connect_error) {
 }
 $conn->set_charset("utf8mb4");
 
-require_once __DIR__ . '/../handler/DatabaseSessionHandler.php'; // Adjust path if you placed it elsewhere
+// Conditionally start session only if it's not an AJAX request
+if (!defined('AJAX_REQUEST')) {
+    require_once __DIR__ . '/../handler/DatabaseSessionHandler.php'; // Adjust path if you placed it elsewhere
 
-// 2. Create an instance of our handler and pass it the database connection
-$session_handler = new DatabaseSessionHandler($conn);
+    // 2. Create an instance of our handler and pass it the database connection
+    $session_handler = new DatabaseSessionHandler($conn);
 
-// 3. Set PHP's session handler to use our new class
-session_set_save_handler($session_handler, true);
+    // 3. Set PHP's session handler to use our new class
+    session_set_save_handler($session_handler, true);
 
-// 4. Now, start the session as usual. PHP will now use our database methods automatically.
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+    // 4. Now, start the session as usual. PHP will now use our database methods automatically.
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
 }
 
 // ✅ Fix path to functions.php

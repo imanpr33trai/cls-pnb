@@ -50,83 +50,96 @@ if (isset($_POST['btn_save'])) {
     $postalCode     = trim($_POST['adpostalCodeuser'] ?? '');
     $expireIn       = $_POST['adexpireingin'] ?? '';
     $captcha_answer = trim($_POST['adtypecode'] ?? '');
-        $platforms      = $_POST['platform'] ?? [];
+    $platforms      = $_POST['platform'] ?? [];
     $links          = $_POST['link'] ?? [];
 
-    // *** THIS IS THE CORRECTED IMAGE UPLOAD LOGIC ***
+    // --- DETAILED IMAGE UPLOAD LOGIC ---
     $image = ''; // Start with an empty image name
-    if (isset($_FILES['picture']) && $_FILES['picture']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['picture']['tmp_name'];
-        $fileName = $_FILES['picture']['name'];
-        $fileSize = $_FILES['picture']['size'];
-        $fileType = $_FILES['picture']['type'];
-        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    // Check if a file was submitted via the 'picture' input
+    if (isset($_FILES['picture']) && $_FILES['picture']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['picture']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['picture']['tmp_name'];
+            $fileName = $_FILES['picture']['name'];
+            $fileSize = $_FILES['picture']['size'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        if (in_array($fileExtension, $allowedExtensions)) {
-            if ($fileSize < 5 * 1024 * 1024) { // Max 5MB
-                // Create a unique filename to prevent overwriting
-                $newFileName = uniqid('ad_', true) . '.' . $fileExtension;
-                $uploadDir = 'assets/uploads/ads_form/';
-                $uploadPath = $uploadDir . $newFileName;
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            if (in_array($fileExtension, $allowedExtensions)) {
+                if ($fileSize < 5 * 1024 * 1024) { // Max 5MB
+                    $newFileName = uniqid('ad_', true) . '.' . $fileExtension;
+                    $uploadDir = dirname(__DIR__, 2) . '/assets/uploads/ads_form/';
+                    $uploadPath = $uploadDir . $newFileName;
 
-                // Move the file to the destination
-                if (move_uploaded_file($fileTmpPath, $uploadPath)) {
-                    $image = $newFileName; // SUCCESS: Store the new filename in our variable
+                    if (move_uploaded_file($fileTmpPath, $uploadPath)) {
+                        $image = $newFileName; // SUCCESS!
+                    } else {
+                        $errors[] = "Error: Could not move the uploaded file. Please check server directory permissions.";
+                    }
                 } else {
-                    $errors[] = "Error: Could not move the uploaded file. Check directory permissions.";
+                    $errors[] = "Error: File is too large. Maximum size is 5MB.";
                 }
             } else {
-                $errors[] = "Error: File is too large. Maximum size is 5MB.";
+                $errors[] = "Error: Invalid file type. Please upload a JPG, PNG, WEBP, or GIF.";
             }
         } else {
-            $errors[] = "Error: Invalid file type. Please upload a JPG, PNG, WEBP, or GIF.";
+            // Handle other specific upload errors
+            $upload_errors = [
+                UPLOAD_ERR_INI_SIZE   => "The uploaded file exceeds the server's maximum file size limit.",
+                UPLOAD_ERR_FORM_SIZE  => "The uploaded file exceeds the form's maximum file size limit.",
+                UPLOAD_ERR_PARTIAL    => "The file was only partially uploaded. Please try again.",
+                UPLOAD_ERR_NO_TMP_DIR => "Server configuration error: Missing a temporary folder.",
+                UPLOAD_ERR_CANT_WRITE => "Server configuration error: Failed to write file to disk.",
+                UPLOAD_ERR_EXTENSION  => "A server extension stopped the file upload.",
+            ];
+            $error_code = $_FILES['picture']['error'];
+            $errors[] = $upload_errors[$error_code] ?? "An unknown file upload error occurred.";
         }
     }
 
     // --- Server-Side Validation ---
     if (empty($category)) { $errors[] = "Category is required."; }
-    // ... all other validation rules ...
+    // ... (add other validation rules as needed) ...
     if (intval($captcha_answer) !== $_SESSION['captcha_answer']) { $errors[] = "The answer to the math question is incorrect."; }
 
 
     // --- Process and Store Data if No Errors ---
     if (empty($errors)) {
-        // ... (all the logic for expires_at, platform_json is correct) ...
         $expires_at = date('Y-m-d H:i:s', strtotime($expireIn));
-        // ...
-        // *** THIS IS THE CORRECTED PLATFORM/LINK LOGIC ***
-        $platform_data = [];
-        // Loop through all submitted platforms. The key ($index) is important.
+
+        // *** CORRECTED PLATFORM/LINK LOGIC ***
+        $platform_names_array = [];
+        $platform_links_array = [];
         foreach ($platforms as $index => $platform_name) {
-            // Check if a platform was selected for this row.
             if (!empty($platform_name)) {
-                // Get the corresponding link from the $links array using the same index.
                 $link_url = isset($links[$index]) ? trim($links[$index]) : '';
-                // Only add the pair if the link is also provided.
                 if (!empty($link_url)) {
-                     $platform_data[] = ['platform' => $platform_name, 'link' => $link_url];
+                    $platform_names_array[] = $platform_name;
+                    $platform_links_array[] = $link_url;
                 }
             }
         }
-        $platform_json = json_encode($platform_data);
+        // Convert arrays to comma-separated strings
+        $platform_names_str = implode(', ', $platform_names_array);
+        $platform_links_str = implode(', ', $platform_links_array);
         // *** END OF CORRECTION ***
-        
-        // The $image variable now correctly holds either the new filename or an empty string.
+
+        // Create the unique slug for the ad
+        $ad_slug = create_unique_slug($conn, $adTitle, 'ad_form', 'ad_slug');
+
         $stmt = $conn->prepare("INSERT INTO ad_form (
             category, subcategory, other_category, ad_title, asking_price, description, user_name,
             organisation, email, phone, location, city_town_neighbourhood, postal_code,
-            expires_in, expires_at, image, platforms, platform_links
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        
-        $empty_str = ''; // For the unused platform_links column
+            expires_in, expires_at, image, platforms, platform_links, ad_slug
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Bind parameters with corrected types and variables
         $stmt->bind_param(
-            "ssssisssssssisssss",
+            "ssssdssssssssssssss",
             $category, $subcategory, $other, $adTitle, $askingPrice, $description, $name,
             $organization, $email, $phone, $location, $city, $postalCode,
-            $expireIn, $expires_at, $image, $platform_json, $empty_str
+            $expireIn, $expires_at, $image, $platform_names_str, $platform_links_str, $ad_slug
         );
-        
+
         if ($stmt->execute()) {
             $_SESSION['form_success'] = "Your ad has been posted successfully!";
             unset($_SESSION['captcha_question'], $_SESSION['captcha_answer']);
@@ -231,14 +244,14 @@ include "partials/header.php";
 
                           <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7">
                         <label for="otherCategory">Others (if not in list)</label>
-                        <input type="text" name="adothercat" id="otherCategory" pattern="[a-zA-Z\s\-]+" />
+                        <input  type="text" name="adothercat" id="otherCategory" pattern="[a-zA-Z\s\-]+" />
                         <div class="invalid-feedback">Only letters, spaces, and hyphens are allowed.</div>
                     </div>
 
                           <!-- Ad Title -->
                     <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                         <label for="adTitle">Ad Title*</label>
-                        <input type="text" name="adTitlemytit" id="adTitle" required maxlength="200" />
+                        <input  type="text" name="adTitlemytit" id="adTitle" required maxlength="200" />
                         <div class="char-counter">0/200</div>
                         <div class="invalid-feedback">Title is required (max 200 characters).</div>
                     </div>
@@ -319,8 +332,8 @@ include "partials/header.php";
 
                         <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 file-upload-main">
         <label for="imageaduser">Image</label>
-        <input type="file" name="picture" id="imageaduser" class="file-uploads" accept="image/*" />
         <div class="upload-image-placeholder-area text-center">
+            <input type="file" name="picture" id="imageaduser" class="file-uploads w-full h-full" accept="image/*" />
             <img src="<?php echo $base_url; ?>assets/images/upload-place.png" alt="" class="img-fluid" />
             <p class="poppins-medium">
                 Drag and drop an image, or
@@ -356,7 +369,7 @@ include "partials/header.php";
                                 <input type="url" name="link[]" class="form-control" placeholder="https://..." />
                             </div>
                             <div class="col-lg-1 col-sm-12 d-flex">
-                                <button type="button" class="btn btn-danger remove-platform-btn" style="display:none;">X</button>
+                                <button type="button" class="theme-btn remove-platform-btn" style="display:none;">X</button>
                             </div>
                         </div>
                     </div>
@@ -442,7 +455,7 @@ $(document).ready(function() {
         var categoryId = $(this).val();
         if (categoryId) {
             $.ajax({
-                url: '/ajax/get_subcategories.php',
+                url: '<?php echo $base_url; ?>ajax/get_subcategories.php',
                 type: 'POST',
                 data: { category_id: categoryId },
                 success: function(response) {
@@ -499,9 +512,22 @@ $(document).ready(function() {
             window.location.reload();
         }, 2000);
     }
-});
-</script>
 
+    // --- Restrict inputs to numbers only ---
+  
+});
+function restrictToNumbers(selector) {
+  $(selector).on("input", function () {
+    // Replace any character that is not a digit with an empty string
+    this.value = this.value.replace(/[^0-9]/g, "");
+  });
+}
+
+// Apply the numeric restriction to the phone and postal code fields
+restrictToNumbers("#teluserads");
+restrictToNumbers("#adpostalcode");
+restrictToNumbers("#adPrice");
+</script>
 <?php include_once('partials/footer.php'); ?>
 
 <!-- form section -->

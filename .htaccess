@@ -8,7 +8,7 @@ RewriteEngine On
 # This cleans up the URL in the user's browser for direct page access.
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
 # IGNORE specific files and critical folders
-RewriteCond %{REQUEST_URI} !^/(google_callback|github_callback|generate_slugs)\.php$ [NC]
+RewriteCond %{REQUEST_URI} !^/(google_callback|github_callback|generate_slugs|seed)\.php$ [NC]
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
 RewriteCond %{REQUEST_URI} !^/config/ [NC]
 RewriteRule ^ /%1 [R=301,L]

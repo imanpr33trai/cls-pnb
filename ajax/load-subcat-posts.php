@@ -24,10 +24,10 @@ if ($result->num_rows > 0) {
         $post_image = !empty($post['image']) ? $base_url . 'assets/uploads/ads_form/' . $post['image'] : $base_url . 'assets/images/default-ad.png';
         $post_url = $base_url . 'ads/' . $post['ad_slug']; // Use ad_slug for pretty URL
         ?>
-        <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="col-12 col-md-6 col-lg-4 mb-4 max-w-[305px]">
             <div class="card h-100">
                 <a href="<?= $post_url ?>">
-                    <img src="<?= htmlspecialchars($post_image) ?>" class="card-img-top" alt="<?= htmlspecialchars($post['ad_title']) ?>">
+                    <img src="<?= htmlspecialchars($post_image) ?>" class="card-img-top  img-ads" alt="<?= htmlspecialchars($post['ad_title']) ?>">
                 </a>
                 <div class="card-body">
                     <h5 class="card-title"><a href="<?= $post_url ?>" class="text-decoration-none text-dark"><?= htmlspecialchars($post['ad_title']) ?></a></h5>
@@ -40,9 +40,9 @@ if ($result->num_rows > 0) {
     }
 } else {
     // If no posts are found in this subcategory
-    echo '<div class="w-100 text-center"><p>No posts found in this subcategory yet.</p></div>';
+    echo '<div class="w-100  text-center"><p>No posts found in this subcategory yet.</p></div>';
 }
 
 $stmt->close();
-$conn->close();
+// $conn->close();
 ?>

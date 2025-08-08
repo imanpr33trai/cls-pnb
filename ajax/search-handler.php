@@ -2,12 +2,7 @@
 // /partials/search-handler.php (Secure and Debug-Ready)
 
 // Make this the first line to catch all errors
-require_once __DIR__ . '/../config/debug.php';
 
-// Ensure the session is started if you need to debug session variables
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 include_once __DIR__ . '/../config/config.php';
 
@@ -33,11 +28,12 @@ try {
     // --- SAFE & DYNAMIC SQL QUERY BUILDING ---
     $sql = "
         SELECT 
-            ad.id, ad.ad_title, ad.description, ad.postal_code, 
-            ad.city_town_neighbourhood, ad.slug AS ad_slug, cat.slug AS category_slug
+            ad.id, ad.ad_title, ad.description, ad.location, 
+            ad.city_town_neighbourhood, ad.postal_code,
+            ad.ad_slug, cat.slug AS category_slug
         FROM ad_form AS ad
-        JOIN ad_categories AS cat ON ad.category = cat.id
-        WHERE ad.ad_status = 'active'
+        LEFT JOIN ad_categories AS cat ON ad.category = cat.id
+        WHERE ad.status = 'live'
     ";
 
     $params = [];
@@ -51,11 +47,12 @@ try {
         $types .= 'ss';
     }
     if (!empty($location)) {
-        $sql .= " AND (LOWER(ad.postal_code) LIKE ? OR LOWER(ad.city_town_neighbourhood) LIKE ?)";
+        $sql .= " AND (LOWER(ad.location) LIKE ? OR LOWER(ad.city_town_neighbourhood) LIKE ? OR LOWER(ad.postal_code) LIKE ?)";
         $location_param = '%' . strtolower($location) . '%';
         $params[] = $location_param;
         $params[] = $location_param;
-        $types .= 'ss';
+        $params[] = $location_param;
+        $types .= 'sss';
     }
     $sql .= " LIMIT 20";
 

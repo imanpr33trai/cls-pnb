@@ -1,5 +1,5 @@
 <?php
-include_once(__DIR__ . '../config/config.php');
+include_once(__DIR__ . '/../config/config.php');
 
 // Homepage
 
@@ -33,15 +33,15 @@ function render_product_card(array $product): string
             <div class="relative">
                 <div class="ad-tag absolute top-2.5 left-2.5 text-white px-3 py-1 rounded-sm text-sm z-10">Ad</div>
                 <div class="product-image-wrapper overflow-hidden">
-                    <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image w-full h-48 object-cover transition-transform duration-300 ease-in-out"></a>
+                    <a href="{$ad_link}"><img src="{$image}" alt="{$name}" class="product-image img-ads w-full h-48 object-cover transition-transform duration-300 ease-in-out"></a>
                 </div>
             </div>
             <div class="p-4 flex flex-col flex-grow">
                 <div class="flex justify-between items-center mb-2">
                     <h5 class="product-price text-lg font-bold">{$formattedPrice}</h5>
-                    <a href="#" class="wish-heart p-2 rounded-full"><span class="icon">{$iconHeart}</span></a>
+                    <a href="#" class="wish-heart text-black hover:text-pink duration-200 p-2 rounded-full"><span class="icon">{$iconHeart}</span></a>
                 </div>
-                <a href="{$ad_link}" class="text-decoration-none"><p class="product-name text-gray-800 hover:text-blue-600 transition-colors duration-200">{$name}</p></a>
+                <a href="{$ad_link}" class="text-decoration-none "><p class="product-name text-gray-800 hover:text-pink transition-colors duration-200">{$name}</p></a>
                 <hr class="my-3">
                 <div class="mt-auto flex items-center text-gray-500 text-sm">
                     <div class="location-icon mr-1">{$iconLocation}</div>
@@ -90,11 +90,11 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
             while ($ad = $result->fetch_assoc()) {
                 // Map the database columns to the keys our component expects
                 $card_data = [
-                    'name'      => $ad['ad_title'],
-                    'price'     => $ad['asking_price'],
-                    'location'  => $ad['location'],
-                    'image'     => !empty($ad['image']) ? $base_url . 'assets/uploads/ads_form/' . $ad['image'] : $base_url . 'assets/images/test-img.png',
-                    'ad_link'   => $base_url . 'ads/' . $ad['ad_slug']
+                    'name' => $ad['ad_title'],
+                    'price' => $ad['asking_price'],
+                    'location' => $ad['location'],
+                    'image' => !empty($ad['image']) ? $base_url . 'assets/uploads/ads_form/' . $ad['image'] : $base_url . 'assets/images/test-img.png',
+                    'ad_link' => $base_url . 'ads/' . $ad['ad_slug']
                 ];
                 // Call the component function for each ad and append the HTML
                 $html .= render_product_card($card_data);

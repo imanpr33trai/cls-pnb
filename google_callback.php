@@ -2,7 +2,7 @@
 // /google-callback.php (For Google API Client v3+ with Namespaces)
 
 // Include debug tools first
-require_once __DIR__ . '/config/debug.php';
+
 
 // The autoloader now knows where to find the namespaced classes
 require_once __DIR__ . '/vendor/autoload.php';
@@ -14,11 +14,11 @@ use Google\Service\Oauth2;
 
 if (session_status() === PHP_SESSION_NONE) {
 }
-debug_to_session(null, "--- Google Callback Initiated ---");
+
 
 try {
     require_once __DIR__ . '/config/config.php';
-    debug_to_session('Config loaded.', 'Init');
+    
 
     // Initialize the namespaced Google Client
     $google_client = new Client();
@@ -27,15 +27,12 @@ try {
     $google_client->setRedirectUri(GOOGLE_REDIRECT_URL);
     $google_client->addScope('email');
     $google_client->addScope('profile');
-    debug_to_session('Google Client Initialized (Namespaced).', 'Setup');
-
+    
     if (!isset($_GET['code'])) {
         throw new Exception("Authorization 'code' not found.");
     }
-    debug_to_session($_GET['code'], "Auth Code Received");
 
     $token = $google_client->fetchAccessTokenWithAuthCode($_GET['code']);
-    debug_to_session($token, 'Token from Google');
     if (isset($token['error'])) {
         throw new Exception("Token Error: " . ($token['error_description'] ?? 'Unknown'));
     }
@@ -45,7 +42,6 @@ try {
     // Initialize the namespaced Oauth2 Service
     $google_service = new Oauth2($google_client);
     $data = $google_service->userinfo->get();
-    debug_to_session($data, 'User Data from Google');
 
     // Your existing user processing logic...
     $google_id = $data->getId();
@@ -69,7 +65,6 @@ try {
     if ($result->num_rows > 0) {
         // User is a returning Google user. Fetch their data.
         $user = $result->fetch_assoc();
-        debug_to_session($user, 'Result: Found existing user by Google ID');
     } else {
         // SCENARIO 2: No user with this Google ID. Check if the email is already registered.
         $stmt_email = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -83,7 +78,6 @@ try {
             $update_stmt = $conn->prepare("UPDATE users SET google_id = ?, auth_provider = 'google' WHERE email = ?");
             $update_stmt->bind_param("ss", $google_id, $user_email);
             $update_stmt->execute();
-            debug_to_session($user, 'Result: Linked local user to Google account');
         } else {
             // SCENARIO 3: This is a brand new user. Create their account.
             $insert_stmt = $conn->prepare(
@@ -99,7 +93,6 @@ try {
             $user_stmt->bind_param("i", $new_user_id);
             $user_stmt->execute();
             $user = $user_stmt->get_result()->fetch_assoc();
-            debug_to_session($user, 'Result: Created new user account');
         }
     }
 
@@ -120,13 +113,11 @@ try {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
     $_SESSION['user_email'] = $user['email'];
-    debug_to_session($_SESSION, 'Final Session State');
 
     session_write_close();
     header('Location: ' . $base_url);
     exit();
 } catch (Exception $e) {
-    debug_to_session($e->getMessage(), '!!! SCRIPT FAILED !!!');
     session_write_close();
     header('Location: login.php?error=google_auth_failed');
     exit();

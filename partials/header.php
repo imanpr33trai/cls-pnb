@@ -67,9 +67,9 @@ include_once(__DIR__ . '/../config/config.php');
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
+    <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"
-        onerror="tinyMceFallback()"></script> -->
+        onerror="tinyMceFallback()"></script>
 
 
     <script>
@@ -181,6 +181,7 @@ include_once(__DIR__ . '/../config/config.php');
             });
 
         });
+   
     </script>
     <div id="voiceSearchOverlay" class="voice-overlay d-none">
         <div class="close-btn" onclick="document.getElementById('voiceSearchOverlay').style.display='none';">&times;
@@ -202,10 +203,13 @@ include_once(__DIR__ . '/../config/config.php');
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden md:flex lg:text-tiny items-center  space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 md:gap-2 xl:
+            <div class="hidden md:flex lg:text-tiny items-center text-white space-x-4 text-sm lg:text-xs lg:gap-4 lg:space-x-3 md:gap-2 xl:
        xl:gap-3.5 xl:space-x-4">
                 <a href="/articles" class="theme-btn ">Articles</a>
-                <?php include 'inner-search.php'; ?>
+                <?php 
+                $prefix = 'header';
+                include 'inner-search.php'; 
+                ?>
 
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="<?php echo $base_url; ?>logout.php" class="text-white flex items-center">

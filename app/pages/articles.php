@@ -21,7 +21,7 @@ include_once(__DIR__ . '/../../config/functions.php');
 
         <div class="page-header-top">
             <h1 class="page-title">Our Latest Articles</h1>
-            <a href="http://localhost:8000/blog-form" class="theme-btn text-decoration-none">Post an Article</a>
+            <a href="/blog-form" class="theme-btn text-decoration-none">Post an Article</a>
         </div>
 
 
@@ -76,7 +76,7 @@ include_once(__DIR__ . '/../../config/functions.php');
 
                     <div class="article-card">
                         <a href="<?= $article_url ?>" class="card-img-blog">
-                            <img src="<?= $firstImage ?>" alt="<?= $title ?>" />
+                            <img src="<?= $firstImage ?>" alt="<?= $title ?>" class="img-ads"/>
                         </a>
                         <div class="card-body-blog">
                             <span class="inline-block bg-gray-200 text-gray-800 px-2 py-1 rounded-xs text-xs font-semibold mb-2"><?= htmlspecialchars($blog['category_name']) ?></span>
@@ -109,16 +109,8 @@ include_once(__DIR__ . '/../../config/functions.php');
 <section class="pagination-sec pb-12">
     <div class="container">
         <div class="row">
-            <div class="col d-flex align-items-center justify-content-between">
-                <a href="#" class="pagination-btn">&larr; Previous</a>
-                <div>
-                    <a href="#" class="pagination-nums">1</a>
-                    <a href="#" class="pagination-nums">2</a>
-                    <a href="#" class="pagination-nums">3</a>
-                    <a href="#" class="pagination-nums">4</a>
-                    <a href="#" class="pagination-nums">5</a>
-                </div>
-                <a href="#" class="pagination-btn">Next &rarr;</a>
+            <div id="pagination-container" class="col d-flex align-items-center justify-content-between">
+                <!-- Pagination will be dynamically inserted here -->
             </div>
         </div>
     </div>
@@ -128,72 +120,88 @@ include_once(__DIR__ . '/../../config/functions.php');
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // In your existing $(document).ready() function...
+$(document).ready(function() {
+    let currentCategory = 0;
+    let currentPage = 1;
 
-    $('.blog-category-filter').click(function(e) {
-        e.preventDefault();
+    function updatePagination(pagination) {
+        const { totalPages, currentPage } = pagination;
+        const paginationContainer = $('#pagination-container');
+        paginationContainer.empty(); // Clear old pagination
 
-        // --- ADD THIS PART ---
-        // Remove 'active' class from all filters
-        $('.blog-category-filter').removeClass('active');
-        // Add 'active' class to the one that was just clicked
-        $(this).addClass('active');
-        // --- END OF ADDED PART ---
-
-        currentCategory = $(this).data('id');
-        currentPage = 1;
-        loadBlogs(currentCategory, currentPage);
-    });
-
-    $(document).ready(function() {
-        let currentCategory = 0;
-        let currentPage = 1;
-
-        function loadBlogs(categoryId = 0, page = 1) {
-            $.ajax({
-                url: 'ajax/fetch_blogs_by_category.php',
-                method: 'POST',
-                data: {
-                    category_id: categoryId,
-                    page: page
-                },
-                success: function(data) {
-                    $('#blog-container').html(data);
-                },
-                error: function() {
-                    alert('Something went wrong while fetching blogs.');
-                }
-            });
+        if (totalPages <= 1) {
+            return; // Don't show pagination if there's only one page
         }
 
-        // Load default blogs on page load
-        loadBlogs();
+        let paginationHTML = '';
 
-        $('.blog-category-filter').click(function(e) {
-            e.preventDefault();
-            currentCategory = $(this).data('id');
-            currentPage = 1;
-            loadBlogs(currentCategory, currentPage);
-        });
+        // Previous Button
+        if (currentPage > 1) {
+            paginationHTML += `<a href="#" class="pagination-btn" data-page="${currentPage - 1}">&larr; Previous</a>`;
+        } else {
+            paginationHTML += `<span class="pagination-btn disabled">&larr; Previous</span>`;
+        }
 
-        $('.pagination-nums').click(function(e) {
-            e.preventDefault();
-            currentPage = parseInt($(this).text());
-            loadBlogs(currentCategory, currentPage);
-        });
+        // Page Numbers
+        paginationHTML += '<div class="flex gap-1.5">';
+        for (let i = 1; i <= totalPages; i++) {
+            const activeClass = (i === currentPage) ? 'active' : '';
+            paginationHTML += `<a href="#" class="pagination-nums ${activeClass}" data-page="${i}">${i}</a>`;
+        }
+        paginationHTML += '</div>';
 
-        $('.pagination-btn').click(function(e) {
-            e.preventDefault();
-            if ($(this).text().includes('Previous')) {
-                if (currentPage > 1) {
-                    currentPage--;
-                }
-            } else {
-                currentPage++;
+        // Next Button
+        if (currentPage < totalPages) {
+            paginationHTML += `<a href="#" class="pagination-btn" data-page="${currentPage + 1}">Next &rarr;</a>`;
+        } else {
+            paginationHTML += `<span class="pagination-btn disabled">Next &rarr;</span>`;
+        }
+
+        paginationContainer.html(paginationHTML);
+    }
+
+    function loadBlogs(categoryId = 0, page = 1) {
+        $.ajax({
+            url: 'ajax/fetch_blogs_by_category.php',
+            method: 'POST',
+            data: {
+                category_id: categoryId,
+                page: page
+            },
+            dataType: 'json', // Expect a JSON response
+            success: function(response) {
+                $('#blog-container').html(response.html);
+                updatePagination(response.pagination);
+                currentPage = response.pagination.currentPage; // Update current page
+            },
+            error: function() {
+                // alert('Something went wrong while fetching blogs.');
+                $('#blog-container').html('<p class="text-center w-100 py-5 text-danger">Error loading articles. Please try again.</p>');
             }
-            loadBlogs(currentCategory, currentPage);
         });
+    }
+
+    // Initial load
+    loadBlogs(currentCategory, currentPage);
+
+    // Event handler for category filters
+    $('.blog-category-filter').click(function(e) {
+        e.preventDefault();
+        $('.blog-category-filter').removeClass('active');
+        $(this).addClass('active');
+        currentCategory = $(this).data('id');
+        loadBlogs(currentCategory, 1); // Reset to page 1
     });
+
+    // Delegated event handler for pagination clicks
+    $('#pagination-container').on('click', 'a.pagination-btn, a.pagination-nums', function(e) {
+        e.preventDefault();
+        const page = $(this).data('page');
+        if (page) {
+            loadBlogs(currentCategory, page);
+        }
+    });
+});
 </script>
 
 

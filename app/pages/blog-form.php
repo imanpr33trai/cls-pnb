@@ -52,7 +52,7 @@ if (isset($_POST['btn_save_2'])) {
     if (empty($blogdiscription)) {
         $errors[] = "Description is required.";
     }
-    if (strlen($blogdiscription) > 5000) {
+    if (strlen($blogdiscription) > 10000) {
         $errors[] = "Description is too long (max 5000 characters).";
     }
 
@@ -90,14 +90,14 @@ if (isset($_POST['btn_save_2'])) {
         $platform_json = json_encode($platform_data);
 
         // Insert into DB
-        $blog_slug = generate_slug($blogtitle);
+        $blog_slug = create_unique_slug($conn, $blogtitle, 'blog_posts', 'blog_slug', 4);
         $stmt = $conn->prepare("INSERT INTO blog_posts (title, blog_slug, author_name, category_id, description, email, phone, image, platform, platform_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $empty_str = ''; // platform_link is no longer used individually
         $stmt->bind_param("sssissssss", $blogtitle, $blog_slug, $blogusername, $blogcategory, $blogdiscription, $blogemail, $blogmob, $encodedImages, $platform_json, $empty_str);
 
         if ($stmt->execute()) {
             $_SESSION['form_success'] = "Your blog post has been submitted successfully!";
-            header("Location: Blog-form.php");
+            header("Location: blog-form.php");
             exit;
         } else {
             $errors[] = "Database Error: " . $stmt->error;
@@ -239,7 +239,7 @@ include_once(__DIR__ . '/../../partials/header.php');
 
                             <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 file-upload-main">
                                 <label for="previewimagesblogs">Images (Optional, up to 5)</label>
-                                <input type="file" name="pictures[]" id="previewimagesblogs" class="file-uploads" multiple accept="image/*" />
+                                <input type="file" name="pictures[]" id="previewimagesblogs" class="file-uploads h-full" multiple accept="image/*" />
 
 
                                 <div class="upload-image-placeholder-area">
@@ -423,4 +423,14 @@ include_once(__DIR__ . '/../../partials/footer.php');
             }
         });
     });
+    function restrictToNumbers(selector) {
+  $(selector).on("input", function () {
+    // Replace any character that is not a digit with an empty string
+    this.value = this.value.replace(/[^0-9]/g, "");
+  });
+}
+
+
+restrictToNumbers("#teluserblog");
+
 </script>
