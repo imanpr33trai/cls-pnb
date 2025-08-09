@@ -1,5 +1,5 @@
 <?php  
-if (!isset($_SESSION['admin_email'])){
+if (!isset($_SESSION['admin_id'])){
 
   echo "<script>window.open('login.php','_self')</script>";
   }else{

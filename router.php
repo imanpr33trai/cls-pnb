@@ -84,61 +84,9 @@ switch (true) {
 
 
 // --- Admin Panel Routes ---
-
-// Route for the main admin dashboard
-case $request_uri === '/admin':
-    include __DIR__ . '/admin/index.php';
-    break;
-
-// Route for the admin login page
-case $request_uri === '/admin/login':
-    include __DIR__ . '/admin/login.php';
-    break;
-
-// Route for processing admin login
-case $request_uri === '/admin/login_process':
-    include __DIR__ . '/admin/login_process.php';
-    break;
-
-// Route for admin pages loaded via AJAX
-case preg_match('/^\/admin\/pages\/([a-zA-Z0-9-_]+)\.php$/', $request_uri, $matches):
-    $page = $matches[1];
-    $page_file = __DIR__ . '/admin/pages/' . $page . '.php';
-    if (file_exists($page_file)) {
-        include $page_file;
-    } else {
-        header("HTTP/1.0 404 Not Found");
-        echo '404 Not Found';
-    }
-    break;
-
-// --- Legacy Admin Area Routes ---
-
-// Route for the legacy admin area dashboard and its index
-case $request_uri === '/admin_area':
-case $request_uri === '/admin_area/':
-case $request_uri === '/admin_area/index.php':
-    include __DIR__ . '/admin_area/index.php';
-    break;
-
-// Route for the legacy admin login page
-case $request_uri === '/admin_area/login.php':
-    include __DIR__ . '/admin_area/login.php';
-    break;
-
-// Route for legacy admin logout
-case $request_uri === '/admin_area/logout.php':
-    include __DIR__ . '/admin_area/logout.php';
-    break;
-
-// Route for deleting a subcategory in the legacy admin area
-case $request_uri === '/admin_area/delete_subcat.php':
-    include __DIR__ . '/admin_area/delete_subcat.php';
-    break;
-
-// Route for deleting a user via API in the legacy admin area
-case $request_uri === '/admin_area/delete_user.php':
-    include __DIR__ . '/admin_area/delete_user.php';
+// If the request starts with /admin, delegate to the admin-router.
+case preg_match('/^\/admin/', $request_uri):
+    include __DIR__ . '/admin-router.php';
     break;
 
 
