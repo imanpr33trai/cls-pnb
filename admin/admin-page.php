@@ -17,18 +17,36 @@ if (!isset($_SESSION['admins_id'])) {
     <title>Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/output.css">
+    <!-- <script defer src="js/script.js"></script> -->
     <style>
         .submenu {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            opacity: 0;
+            visibility: hidden;
+            transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, visibility 0s linear 0.3s;
         }
         .submenu.open {
-            max-height: 1000px; /* Adjust as needed */
+            max-height: 500px;
+            opacity: 1;
+            visibility: visible;
+            transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear;
         }
         .rotate-180 {
             transform: rotate(180deg);
             transition: transform 0.3s ease-in-out;
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+        #main-content.blur {
+            filter: blur(5px);
         }
     </style>
 </head>
@@ -47,21 +65,22 @@ if (!isset($_SESSION['admins_id'])) {
             <nav class="flex-1 overflow-y-auto">
                 <ul class="space-y-2">
                     <li>
-                        <a href="#" data-page="dashboard" class="tab-link flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
+                        <a href="/admin/admin-page.php" data-page="dashboard" class="tab-link flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                             <span class="mr-3">📊</span> Dashboard
                         </a>
                     </li>
                     
                     <!-- Ads -->
+                    <!-- Ads -->
                     <li>
-                        <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
+                        <button type="button" class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">📢</span> Ads</span>
-                            <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            <svg class="w-4 h-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
-                        <ul class="submenu pl-8 mt-2 space-y-2">
-                            <li><a href="#" data-page="view-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View All Ads</a></li>
-                            <li><a href="#" data-page="pending-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">Pending Ads</a></li>
-                            <li><a href="#" data-page="reported-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">⚠️ Reported Ads</a></li>
+                        <ul class="submenu pl-8 mt-0 space-y-1 overflow-hidden">
+                            <li><a href="/admin/admin-page.php?page=view-ads" data-page="view-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">View All Ads</a></li>
+                            <li><a href="/admin/admin-page.php?page=pending-ads" data-page="pending-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">Pending Ads</a></li>
+                            <li><a href="/admin/admin-page.php?page=reported-ads" data-page="reported-ads" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">⚠️ Reported Ads</a></li>
                         </ul>
                     </li>
 
@@ -108,7 +127,7 @@ if (!isset($_SESSION['admins_id'])) {
                             <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <ul class="submenu pl-8 mt-2 space-y-2">
-                            <li><a href="#" data-page="users/view_users" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View All Users</a></li>
+                            <li><a href="#" data-page="view_users" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View All Users</a></li>
                         </ul>
                     </li>
 
@@ -160,8 +179,8 @@ if (!isset($_SESSION['admins_id'])) {
             </nav>
         </aside>
 
-        <div class="flex-1 md:ml-64 transition-all duration-300 ease-in-out">
-             <header class="bg-white shadow p-4 flex justify-between items-center md:hidden sticky top-0 z-20">
+        <div id="main-content" class="flex-1 md:ml-64 transition-all duration-300 ease-in-out">
+            <header class="bg-white shadow p-4 flex justify-between items-center md:hidden sticky top-0 z-20">
                 <h1 class="text-xl font-bold">Admin Dashboard</h1>
                 <button id="open-sidebar" class="p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -170,204 +189,170 @@ if (!isset($_SESSION['admins_id'])) {
                 </button>
             </header>
 
-            <main id="content-area" class="p-8">
-            <!-- Dynamic content will be loaded here -->
-            <?php
-            // These blocks handle form submissions from the loaded pages.
-            require_once __DIR__ . '/../config/config.php';
+            <!-- This is the PHP block in the <main> section of /admin/admin-page.php -->
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category'])) {
-                $name = trim($_POST['category_name']);
-                $image_name = '';
+<main id="content-area" class="p-8">
+    <?php
+    // THE FIX: The router now tells us which page to load initially.
+    $page_to_load = $_GET['page'] ?? 'dashboard';
+    
+    // Sanitize to be safe
+    $page_to_load = preg_replace('/[^a-zA-Z0-9_-]/', '', $page_to_load);
+    $page_path = __DIR__ . '/pages/' . $page_to_load . '.php';
 
-                if (!empty($_FILES['category_image']['name'])) {
-                    $upload_dir = '../assets/uploads/';
-                    $image_name = time() . '_' . basename($_FILES['category_image']['name']);
-                    $target_path = $upload_dir . $image_name;
-                    move_uploaded_file($_FILES['category_image']['tmp_name'], $target_path);
-                }
-
-                $stmt = $conn->prepare("INSERT INTO ad_categories (name, image) VALUES (?, ?)");
-                $stmt->bind_param("ss", $name, $image_name);
-                if ($stmt->execute()) {
-                    echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Category added!</div>";
-                }
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subcategory'])) {
-                $category_id = $_POST['category_id'];
-                $title = trim($_POST['subcategory_title']);
-
-                $stmt = $conn->prepare("INSERT INTO ad_subcategories (category_id, title) VALUES (?, ?)");
-                $stmt->bind_param("is", $category_id, $title);
-                if ($stmt->execute()) {
-                    echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Subcategory added!</div>";
-                }
-            }
-
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category_1'])) {
-                $category_namess = trim($_POST['category_name_blog']);
-
-                if (!empty($category_namess)) {
-                    $stmt = $conn->prepare("INSERT INTO blog_categories (name) VALUES (?)");
-                    $stmt->bind_param("s", $category_namess);
-                    if ($stmt->execute()) {
-                        $success = "Category added successfully!";
-                        echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ $success</div>";
-                    } else {
-                        $error = "Error: " . $stmt->error;
-                        echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ $error</div>";
-                    }
-                    $stmt->close();
-                } else {
-                    $error = "Please enter a category name.";
-                    echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ $error</div>";
-                }
-            }
-            ?>
-        </main>
+    if (file_exists($page_path)) {
+        include $page_path;
+    } else {
+        // If the URL contains an invalid page name, load a 404 content file
+        include __DIR__ . '/pages/404.php';
+    }
+    ?>
+</main>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const openSidebarBtn = document.getElementById('open-sidebar');
-            const closeSidebarBtn = document.getElementById('close-sidebar');
-            const contentArea = document.getElementById('content-area');
-            const links = document.querySelectorAll('.tab-link');
-            const menuToggles = document.querySelectorAll('.menu-toggle');
-            const activeClass = 'bg-gray-700';
+    <div id="edit-ad-modal" class="fixed inset-0 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Ad</h3>
+                <div id="edit-ad-modal-content" class="mt-2 px-7 py-3">
+                    <!-- Form will be loaded here -->
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="close-edit-modal" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
+    <!-- Delete Ad Modal -->
+    <div id="delete-ad-modal" class="fixed inset-0 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mt-2">Delete Ad</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">Are you sure you want to delete this ad? This action cannot be undone.</p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300">
+                        Delete
+
+                    </button>
+                    <button id="cancel-delete-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 ml-3">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize the admin panel -->
+<!-- This is the <script> block in /admin/admin-page.php -->
+
+<!-- This is the <script> block in /admin/admin-page.php -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById("sidebar");
+    const openSidebarBtn = document.getElementById("open-sidebar");
+    const closeSidebarBtn = document.getElementById("close-sidebar");
+    const contentArea = document.getElementById("content-area");
+    const tabLinks = document.querySelectorAll(".tab-link");
+    const menuToggles = document.querySelectorAll(".menu-toggle");
+    const activeClass = "bg-gray-700";
+
+    // Sidebar and Menu toggle logic (your existing code is good)
+    if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", () => sidebar.classList.add("-translate-x-full"));
+    menuToggles.forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            const submenu = toggle.nextElementSibling;
+            if (submenu) {
+                submenu.classList.toggle("open");
+                toggle.querySelector("svg").classList.toggle("rotate-180");
             }
-
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-            }
-
-            if (openSidebarBtn) {
-                openSidebarBtn.addEventListener('click', openSidebar);
-            }
-            if (closeSidebarBtn) {
-                closeSidebarBtn.addEventListener('click', closeSidebar);
-            }
-
-            menuToggles.forEach(toggle => {
-                toggle.addEventListener('click', () => {
-                    const submenu = toggle.nextElementSibling;
-                    const icon = toggle.querySelector('svg');
-                    
-                    // Close other open submenus
-                    document.querySelectorAll('.submenu.open').forEach(openSubmenu => {
-                        if (openSubmenu !== submenu) {
-                            openSubmenu.classList.remove('open');
-                            openSubmenu.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
-                        }
-                    });
-
-                    submenu.classList.toggle('open');
-                    icon.classList.toggle('rotate-180');
-                });
-            });
-
-            // Placeholder for function that might be loaded with a page
-            let attachDashboardHandlers = () => {};
-
-            function loadPage(page, pushState = true) {
-                // Clear previous content and show loading indicator
-                contentArea.innerHTML = '<div class="text-center py-10 text-gray-500">Loading...</div>';
-                
-                // The fetch URL must be absolute from the root to ensure it's always correct.
-                fetch(`/admin/pages/${page}.php`)
-                    .then(res => {
-                        if (!res.ok) throw new Error(`Network response was not ok: ${res.statusText}`);
-                        return res.text();
-                    })
-                    .then(data => {
-                        // Prepend existing form submission messages to the new content
-                        const existingMessages = document.querySelectorAll('#content-area > .bg-green-100, #content-area > .bg-red-100');
-                        let messagesHTML = '';
-                        existingMessages.forEach(msg => messagesHTML += msg.outerHTML);
-                        
-                        contentArea.innerHTML = messagesHTML + data;
-
-                        if (page === 'dashboard' && typeof attachDashboardHandlers === 'function') {
-                            attachDashboardHandlers();
-                        }
-
-                        if (pushState) {
-                            const newUrl = (page === 'dashboard' || page === '') ? '/admin' : `/admin/${page}`;
-                            history.pushState({page: page}, '', newUrl);
-                        }
-
-                        // Update active link in sidebar
-                        links.forEach(l => l.classList.remove(activeClass));
-                        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add(activeClass);
-                            const parentSubmenu = activeLink.closest('.submenu');
-                            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
-                                const toggle = parentSubmenu.previousElementSibling;
-                                if(toggle) {
-                                    toggle.click();
-                                }
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        contentArea.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
-                                                    <strong>Error:</strong> Failed to load page content. Please check the console for details.
-                                                 </div>`;
-                        console.error('Error loading page:', error);
-                    });
-            }
-
-            links.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.getAttribute('data-page');
-                    if(page) {
-                        loadPage(page);
-                    }
-                    
-                    if (window.innerWidth < 768) {
-                        closeSidebar();
-                    }
-                });
-            });
-
-            // Handle back/forward browser navigation
-            window.addEventListener('popstate', function(e) {
-                if (e.state && e.state.page) {
-                    loadPage(e.state.page, false);
-                } else {
-                    // Handle initial state if no state is present
-                    initialPageLoad();
-                }
-            });
-
-            // Initial page load based on URL
-            function initialPageLoad() {
-                const path = window.location.pathname;
-                let page = path.startsWith('/admin/') ? path.substring(7) : (path === '/admin' ? 'dashboard' : path.substring(1));
-                if (page === '' || page === 'index.php') {
-                    page = 'dashboard';
-                }
-                // Ensure the page is a valid one before loading
-                const validPages = Array.from(links).map(l => l.getAttribute('data-page'));
-                if (validPages.includes(page)) {
-                    loadPage(page, false); // Don't push state on initial load
-                } else {
-                    loadPage('dashboard', false); // Default to dashboard if URL is invalid
-                }
-            }
-
-            initialPageLoad();
         });
-    </script>
+    });
+
+    /**
+     * Main function to load content into the dashboard dynamically.
+     */
+    async function loadPage(page, pushState = true) {
+        contentArea.innerHTML = '<div class="text-center p-8">Loading...</div>';
+        
+        // THE FIX: Fetch from the dedicated AJAX endpoint your router now understands
+        const fetchUrl = `/admin/pages/${page}`;
+
+        try {
+            const response = await fetch(fetchUrl);
+            if (!response.ok) throw new Error(`Error: ${await response.text() || 'Page content not found'}`);
+
+            const html = await response.text();
+            contentArea.innerHTML = html;
+
+            if (pushState) {
+                // THE FIX: Push a clean user-facing URL to the browser history
+                const newUrl = page === "dashboard" ? `/admin` : `/admin/${page}`;
+                history.pushState({ page: page }, '', newUrl);
+            }
+            document.title = `Admin | ${page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')}`;
+            updateActiveLink(page);
+        } catch (error) {
+            console.error("Error loading page:", error);
+            contentArea.innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded">${error.message}</div>`;
+        }
+    }
+
+    /**
+     * Updates the active state on sidebar links.
+     */
+    function updateActiveLink(page) {
+        tabLinks.forEach(link => link.classList.remove(activeClass));
+        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
+        if (activeLink) {
+            activeLink.classList.add(activeClass);
+            const parentSubmenu = activeLink.closest('.submenu');
+            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
+                parentSubmenu.previousElementSibling.click();
+            }
+        }
+    }
+
+    // --- Main Event Listener for all sidebar links ---
+    sidebar.addEventListener('click', function(e) {
+        const link = e.target.closest('.tab-link');
+        if (link) {
+            e.preventDefault();
+            const page = link.dataset.page;
+            if (page) {
+                loadPage(page);
+                if (window.innerWidth < 768) sidebar.classList.add("-translate-x-full");
+            }
+        }
+    });
+
+    // --- Browser Back/Forward Button Support ---
+    window.addEventListener('popstate', function(e) {
+        const page = (e.state && e.state.page) ? e.state.page : 'dashboard';
+        loadPage(page, false);
+    });
+
+    // --- Load Initial Page Content ---
+    // The PHP router now passes the initial page name via $_GET['page']
+    const initialPage = '<?php echo htmlspecialchars($_GET["page"] ?? "dashboard"); ?>';
+    updateActiveLink(initialPage);
+    
+    // The initial HTML is already loaded by the PHP include at the top of the page,
+    // so we don't need to call loadPage() on the first visit.
+});
+</script>
 </body>
 
 </html>
-        

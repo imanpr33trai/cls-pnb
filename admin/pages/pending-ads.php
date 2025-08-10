@@ -87,15 +87,24 @@ $stmt->close();
                                         <p class="text-gray-900 whitespace-no-wrap"><?php echo date("F j, Y, g:i a", strtotime($ad['created_at'])); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <form action="" method="POST" class="inline-block">
-                                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                                            <button type="submit" name="status" value="live" class="text-green-600 hover:text-green-900 mr-3 font-semibold">Approve</button>
-                                        </form>
-                                        <form action="" method="POST" class="inline-block">
-                                            <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                                            <button type="submit" name="status" value="rejected" class="text-red-600 hover:text-red-900 font-semibold">Reject</button>
-                                        </form>
-                                        <a href="/ads/<?php echo htmlspecialchars($ad['ad_slug'] ?? $ad['id']); ?>" target="_blank" class="text-indigo-600 hover:text-indigo-900 ml-3">View Ad</a>
+                                        <div class="flex items-center">
+                                            <form action="" method="POST" class="inline-block">
+                                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                                                <button type="submit" name="status" value="live" class="text-green-600 hover:text-green-900 mr-3 font-semibold">Approve</button>
+                                            </form>
+                                            <form action="" method="POST" class="inline-block">
+                                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
+                                                <button type="submit" name="status" value="rejected" class="text-red-600 hover:text-red-900 mr-4 font-semibold">Reject</button>
+                                            </form>
+                                            
+                                        </div>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <a href="/ads/<?php echo htmlspecialchars($ad['ad_slug'] ?? $ad['id']); ?>" target="_blank" class="text-gray-500 hover:text-gray-700" title="View Ad">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                            </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

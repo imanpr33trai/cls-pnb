@@ -1,4 +1,14 @@
 <?php
+// Add this at the top of each page in the pages directory
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['admins_id'])) {
+    http_response_code(401);
+    exit('Unauthorized');
+}
+
 require_once __DIR__ . '/../../config/config.php';
 
 // --- Fetching Data ---
