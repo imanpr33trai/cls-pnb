@@ -1,6 +1,13 @@
 # /.htaccess (Final, Clean Version)
 
+# Prevent automatic directory slash append
+DirectorySlash Off
+
 RewriteEngine On
+
+# Prevent redirect loops for admin and login
+RewriteCond %{ENV:REDIRECT_STATUS} 200
+RewriteRule ^ - [L]
 
 # ----------------------------------------------------------------------
 # Rule 1: Redirect requests from "file.php" to "/file"
@@ -16,10 +23,7 @@ RewriteRule ^ /%1 [R=301,L]
 # ----------------------------------------------------------------------
 # Rule 2: Front Controller for clean URLs
 # ----------------------------------------------------------------------
-# This routes all other requests to router.php, including our new API endpoint.
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-# IGNORE specific folders where direct access might be needed
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
 RewriteCond %{REQUEST_URI} !^/config/ [NC]
 RewriteRule ^(.*)$ router.php [L]

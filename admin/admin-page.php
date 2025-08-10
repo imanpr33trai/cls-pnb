@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['admin_id'])) {
+if (!isset($_SESSION['admins_id'])) {
     // Use an absolute path for the redirect
     header("Location: /admin/login");
     exit;
@@ -73,6 +73,7 @@ if (!isset($_SESSION['admin_id'])) {
                         </button>
                         <ul class="submenu pl-8 mt-2 space-y-2">
                             <li><a href="#" data-page="category" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Categories</a></li>
+                            <li><a href="#" data-page="add-ad-category" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">Add New</a></li>
                             <li><a href="#" data-page="sub-cat" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Subcategories</a></li>
                         </ul>
                     </li>
@@ -97,7 +98,6 @@ if (!isset($_SESSION['admin_id'])) {
                         </button>
                         <ul class="submenu pl-8 mt-2 space-y-2">
                             <li><a href="#" data-page="blog-cat" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Categories</a></li>
-                            <li><a href="#" data-page="blog-sub-cat" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Subcategories</a></li>
                         </ul>
                     </li>
 
@@ -109,7 +109,6 @@ if (!isset($_SESSION['admin_id'])) {
                         </button>
                         <ul class="submenu pl-8 mt-2 space-y-2">
                             <li><a href="#" data-page="users/view_users" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View All Users</a></li>
-                            <li><a href="#" data-page="reported-users" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">️ Reported Users</a></li>
                         </ul>
                     </li>
 
@@ -276,11 +275,12 @@ if (!isset($_SESSION['admin_id'])) {
             // Placeholder for function that might be loaded with a page
             let attachDashboardHandlers = () => {};
 
-            function loadPage(page) {
+            function loadPage(page, pushState = true) {
                 // Clear previous content and show loading indicator
                 contentArea.innerHTML = '<div class="text-center py-10 text-gray-500">Loading...</div>';
                 
-                fetch(`pages/${page}.php`)
+                // The fetch URL must be absolute from the root to ensure it's always correct.
+                fetch(`/admin/pages/${page}.php`)
                     .then(res => {
                         if (!res.ok) throw new Error(`Network response was not ok: ${res.statusText}`);
                         return res.text();
@@ -296,6 +296,25 @@ if (!isset($_SESSION['admin_id'])) {
                         if (page === 'dashboard' && typeof attachDashboardHandlers === 'function') {
                             attachDashboardHandlers();
                         }
+
+                        if (pushState) {
+                            const newUrl = (page === 'dashboard' || page === '') ? '/admin' : `/admin/${page}`;
+                            history.pushState({page: page}, '', newUrl);
+                        }
+
+                        // Update active link in sidebar
+                        links.forEach(l => l.classList.remove(activeClass));
+                        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add(activeClass);
+                            const parentSubmenu = activeLink.closest('.submenu');
+                            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
+                                const toggle = parentSubmenu.previousElementSibling;
+                                if(toggle) {
+                                    toggle.click();
+                                }
+                            }
+                        }
                     })
                     .catch(error => {
                         contentArea.innerHTML = `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded" role="alert">
@@ -308,8 +327,6 @@ if (!isset($_SESSION['admin_id'])) {
             links.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    links.forEach(l => l.classList.remove(activeClass));
-                    this.classList.add(activeClass);
                     const page = this.getAttribute('data-page');
                     if(page) {
                         loadPage(page);
@@ -321,12 +338,33 @@ if (!isset($_SESSION['admin_id'])) {
                 });
             });
 
-            // Initial page load
-            const initialLink = document.querySelector('.tab-link[data-page="dashboard"]');
-            if (initialLink) {
-                initialLink.classList.add(activeClass);
-                loadPage('dashboard');
+            // Handle back/forward browser navigation
+            window.addEventListener('popstate', function(e) {
+                if (e.state && e.state.page) {
+                    loadPage(e.state.page, false);
+                } else {
+                    // Handle initial state if no state is present
+                    initialPageLoad();
+                }
+            });
+
+            // Initial page load based on URL
+            function initialPageLoad() {
+                const path = window.location.pathname;
+                let page = path.startsWith('/admin/') ? path.substring(7) : (path === '/admin' ? 'dashboard' : path.substring(1));
+                if (page === '' || page === 'index.php') {
+                    page = 'dashboard';
+                }
+                // Ensure the page is a valid one before loading
+                const validPages = Array.from(links).map(l => l.getAttribute('data-page'));
+                if (validPages.includes(page)) {
+                    loadPage(page, false); // Don't push state on initial load
+                } else {
+                    loadPage('dashboard', false); // Default to dashboard if URL is invalid
+                }
             }
+
+            initialPageLoad();
         });
     </script>
 </body>

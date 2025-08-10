@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // If admin is already logged in, redirect to the dashboard
-if (isset($_SESSION['admin_id'])) {
+if (isset($_SESSION['admins_id'])) {
     // Redirect to the canonical admin URL, which the router will handle.
     header("Location: /admin"); 
     exit();
@@ -40,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $admin['password'])) {
                 // --- LOGIN SUCCESSFUL ---
                 session_regenerate_id(true); // Security: prevent session fixation
-                $_SESSION['admin_id'] = $admin['id'];
-                $_SESSION['admin_username'] = $admin['username'];
+                $_SESSION['admins_id'] = $admin['id'];
+                $_SESSION['admins_username'] = $admin['username'];
                 
                 // Redirect to the admin dashboard
                 header("Location: " . $base_url . 'admin');

@@ -86,8 +86,10 @@ switch (true) {
 // --- Admin Panel Routes ---
 // If the request starts with /admin, delegate to the admin-router.
 case preg_match('/^\/admin/', $request_uri):
+    // The admin-router is designed to handle the full URI starting with /admin,
+    // so we pass the request URI to it without modification.
     include __DIR__ . '/admin-router.php';
-    break;
+    exit; // Important: exit after handling admin routes
 
 
 
