@@ -114,7 +114,7 @@ $stmt->close();
 </div>
 
 <!-- Edit Ad Modal -->
-<div id="edit-ad-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+<div id="edit-ad-modal" class="fixed inset-0  bg-opacity-50 overflow-y-auto h-full w-full hidden">
     <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
             <p class="text-2xl font-bold">Edit Ad</p>
@@ -131,7 +131,7 @@ $stmt->close();
 </div>
 
 <!-- Delete Ad Modal -->
-<div id="delete-ad-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+<div id="delete-ad-modal" class="fixed inset-0  bg-opacity-50 overflow-y-auto h-full w-full hidden">
     <div class="relative top-1/4 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3 text-center">
             <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">

@@ -19,35 +19,21 @@ if (!isset($_SESSION['admins_id'])) {
     <link rel="stylesheet" href="../assets/css/output.css">
     <!-- <script defer src="js/script.js"></script> -->
     <style>
-        .submenu {
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, visibility 0s linear 0.3s;
-        }
-        .submenu.open {
-            max-height: 500px;
-            opacity: 1;
-            visibility: visible;
-            transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear;
-        }
-        .rotate-180 {
-            transform: rotate(180deg);
-            transition: transform 0.3s ease-in-out;
-        }
-        .modal {
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transition: transform 0.3s ease;
-        }
-        body.modal-open {
-            overflow: hidden;
-        }
-        #main-content.blur {
-            filter: blur(5px);
-        }
+        .submenu { max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, visibility 0s linear 0.3s; }
+        .submenu.open { max-height: 500px; opacity: 1; visibility: visible; transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear; }
+        .rotate-180 { transform: rotate(180deg); transition: transform 0.3s ease-in-out; }
+        
+        /* Ensure main content has a base z-index */
+        #main-content { position: relative; z-index: 10; }
+        #main-content.blur { filter: blur(4px); transition: filter 0.3s ease; }
+        
+        /* Sidebar needs to be above main content */
+        #sidebar { z-index: 40; }
+        
+        /* Modals need to be on top of EVERYTHING */
+        #edit-ad-modal, #delete-ad-modal { z-index: 50; }
+        
+        body.modal-open { overflow: hidden; }
     </style>
 </head>
 
@@ -70,7 +56,7 @@ if (!isset($_SESSION['admins_id'])) {
                         </a>
                     </li>
                     
-                    <!-- Ads -->
+                    <!-- Ads -->    
                     <!-- Ads -->
                     <li>
                         <button type="button" class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
@@ -182,36 +168,24 @@ if (!isset($_SESSION['admins_id'])) {
         <div id="main-content" class="flex-1 md:ml-64 transition-all duration-300 ease-in-out">
             <header class="bg-white shadow p-4 flex justify-between items-center md:hidden sticky top-0 z-20">
                 <h1 class="text-xl font-bold">Admin Dashboard</h1>
-                <button id="open-sidebar" class="p-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
+                <button id="open-sidebar" class="p-2">...</button>
             </header>
-
-            <!-- This is the PHP block in the <main> section of /admin/admin-page.php -->
-
-<main id="content-area" class="p-8">
-    <?php
-    // THE FIX: The router now tells us which page to load initially.
-    $page_to_load = $_GET['page'] ?? 'dashboard';
-    
-    // Sanitize to be safe
-    $page_to_load = preg_replace('/[^a-zA-Z0-9_-]/', '', $page_to_load);
-    $page_path = __DIR__ . '/pages/' . $page_to_load . '.php';
-
-    if (file_exists($page_path)) {
-        include $page_path;
-    } else {
-        // If the URL contains an invalid page name, load a 404 content file
-        include __DIR__ . '/pages/404.php';
-    }
-    ?>
-</main>
+            <main id="content-area" class="p-8">
+                <?php
+                $page = $_GET['page'] ?? 'dashboard';
+                $page = preg_replace('/[^a-zA-Z0-9_-]/', '', $page);
+                $pagePath = __DIR__ . '/pages/' . $page . '.php';
+                if (file_exists($pagePath)) {
+                    include $pagePath;
+                } else {
+                    include __DIR__ . '/pages/dashboard.php';
+                }
+                ?>
+            </main>
         </div>
     </div>
 
-    <div id="edit-ad-modal" class="fixed inset-0 overflow-y-auto h-full w-full hidden">
+    <div id="edit-ad-modal" class="fixed  inset-0 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Ad</h3>
@@ -267,17 +241,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabLinks = document.querySelectorAll(".tab-link");
     const menuToggles = document.querySelectorAll(".menu-toggle");
     const activeClass = "bg-gray-700";
+const mainContent = document.getElementById("main-content");
+        const editAdModal = document.getElementById("edit-ad-modal");
+    const editAdModalContent = document.getElementById("edit-ad-modal-content");
+    const closeEditModalBtn = document.getElementById("close-edit-modal");
+    const deleteAdModal = document.getElementById("delete-ad-modal");
+    const confirmDeleteBtn = document.getElementById("confirm-delete-btn"); 
+    const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+    let adToDeleteId = null;
+
 
     // Sidebar and Menu toggle logic (your existing code is good)
-    if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
+        if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
     if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", () => sidebar.classList.add("-translate-x-full"));
-    menuToggles.forEach(toggle => {
-        toggle.addEventListener("click", () => {
-            const submenu = toggle.nextElementSibling;
-            if (submenu) {
-                submenu.classList.toggle("open");
-                toggle.querySelector("svg").classList.toggle("rotate-180");
-            }
+    menuToggles.forEach(clickedToggle => {
+        clickedToggle.addEventListener("click", () => {
+            const clickedSubmenu = clickedToggle.nextElementSibling;
+            if (!clickedSubmenu || !clickedSubmenu.classList.contains('submenu')) return;
+            menuToggles.forEach(otherToggle => {
+                if (otherToggle !== clickedToggle) {
+                    const otherSubmenu = otherToggle.nextElementSibling;
+                    if (otherSubmenu && otherSubmenu.classList.contains('open')) {
+                        otherSubmenu.classList.remove('open');
+                        otherToggle.querySelector('svg').classList.remove('rotate-180');
+                    }
+                }
+            });
+            clickedSubmenu.classList.toggle("open");
+            clickedToggle.querySelector("svg").classList.toggle("rotate-180");
         });
     });
 
@@ -326,23 +317,94 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Main Event Listener for all sidebar links ---
-    sidebar.addEventListener('click', function(e) {
+  sidebar.addEventListener('click', (e) => {
         const link = e.target.closest('.tab-link');
-        if (link) {
-            e.preventDefault();
-            const page = link.dataset.page;
-            if (page) {
-                loadPage(page);
-                if (window.innerWidth < 768) sidebar.classList.add("-translate-x-full");
+        if (link) { e.preventDefault(); loadPage(link.dataset.page); }
+    });
+
+    // --- Browser Back/Forward Button Support ---
+ window.addEventListener('popstate', (e) => loadPage(e.state?.page || 'dashboard', false));
+
+ mainContent.addEventListener('click', function(event) {
+        const target = event.target;
+        
+        // --- HANDLE EDIT MODAL BUTTON CLICK ---
+        if (target.matches('.open-edit-modal')) {
+            openEditModal(target.dataset.adId);
+        }
+
+        // --- HANDLE DELETE MODAL BUTTON CLICK ---
+        if (target.matches('.open-delete-modal')) {
+            openDeleteModal(target.dataset.adId);
+        }
+
+        // --- HANDLE EDIT FORM SUBMISSION ---
+        if (target.matches('#edit-ad-form button[type="submit"]')) {
+            const form = target.closest('#edit-ad-form');
+            if (form) {
+                event.preventDefault();
+                submitEditForm(form);
             }
         }
     });
 
-    // --- Browser Back/Forward Button Support ---
-    window.addEventListener('popstate', function(e) {
-        const page = (e.state && e.state.page) ? e.state.page : 'dashboard';
-        loadPage(page, false);
-    });
+    // --- MODAL FUNCTIONS ---
+    function openModal(modal) {
+        modal.classList.remove("hidden");
+        mainContent.classList.add("blur");
+        document.body.classList.add("modal-open");
+    }
+    function closeModal(modal) {
+        modal.classList.add("hidden");
+        mainContent.classList.remove("blur");
+        document.body.classList.remove("modal-open");
+    }
+
+    async function openEditModal(adId) {
+        if (!adId) return;
+        editAdModalContent.innerHTML = "Loading form...";
+        openModal(editAdModal);
+        try {
+            const response = await fetch(`<?php echo $base_url; ?>admin/util/get_ad_form.php?ad_id=${adId}`);
+            if (!response.ok) throw new Error('Failed to load edit form.');
+            editAdModalContent.innerHTML = await response.text();
+        } catch (error) { editAdModalContent.innerHTML = `<p class="text-red-500">${error.message}</p>`; }
+    }
+
+    if (closeEditModalBtn) closeEditModalBtn.addEventListener("click", () => closeModal(editAdModal));
+
+    async function submitEditForm(form) {
+        try {
+            const response = await fetch('<?php echo $base_url; ?>admin/util/edit-ad.php', { method: 'POST', body: new FormData(form) });
+            const result = await response.json();
+            if (result.success) {
+                alert('Ad updated successfully!');
+                closeModal(editAdModal);
+                loadPage(new URLSearchParams(window.location.search).get('page') || 'view-ads');
+            } else { throw new Error(result.message || 'Failed to update ad.'); }
+        } catch(error) { alert(error.message); }
+    }
+
+    function openDeleteModal(adId) { adToDeleteId = adId; openModal(deleteAdModal); }
+    if (cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", () => closeModal(deleteAdModal));
+
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener("click", async () => {
+            if (!adToDeleteId) return;
+            try {
+                const formData = new FormData();
+                formData.append('ad_id', adToDeleteId);
+                const response = await fetch(`<?php echo $base_url; ?>admin/util/delete_ad.php`, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Ad deleted successfully!');
+                    closeModal(deleteAdModal);
+                    loadPage(new URLSearchParams(window.location.search).get('page') || 'view-ads');
+                } else { throw new Error(result.message || 'Failed to delete ad.'); }
+            } catch(error) { alert(error.message); }
+        });
+    }
+
 
     // --- Load Initial Page Content ---
     // The PHP router now passes the initial page name via $_GET['page']

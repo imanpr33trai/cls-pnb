@@ -37,7 +37,6 @@
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
     --color-blue-700: oklch(48.8% 0.243 264.376);
-    --color-blue-800: oklch(42.4% 0.199 265.638);
     --color-indigo-50: oklch(96.2% 0.018 272.314);
     --color-indigo-100: oklch(93% 0.034 272.788);
     --color-indigo-400: oklch(67.3% 0.182 276.935);
@@ -310,6 +309,9 @@
   }
   .top-2\.5 {
     top: calc(var(--spacing) * 2.5) !important;
+  }
+  .top-10 {
+    top: calc(var(--spacing) * 10) !important;
   }
   .top-20 {
     top: calc(var(--spacing) * 20) !important;
@@ -998,9 +1000,6 @@
   .py-8 {
     padding-block: calc(var(--spacing) * 8) !important;
   }
-  .py-10 {
-    padding-block: calc(var(--spacing) * 10) !important;
-  }
   .py-12 {
     padding-block: calc(var(--spacing) * 12) !important;
   }
@@ -1180,6 +1179,9 @@
   }
   .text-pink-600 {
     color: var(--color-pink-600) !important;
+  }
+  .text-red-500 {
+    color: var(--color-red-500) !important;
   }
   .text-red-600 {
     color: var(--color-red-600) !important;

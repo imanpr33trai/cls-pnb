@@ -38,7 +38,7 @@ switch (true) {
 
 $allowed_pages = [
     'dashboard', 'view-ads', 'pending-ads', 'reported-ads', 'category', 'add-ad-category', 'sub-cat',
-    'view-blogs', 'pending-blogs', 'blog-cat', 'users/view_users',
+    'view-blogs', 'pending-blogs', 'blog-cat', 'view_users',
     'view-subscribers', 'send-newsletter', 'site-settings', 'email-settings',
     'security-roles', 'analytics', 'backup-restore', 'export-data'
 ];

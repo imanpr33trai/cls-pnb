@@ -44,36 +44,13 @@ $category_stmt->close();
 
 <div class="container mx-auto px-4 sm:px-8">
     <div class="py-8">
-        <h2 class="text-2xl font-semibold leading-tight">Ad Subcategories</h2>
-        
-        <!-- Add New Subcategory Form -->
-        <div class="mt-8 mb-10 p-6 bg-white rounded-lg shadow">
-            <h3 class="text-lg font-semibold mb-4">Add New Subcategory</h3>
-            <form action="/admin/sub-cat" method="POST" class="max-w-lg">
-                <div class="mb-4">
-                    <label for="category_id" class="block text-gray-700 text-sm font-bold mb-2">Parent Category:</label>
-                    <select id="category_id" name="category_id" required
-                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <option value="">Select a Category</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label for="subcategory_title" class="block text-gray-700 text-sm font-bold mb-2">Subcategory Title:</label>
-                    <input type="text" id="subcategory_title" name="subcategory_title" required
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                </div>
-                <div class="flex items-center">
-                    <button type="submit" name="add_subcategory"
-                            class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        Add Subcategory
-                    </button>
-                </div>
-            </form>
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-semibold leading-tight">Ad Subcategories</h2>
+            <a href="#" data-page="add-ad-category" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+                Add New Subcategory
+            </a>
         </div>
-
+        
         <!-- Subcategories List -->
         <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
