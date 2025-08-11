@@ -382,6 +382,9 @@
   .my-3 {
     margin-block: calc(var(--spacing) * 3) !important;
   }
+  .my-4 {
+    margin-block: calc(var(--spacing) * 4) !important;
+  }
   .my-5 {
     margin-block: calc(var(--spacing) * 5) !important;
   }
@@ -606,6 +609,9 @@
   }
   .w-24 {
     width: calc(var(--spacing) * 24) !important;
+  }
+  .w-32 {
+    width: calc(var(--spacing) * 32) !important;
   }
   .w-64 {
     width: calc(var(--spacing) * 64) !important;
@@ -1447,6 +1453,13 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-gray-700) !important;
+      }
+    }
+  }
+  .hover\:text-gray-800 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-gray-800) !important;
       }
     }
   }

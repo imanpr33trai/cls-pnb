@@ -46,7 +46,7 @@ $category_stmt->close();
     <div class="py-8">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold leading-tight">Ad Subcategories</h2>
-            <a href="#" data-page="add-ad-category" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <a href="/admin/add-ad-category" data-page="add-ad-category" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                 Add New Subcategory
             </a>
         </div>

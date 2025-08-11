@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Function to check if an admin is logged in
 function isAdminAuthenticated() {
-    return isset($_SESSION['admin_id']); // Use your actual admin session variable
+    return isset($_SESSION['admins_id']); // Use your actual admin session variable
 }
 
 $request_uri = strtok($_SERVER['REQUEST_URI'], '?');

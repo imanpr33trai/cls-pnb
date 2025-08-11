@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // If admin is already logged in, redirect to the dashboard
 if (isset($_SESSION['admins_id'])) {
     // Redirect to the canonical admin URL, which the router will handle.
-    header("Location: /admin"); 
+    header("Location: /admin/dashboard"); 
     exit();
 }
 

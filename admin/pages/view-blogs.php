@@ -101,11 +101,8 @@ $stmt->close();
                                         <p class="text-gray-900 whitespace-no-wrap"><?php echo date("F j, Y", strtotime($blog['created_at'])); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                        <form action="" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this post?');">
-                                            <input type="hidden" name="blog_id" value="<?php echo $blog['id']; ?>">
-                                            <button type="submit" name="delete_blog" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
-                                        </form>
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3 open-edit-blog-modal" data-blog-id="<?php echo $blog['id']; ?>">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 font-semibold open-delete-blog-modal" data-blog-id="<?php echo $blog['id']; ?>">Delete</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

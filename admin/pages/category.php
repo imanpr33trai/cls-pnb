@@ -43,7 +43,7 @@ $stmt->close();
     <div class="py-8">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold leading-tight">Ad Categories</h2>
-            <a href="#" data-page="add-ad-category" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <a href="/admin/add-ad-category" data-page="add-ad-category" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                 Add New Category
             </a>
         </div>
@@ -91,10 +91,8 @@ $stmt->close();
                                         </span>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                        <form action="" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this category?');">
-                                            <input type="hidden" name="category_id" value="<?php echo $category['id']; ?>">
-                                            <button type="submit" name="delete_category" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
+                                         <button class="text-indigo-600 hover:text-indigo-900 mr-3 open-edit-category-modal" data-category-id="<?php echo $category['id']; ?>">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 font-semibold open-delete-category-modal" data-category-id="<?php echo $category['id']; ?>">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -106,3 +104,20 @@ $stmt->close();
         </div>
     </div>
 </div>
+
+<!-- Edit Category Modal -->
+<!-- <div id="edit-category-modal" class="fixed inset-0 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3">
+            <p class="text-2xl font-bold">Edit Category</p>
+            <div id="close-edit-category-modal" class="cursor-pointer z-50">
+                <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                </svg>
+            </div>
+        </div>
+        <div id="edit-category-modal-content">
+            Form will be loaded here
+        </div>
+    </div>
+</div> -->

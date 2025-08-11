@@ -17,7 +17,7 @@ if (!isset($_SESSION['admins_id'])) {
     <title>Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../assets/css/output.css">
-    <!-- <script defer src="js/script.js"></script> -->
+    <script defer src="js/script.js"></script>
     <style>
         .submenu { max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, visibility 0s linear 0.3s; }
         .submenu.open { max-height: 500px; opacity: 1; visibility: visible; transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear; }
@@ -31,14 +31,238 @@ if (!isset($_SESSION['admins_id'])) {
         #sidebar { z-index: 40; }
         
         /* Modals need to be on top of EVERYTHING */
-        #edit-ad-modal, #delete-ad-modal { z-index: 50; }
+        #edit-ad-modal, #delete-ad-modal, #edit-category-modal{ z-index: 50; }
         
         body.modal-open { overflow: hidden; }
     </style>
 </head>
+<!-- Add this single script block right before your closing </body> tag -->
 
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // =================================================================
+    //  1. CACHE ALL DOM ELEMENTS (Declared only once)
+    // =================================================================
+    const sidebar = document.getElementById("sidebar");
+    const openSidebarBtn = document.getElementById("open-sidebar");
+    const closeSidebarBtn = document.getElementById("close-sidebar");
+    const contentArea = document.getElementById("content-area");
+    const mainContent = document.getElementById("main-content"); // Keep if used for blur
+    const menuToggles = document.querySelectorAll(".menu-toggle");
+    const activeClass = "bg-gray-700";
+    
+    // --- Modals ---
+    const mainWrapper = document.getElementById("main-wrapper"); // The new blur target
+    const modalContainer = document.getElementById("modal-container");
+    
+    const editAdModal = document.getElementById("edit-ad-modal");
+    const editAdModalContent = document.getElementById("edit-ad-modal-content");
+    const closeEditModalBtn = document.getElementById("close-edit-modal");
+
+    const editCategoryModal = document.getElementById("edit-category-modal");
+    const editCategoryModalContent = document.getElementById("edit-category-modal-content");
+    const closeEditCategoryModalBtn = document.getElementById("close-edit-category-modal");
+
+    const deleteModal = document.getElementById("delete-ad-modal");
+    const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
+    const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
+    
+    let itemToDelete = { id: null, type: null };
+
+    // =================================================================
+    //  2. CORE FUNCTIONS
+    // =================================================================
+
+    /**
+     * Main function to load page content dynamically via AJAX.
+     */
+    async function loadPage(page, pushState = true) {
+        closeAllModals(); // Close any open modals before navigating
+        contentArea.innerHTML = '<div class="text-center p-8">Loading...</div>';
+        try {
+            const response = await fetch(`<?php echo $base_url; ?>admin/pages/${page}`);
+            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+            contentArea.innerHTML = await response.text();
+            if (pushState) {
+                const newUrl = page === "dashboard" ? `<?php echo $base_url; ?>admin` : `<?php echo $base_url; ?>admin/${page}`;
+                history.pushState({ page }, '', newUrl);
+            }
+            updateActiveLink(page);
+        } catch (error) {
+            contentArea.innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded">${error.message}</div>`;
+        }
+    }
+
+    /**
+     * Updates the active state on sidebar links.
+     */
+    function updateActiveLink(page) {
+        document.querySelectorAll(".tab-link").forEach(link => link.classList.remove(activeClass));
+        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
+        if (activeLink) {
+            activeLink.classList.add(activeClass);
+            const parentSubmenu = activeLink.closest('.submenu');
+            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
+                parentSubmenu.previousElementSibling.click();
+            }
+        }
+    }
+
+    /**
+     * Generic functions to open and close any modal.
+     */
+    function openModal(modal) {
+        if (!modal) return;
+        modalContainer.classList.add('open');
+        modal.classList.add('open');
+        mainWrapper.classList.add("blur");
+        document.body.classList.add("modal-open");
+    }
+
+    function closeModal(modal) {
+        if (!modal) return;
+        modalContainer.classList.remove('open');
+        modal.classList.remove('open');
+        mainWrapper.classList.remove("blur");
+        document.body.classList.remove("modal-open");
+    }
+    
+    function closeAllModals() {
+        closeModal(editAdModal);
+        closeModal(editCategoryModal);
+        closeModal(deleteModal);
+    }
+
+    // =================================================================
+    //  3. EVENT LISTENERS
+    // =================================================================
+
+    // --- Sidebar and Menu Listeners ---
+    if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
+    if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", () => sidebar.classList.add("-translate-x-full"));
+    
+    menuToggles.forEach(clickedToggle => {
+        clickedToggle.addEventListener("click", () => {
+            const submenu = clickedToggle.nextElementSibling;
+            if (!submenu || !submenu.classList.contains('submenu')) return;
+            const isOpen = submenu.classList.contains('open');
+            document.querySelectorAll('.submenu.open').forEach(openSubmenu => {
+                openSubmenu.classList.remove('open');
+                openSubmenu.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+            });
+            if (!isOpen) {
+                submenu.classList.add('open');
+                clickedToggle.querySelector('svg').classList.add('rotate-180');
+            }
+        });
+    });
+
+    sidebar.addEventListener('click', (e) => {
+        const link = e.target.closest('.tab-link');
+        if (link) { e.preventDefault(); loadPage(link.dataset.page); }
+    });
+
+    window.addEventListener('popstate', (e) => loadPage(e.state?.page || 'dashboard', false));
+
+    // --- Main Event Delegation for Dynamically Loaded Content ---
+    contentArea.addEventListener('click', function(event) {
+        const editAdButton = event.target.closest('.open-edit-modal');
+        if (editAdButton) openModal(editAdModal, `/admin/util/get_ad_form.php?ad_id=${editAdButton.dataset.adId}`, editAdModalContent);
+        
+        const deleteAdButton = event.target.closest('.open-delete-modal');
+        if (deleteAdButton) openDeleteModal(deleteAdButton.dataset.adId, 'ad');
+        
+        const editCatButton = event.target.closest('.open-edit-category-modal');
+        if (editCatButton) openModal(editCategoryModal, `/admin/util/get_category_form.php?category_id=${editCatButton.dataset.categoryId}`, editCategoryModalContent);
+        
+        const deleteCatButton = event.target.closest('.open-delete-category-modal');
+        if (deleteCatButton) openDeleteModal(deleteCatButton.dataset.categoryId, 'category');
+    });
+
+    // --- Listeners for Persistent Modal Elements ---
+    modalContainer.addEventListener('submit', function(event) {
+        if (event.target.matches('#edit-ad-form')) {
+            event.preventDefault();
+            submitEditForm(event.target, 'ad');
+        }
+        if (event.target.matches('#edit-category-form')) {
+            event.preventDefault();
+            submitEditForm(event.target, 'category');
+        }
+    });
+
+    // Close buttons
+    if(closeEditModalBtn) closeEditModalBtn.addEventListener("click", () => closeModal(editAdModal));
+    if(closeEditCategoryModalBtn) closeEditCategoryModalBtn.addEventListener("click", () => closeModal(editCategoryModal));
+    if(cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", () => closeModal(deleteModal));
+    
+    // Confirm delete button
+    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
+
+    // =================================================================
+    //  4. MODAL AND FORM SUBMISSION LOGIC
+    // =================================================================
+
+    async function openModal(modal, url, contentTarget) {
+        if (!url) return openModal(modal); // For delete modal
+        contentTarget.innerHTML = "Loading...";
+        openModal(modal);
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Failed to load content.');
+            contentTarget.innerHTML = await response.text();
+        } catch (error) {
+            contentTarget.innerHTML = `<p class="text-red-500">${error.message}</p>`;
+        }
+    }
+
+    async function submitEditForm(form, type) {
+        const url = type === 'ad' ? '/admin/util/edit-ad.php' : '/admin/util/update_category.php';
+        const modal = type === 'ad' ? editAdModal : editCategoryModal;
+        try {
+            const response = await fetch(url, { method: 'POST', body: new FormData(form) });
+            const result = await response.json();
+            if (result.success) {
+                alert(`${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully!`);
+                closeModal(modal);
+                loadPage(type === 'ad' ? 'view-ads' : 'category');
+            } else { throw new Error(result.message); }
+        } catch(error) { alert(error.message); }
+    }
+
+    function openDeleteModal(id, type) {
+        itemToDelete = { id, type };
+        deleteModal.querySelector('h3').textContent = `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        openModal(deleteModal);
+    }
+    
+    async function confirmDelete() {
+        if (!itemToDelete) return;
+        const { id, type } = itemToDelete;
+        const url = type === 'ad' ? '/admin/util/delete_ad.php' : '/admin/util/delete_category.php';
+        const formData = new FormData();
+        formData.append(type === 'ad' ? 'ad_id' : 'category_id', id);
+
+        try {
+            const response = await fetch(url, { method: 'POST', body: formData });
+            const result = await response.json();
+            if (result.success) {
+                alert(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted!`);
+                closeModal(deleteModal);
+                loadPage(type === 'ad' ? 'view-ads' : 'category');
+            } else { throw new Error(result.message); }
+        } catch(error) { alert(`Error: ${error.message}`); }
+    }
+    
+    // =================================================================
+    //  5. INITIAL PAGE LOAD
+    // =================================================================
+    const initialPage = '<?php echo htmlspecialchars($_GET["page"] ?? "dashboard"); ?>';
+    updateActiveLink(initialPage);
+});
+</script> -->
 <body class="bg-gray-100 font-sans">
-    <div class="flex min-h-screen">
+    <div  class="flex min-h-screen">
         <aside id="sidebar" class="bg-gray-800 text-white w-64 p-4 space-y-6 fixed top-0 left-0 h-full z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
             <div class="flex justify-between items-center">
                 <h3 class="text-2xl font-bold">Admin Panel</h3>
@@ -78,8 +302,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </button>
                         <ul class="submenu pl-8 mt-2 space-y-2">
                             <li><a href="#" data-page="category" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Categories</a></li>
-                            <li><a href="#" data-page="add-ad-category" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">Add New</a></li>
                             <li><a href="#" data-page="sub-cat" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">View Subcategories</a></li>
+                            <li><a href="#" data-page="add-ad-category" class="tab-link block px-4 py-2 rounded-md hover:bg-gray-700">Add New Category</a></li>
                         </ul>
                     </li>
 
@@ -200,6 +424,27 @@ if (!isset($_SESSION['admins_id'])) {
             </div>
         </div>
     </div>
+    <!-- Edit Category Modal -->
+<div id="edit-category-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3">
+            <p class="text-2xl font-bold">Edit Category</p>
+            <button id="close-edit-category-modal" class="cursor-pointer text-2xl font-bold">&times;</button>
+        </div>
+        <div id="edit-category-modal-content">Loading form...</div>
+    </div>
+</div>
+
+<!-- Edit Blog Modal -->
+<div id="edit-blog-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3">
+            <p class="text-2xl font-bold">Edit Blog Post</p>
+            <button id="close-edit-blog-modal" class="cursor-pointer text-2xl font-bold">&times;</button>
+        </div>
+        <div id="edit-blog-modal-content">Loading form...</div>
+    </div>
+</div>
 
     <!-- Delete Ad Modal -->
     <div id="delete-ad-modal" class="fixed inset-0 overflow-y-auto h-full w-full hidden">
@@ -226,13 +471,17 @@ if (!isset($_SESSION['admins_id'])) {
             </div>
         </div>
     </div>
+    <!-- /admin/admin-page.php -->
+<!-- Add this inside your #modal-container div -->
+
+
 
     <!-- Initialize the admin panel -->
 <!-- This is the <script> block in /admin/admin-page.php -->
 
 <!-- This is the <script> block in /admin/admin-page.php -->
 
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById("sidebar");
     const openSidebarBtn = document.getElementById("open-sidebar");
@@ -397,7 +646,7 @@ const mainContent = document.getElementById("main-content");
                 const response = await fetch(`<?php echo $base_url; ?>admin/util/delete_ad.php`, { method: 'POST', body: formData });
                 const result = await response.json();
                 if (result.success) {
-                    alert('Ad deleted successfully!');
+                    
                     closeModal(deleteAdModal);
                     loadPage(new URLSearchParams(window.location.search).get('page') || 'view-ads');
                 } else { throw new Error(result.message || 'Failed to delete ad.'); }
@@ -414,7 +663,118 @@ const mainContent = document.getElementById("main-content");
     // The initial HTML is already loaded by the PHP include at the top of the page,
     // so we don't need to call loadPage() on the first visit.
 });
-</script>
+
+// /admin/admin-page.php (inside the <script> block)
+
+document.addEventListener('DOMContentLoaded', function() {
+    // --- ADD these variables to your CACHE DOM ELEMENTS section ---
+    const editCategoryModal = document.getElementById("edit-category-modal");
+    const editCategoryModalContent = document.getElementById("edit-category-modal-content");
+    const closeEditCategoryModalBtn = document.getElementById("close-edit-category-modal");
+    // You can reuse the delete modal for categories
+    const deleteModal = document.getElementById('delete-ad-modal'); // Assuming it's a generic delete modal
+    let itemToDelete = { id: null, type: null };
+
+    // --- ADD this inside your main `mainContent.addEventListener('click', ...)` block ---
+    mainContent.addEventListener('click', function(event) {
+        const target = event.target;
+        
+        // ... your existing .open-edit-modal and .open-delete-modal logic for ADS ...
+        
+        // --- NEW: HANDLE CATEGORY MODAL BUTTONS ---
+        const editCatButton = target.closest('.open-edit-category-modal');
+        if (editCatButton) {
+            openEditCategoryModal(editCatButton.dataset.categoryId);
+        }
+
+        const deleteCatButton = target.closest('.open-delete-category-modal');
+        if (deleteCatButton) {
+            openDeleteModal(deleteCatButton.dataset.categoryId, 'category');
+        }
+    });
+
+    // --- ADD this inside the `modalContainer.addEventListener('submit', ...)` block ---
+    modalContainer.addEventListener('submit', function(event){
+        // ... your existing #edit-ad-form logic ...
+
+        // --- NEW: HANDLE CATEGORY FORM SUBMISSION ---
+        if(event.target.matches('#edit-category-form')){
+            event.preventDefault();
+            submitEditCategoryForm(event.target);
+        }
+    });
+
+    // --- ADD these new functions to your SCRIPT block ---
+
+    // --- MODAL FUNCTIONS (Updated openDeleteModal) ---
+    function openDeleteModal(id, type) {
+        itemToDelete = { id: id, type: type }; // Store both ID and type (e.g., 'ad' or 'category')
+        // You can customize the modal title if you want
+        // deleteModal.querySelector('h3').textContent = `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        openModal(deleteModal);
+    }
+
+    // --- CATEGORY MODAL LOGIC ---
+    async function openEditCategoryModal(categoryId) {
+        if (!categoryId) return;
+        editCategoryModalContent.innerHTML = "Loading form...";
+        openModal(editCategoryModal);
+        try {
+            const response = await fetch(`<?php echo $base_url; ?>admin/util/get_category_form.php?category_id=${categoryId}`);
+            if (!response.ok) throw new Error('Failed to load category edit form.');
+            editCategoryModalContent.innerHTML = await response.text();
+        } catch (error) {
+            editCategoryModalContent.innerHTML = `<p class="text-red-500">${error.message}</p>`;
+        }
+    }
+
+    if (closeEditCategoryModalBtn) closeEditCategoryModalBtn.addEventListener("click", () => closeModal(editCategoryModal));
+    
+    async function submitEditCategoryForm(form) {
+        try {
+            const response = await fetch('<?php echo $base_url; ?>admin/util/update_category.php', { method: 'POST', body: new FormData(form) });
+            const result = await response.json();
+            if (result.success) {
+                alert('Category updated successfully!');
+                closeModal(editCategoryModal);
+                loadPage('category'); // Refresh the category page
+            } else { throw new Error(result.message || 'Failed to update category.'); }
+        } catch(error) { alert(error.message); }
+    }
+
+    // --- CONFIRM DELETE LOGIC (Updated to be generic) ---
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener("click", async () => {
+            if (!itemToDelete || !itemToDelete.id || !itemToDelete.type) return;
+
+            let url = '';
+            let formData = new FormData();
+            
+            if(itemToDelete.type === 'ad') {
+                url = `<?php echo $base_url; ?>admin/util/delete_ad.php`;
+                formData.append('ad_id', itemToDelete.id);
+            } else if (itemToDelete.type === 'category') {
+                url = `<?php echo $base_url; ?>admin/util/delete_category.php`;
+                formData.append('category_id', itemToDelete.id);
+            } else {
+                return; // Unknown type
+            }
+
+            try {
+                const response = await fetch(url, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) {
+                    alert(`${itemToDelete.type.charAt(0).toUpperCase() + itemToDelete.type.slice(1)} deleted successfully!`);
+                    closeModal(deleteModal);
+                    loadPage(itemToDelete.type === 'ad' ? 'view-ads' : 'category'); // Refresh the correct page
+                } else { throw new Error(result.message); }
+            } catch(error) { alert(`Error: ${error.message}`); }
+        });
+    }
+
+});
+</script> -->
+
 </body>
 
 </html>
