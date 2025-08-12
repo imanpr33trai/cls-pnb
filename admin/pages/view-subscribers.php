@@ -12,7 +12,7 @@ $stmt->close();
     <div class="py-8">
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold leading-tight">Newsletter Subscribers</h2>
-            <a href="#" data-page="send-newsletter" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
+            <a href="/admin/send-newsletter" data-page="send-newsletter" class="tab-link bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">
                 Send Newsletter
             </a>
         </div>
