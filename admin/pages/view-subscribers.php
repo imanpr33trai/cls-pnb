@@ -2,19 +2,6 @@
 // /admin/pages/view-subscribers.php
 require_once __DIR__ . '/../../config/config.php';
 
-// Handle subscriber deletion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_subscriber'])) {
-    $subscriber_id = (int)$_POST['subscriber_id'];
-    $stmt = $conn->prepare("DELETE FROM subscribers WHERE id = ?");
-    $stmt->bind_param("i", $subscriber_id);
-    if ($stmt->execute()) {
-        echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Subscriber deleted successfully!</div>";
-    } else {
-        echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ Error deleting subscriber.</div>";
-    }
-    $stmt->close();
-}
-
 // Fetch all subscribers
 $stmt = $conn->prepare("SELECT id, email, created_at FROM subscribers ORDER BY created_at DESC");
 $stmt->execute();
@@ -62,10 +49,7 @@ $stmt->close();
                                         <p class="text-gray-900 whitespace-no-wrap"><?php echo date("F j, Y", strtotime($subscriber['created_at'])); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <form action="" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this subscriber?');">
-                                            <input type="hidden" name="subscriber_id" value="<?php echo $subscriber['id']; ?>">
-                                            <button type="submit" name="delete_subscriber" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
-                                        </form>
+                                        <button class="text-red-600 hover:text-red-900 font-semibold open-delete-subscriber-modal" data-subscriber-id="<?php echo $subscriber['id']; ?>">Delete</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

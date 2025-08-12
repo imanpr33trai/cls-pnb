@@ -4,7 +4,6 @@
     "league/oauth2-github": "^3.1",
     "league/oauth2-client": "^2.8",
     "vlucas/phpdotenv": "^5.6",
-    "phpmailer/phpmailer": "^6.10",
-    "mkocansey/bladewind": "^3.1"
+    "phpmailer/phpmailer": "^6.10"
   }
 }

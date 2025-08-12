@@ -358,22 +358,22 @@ include_once(__DIR__ . '/../../partials/footer.php');
 ?>
 <!-- footer -->
 <!-- footer -->
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <!-- Include jQuery if it's not in your footer -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- Unified script for the blog form -->
 <script>
     $(document).ready(function() {
-        const blogForm = $('#blogForm');
+        const blogForm = $('form'); // Use a generic selector for the form
 
-        // --- Initialize TinyMCE ---
-        tinymce.init({
-            selector: '#descriptionsblogs', // Targets your textarea
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-            height: 500, // Make the editor taller
-            menubar: false,
-        });
+        // --- Initialize CKEditor ---
+        ClassicEditor
+            .create( document.querySelector( '#descriptionsblogs' ) )
+            .catch( error => {
+                console.error( error );
+            } );
 
         // --- Live validation feedback ---
         blogForm.find('input[required], select[required], textarea[required]').on('blur', function() {
@@ -391,12 +391,7 @@ include_once(__DIR__ . '/../../partials/footer.php');
             });
         }
         setupCounter('#blogtitles', '.char-counter', 150);
-        setupCounter('#descriptionsblogs', '.char-counter', 5000);
-
-        // --- Multiple Image Preview (Your existing vanilla JS is good) ---
-        document.getElementById('previewimagesblogs').addEventListener('change', function(e) {
-            // ... your existing multi-image preview JS is perfect ...
-        });
+        // Counter for descriptionsblogs is removed
 
         // --- "Add More" Platforms Logic ---
         $('#add-more-platforms').on('click', function(e) {
@@ -424,13 +419,11 @@ include_once(__DIR__ . '/../../partials/footer.php');
         });
     });
     function restrictToNumbers(selector) {
-  $(selector).on("input", function () {
-    // Replace any character that is not a digit with an empty string
-    this.value = this.value.replace(/[^0-9]/g, "");
-  });
-}
+      $(selector).on("input", function () {
+        // Replace any character that is not a digit with an empty string
+        this.value = this.value.replace(/[^0-9]/g, "");
+      });
+    }
 
-
-restrictToNumbers("#teluserblog");
-
+    restrictToNumbers("#teluserblog");
 </script>

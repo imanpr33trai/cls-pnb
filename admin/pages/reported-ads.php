@@ -2,14 +2,45 @@
 // /admin/pages/reported-ads.php
 require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all ads with 'reported' status
+// Handle actions: dismiss report or delete ad
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['report_id'], $_POST['action'])) {
+    $report_id = (int)$_POST['report_id'];
+    $action = $_POST['action'];
+
+    if ($action === 'dismiss') {
+        // Just delete the report, leave the ad as is.
+        $stmt = $conn->prepare("DELETE FROM reported_ads WHERE id = ?");
+        $stmt->bind_param("i", $report_id);
+        if ($stmt->execute()) {
+            echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Report dismissed successfully.</div>";
+        } else {
+            echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ Error dismissing report.</div>";
+        }
+        $stmt->close();
+    } elseif ($action === 'delete_ad' && isset($_POST['ad_id'])) {
+        $ad_id = (int)$_POST['ad_id'];
+        
+        // First, delete the ad from ad_form (ON DELETE CASCADE will handle related reports)
+        $stmt = $conn->prepare("DELETE FROM ad_form WHERE id = ?");
+        $stmt->bind_param("i", $ad_id);
+        if ($stmt->execute()) {
+            echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Ad deleted successfully.</div>";
+        } else {
+            echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ Error deleting ad.</div>";
+        }
+        $stmt->close();
+    }
+}
+
+// Fetch all reported ads
 $stmt = $conn->prepare("
     SELECT 
-        a.id, 
-        a.ad_title,
-        a.ad_slug,
+        r.id AS report_id,
+        r.ad_id,
         r.reason,
         r.created_at AS reported_at,
+        a.ad_title,
+        a.ad_slug,
         u.email AS reporter_email
     FROM 
         reported_ads r
@@ -17,8 +48,6 @@ $stmt = $conn->prepare("
         ad_form a ON r.ad_id = a.id
     LEFT JOIN
         users u ON r.user_id = u.id
-    WHERE
-        a.status = 'reported'
     ORDER BY 
         r.created_at DESC
 ");
@@ -33,7 +62,7 @@ $stmt->close();
         <div>
             <h2 class="text-2xl font-semibold leading-tight">Reported Ads</h2>
         </div>
-        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+        <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-aut">
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table class="min-w-full leading-normal">
                     <thead>
@@ -48,7 +77,7 @@ $stmt->close();
                                 Reported By
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Date
+                                Reported On
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Actions
@@ -64,36 +93,31 @@ $stmt->close();
                             <?php foreach ($reported_ads as $ad): ?>
                                 <tr>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($ad['ad_title']); ?></p>
+                                        <a href="/ads/<?php echo htmlspecialchars($ad['ad_slug'] ?? $ad['ad_id']); ?>" target="_blank" class="text-blue-500 hover:underline">
+                                            <?php echo htmlspecialchars($ad['ad_title']); ?>
+                                        </a>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($ad['reason']); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($ad['reporter_email'] ?? 'N/A'); ?></p>
+                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($ad['reporter_email'] ?? 'Guest'); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo date("F j, Y", strtotime($ad['reported_at'])); ?></p>
+                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo date("F j, Y, g:i a", strtotime($ad['reported_at'])); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <div class="flex items-center">
-                                            <form action="/admin/pages/pending-ads.php" method="POST" class="inline-block">
-                                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                                                <button type="submit" name="status" value="live" class="text-green-600 hover:text-green-900 mr-3 font-semibold">Dismiss</button>
+                                            <form action="" method="POST" class="inline-block mr-2">
+                                                <input type="hidden" name="report_id" value="<?php echo $ad['report_id']; ?>">
+                                                <button type="submit" name="action" value="dismiss" class="text-green-600 hover:text-green-900 font-semibold">Dismiss</button>
                                             </form>
-                                            <form action="/admin/pages/pending-ads.php" method="POST" class="inline-block">
-                                                <input type="hidden" name="ad_id" value="<?php echo $ad['id']; ?>">
-                                                <button type="submit" name="status" value="rejected" class="text-red-600 hover:text-red-900 mr-4 font-semibold">Remove Ad</button>
+                                            <form action="" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this ad permanently?');">
+                                                <input type="hidden" name="report_id" value="<?php echo $ad['report_id']; ?>">
+                                                <input type="hidden" name="ad_id" value="<?php echo $ad['ad_id']; ?>">
+                                                <button type="submit" name="action" value="delete_ad" class="text-red-600 hover:text-red-900 font-semibold">Delete Ad</button>
                                             </form>
-                                            
                                         </div>
-                                    </td>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <a href="/ads/<?php echo htmlspecialchars($ad['ad_slug'] ?? $ad['id']); ?>" target="_blank" class="text-gray-500 hover:text-gray-700" title="View Ad">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                </svg>
-                                            </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

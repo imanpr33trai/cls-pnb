@@ -2,36 +2,6 @@
 // /admin/pages/view-blogs.php
 require_once __DIR__ . '/../../config/config.php';
 
-// Handle blog post deletion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_blog'])) {
-    $blog_id = (int)$_POST['blog_id'];
-
-    // Optional: Delete associated image if it exists
-    $stmt = $conn->prepare("SELECT image FROM blog_posts WHERE id = ?");
-    $stmt->bind_param("i", $blog_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($row = $result->fetch_assoc()) {
-        if (!empty($row['image'])) {
-            $image_path = __DIR__ . '/../../assets/uploads/' . $row['image'];
-            if (file_exists($image_path)) {
-                unlink($image_path);
-            }
-        }
-    }
-    $stmt->close();
-
-    // Delete the blog post
-    $delete_stmt = $conn->prepare("DELETE FROM blog_posts WHERE id = ?");
-    $delete_stmt->bind_param("i", $blog_id);
-    if ($delete_stmt->execute()) {
-        echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Blog post deleted successfully!</div>";
-    } else {
-        echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ Error deleting blog post.</div>";
-    }
-    $delete_stmt->close();
-}
-
 // Fetch all blog posts
 $stmt = $conn->prepare("
     SELECT 

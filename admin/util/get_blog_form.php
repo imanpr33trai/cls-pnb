@@ -47,7 +47,7 @@ if ($blog_id > 0) {
 
     <div class="mb-4">
         <label for="content" class="block text-gray-700 text-sm font-bold mb-2">Content:</label>
-        <textarea name="content" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"><?php echo htmlspecialchars($blog['content']); ?></textarea>
+        <textarea name="content" rows="10" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"><?php echo htmlspecialchars($blog['description']); ?></textarea>
     </div>
 
     <div class="mb-6">

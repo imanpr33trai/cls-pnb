@@ -266,9 +266,8 @@ include "partials/header.php";
                         <!-- Description -->
                     <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                         <label for="descriptions">Description*</label>
-                        <textarea name="descriptionforad" id="descriptions" rows="8" required maxlength="2000"></textarea>
-                        <div class="char-counter">0/2000</div>
-                        <div class="invalid-feedback">Description is required (max 2000 characters).</div>
+                        <textarea name="descriptionforad" id="descriptions" rows="8" required></textarea>
+                        <div class="invalid-feedback">Description is required.</div>
                     </div>
 
                           <!-- User Details (Pre-filled) -->
@@ -391,12 +390,21 @@ include "partials/header.php";
 <?php endif; ?>
 
 
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <!-- Include jQuery ONCE at the start -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <!-- UNIFIED SCRIPT BLOCK FOR ALL PAGE FUNCTIONALITY -->
 <script>
 $(document).ready(function() {
+    // --- CKEditor Initialization ---
+    ClassicEditor
+        .create( document.querySelector( '#descriptions' ) )
+        .catch( error => {
+            console.error( error );
+        } );
+
     // --- Setup ---
     const adForm = $('form'); // Target the main form
 
@@ -423,7 +431,7 @@ $(document).ready(function() {
         });
     }
     setupCounter('#adTitle', '.char-counter', 200);
-    setupCounter('#descriptions', '.char-counter', 2000);
+    // Counter for #descriptions removed as it's now a CKEditor instance
 
     // --- Image Preview ---
     $('#imageaduser').on('change', function (e) {
@@ -529,15 +537,4 @@ restrictToNumbers("#adpostalcode");
 restrictToNumbers("#adPrice");
 </script>
 <?php include_once('partials/footer.php'); ?>
-
-<!-- form section -->
-<!-- form section -->
-
-<!-- footer -->
-<!-- footer -->
-<?php
- include_once('partials/footer.php');
- ?>
-<!-- footer -->
-<!-- footer -->
 

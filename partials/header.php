@@ -72,12 +72,12 @@ include_once(__DIR__ . '/../config/config.php');
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
+    <!-- <script src="https://cdn.tiny.cloud/1/4hdqtud4lm7rr5ajjcpq1i0wmf7iyocm5hgfjs5oyqmw5m8p/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"
-        onerror="tinyMceFallback()"></script>
+        onerror="tinyMceFallback()"></script> -->
 
 
-    <script>
+    <!-- <script>
         function tinyMceFallback() {
             console.error('TinyMCE CDN failed to load.');
             // Show a message or fallback editor
@@ -86,7 +86,7 @@ include_once(__DIR__ . '/../config/config.php');
         <textarea name="content" rows="10" cols="50" placeholder="Write here..."></textarea>
     `;
         }
-    </script>
+    </script> -->
 
 
     <!-- other meta tags -->

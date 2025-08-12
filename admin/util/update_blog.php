@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_id'])) {
         }
     }
 
-    $update_stmt = $conn->prepare("UPDATE blog_posts SET title = ?, author_name = ?, category_id = ?, content = ?, image = ? WHERE id = ?");
+    $update_stmt = $conn->prepare("UPDATE blog_posts SET title = ?, author_name = ?, category_id = ?, description = ?, image = ? WHERE id = ?");
     $update_stmt->bind_param("ssissi", $title, $author_name, $category_id, $content, $new_image_name, $blog_id);
 
     if ($update_stmt->execute()) {

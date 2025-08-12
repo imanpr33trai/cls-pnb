@@ -2,17 +2,18 @@
 // /admin/pages/blog-cat.php
 require_once __DIR__ . '/../../config/config.php';
 
-// Handle category deletion
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_category'])) {
-    $category_id = (int)$_POST['category_id'];
-    $stmt = $conn->prepare("DELETE FROM blog_categories WHERE id = ?");
-    $stmt->bind_param("i", $category_id);
-    if ($stmt->execute()) {
-        echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Category deleted successfully!</div>";
-    } else {
-        echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>❌ Error deleting category. It might be in use.</div>";
+// Handle Add New Category
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category_1'])) {
+    $category_name = trim($_POST['category_name_blog']);
+    if (!empty($category_name)) {
+        $stmt = $conn->prepare("INSERT INTO blog_categories (name) VALUES (?)");
+        $stmt->bind_param("s", $category_name);
+        $stmt->execute();
+        $stmt->close();
+        // Redirect to the same page to prevent form resubmission
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
     }
-    $stmt->close();
 }
 
 // Fetch all blog categories
@@ -30,7 +31,7 @@ $stmt->close();
         <!-- Add New Category Form -->
         <div class="mt-8 mb-10 p-6 bg-white rounded-lg shadow">
             <h3 class="text-lg font-semibold mb-4">Add New Blog Category</h3>
-            <form action="/admin/admin-page.php" method="POST" class="max-w-lg">
+            <form action="" method="POST" class="max-w-lg">
                 <div class="mb-4">
                     <label for="category_name_blog" class="block text-gray-700 text-sm font-bold mb-2">Category Name:</label>
                     <input type="text" id="category_name_blog" name="category_name_blog" required
@@ -80,11 +81,8 @@ $stmt->close();
                                         </span>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                        <form action="" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this category?');">
-                                            <input type="hidden" name="category_id" value="<?php echo $category['id']; ?>">
-                                            <button type="submit" name="delete_category" class="text-red-600 hover:text-red-900 font-semibold">Delete</button>
-                                        </form>
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3 open-edit-blog-cat-modal" data-blog-category-id="<?php echo $category['id']; ?>">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900 font-semibold open-delete-blog-cat-modal" data-blog-category-id="<?php echo $category['id']; ?>">Delete</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

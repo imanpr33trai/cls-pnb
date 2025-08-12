@@ -15,9 +15,9 @@ if (!isset($_SESSION['admins_id'])) {
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <link rel="stylesheet" href="../assets/css/output.css">
-    <script defer src="js/script.js"></script>
+    <script defer src="/admin/js/script.js"></script>
     <style>
         .submenu { max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out, visibility 0s linear 0.3s; }
         .submenu.open { max-height: 500px; opacity: 1; visibility: visible; transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear; }
@@ -31,236 +31,12 @@ if (!isset($_SESSION['admins_id'])) {
         #sidebar { z-index: 40; }
         
         /* Modals need to be on top of EVERYTHING */
-        #edit-ad-modal, #delete-ad-modal, #edit-category-modal{ z-index: 50; }
+        #edit-ad-modal, #delete-ad-modal, #edit-category-modal, #edit-blog-modal, #edit-blog-cat-modal{ z-index: 50; }
         
         body.modal-open { overflow: hidden; }
     </style>
 </head>
-<!-- Add this single script block right before your closing </body> tag -->
 
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // =================================================================
-    //  1. CACHE ALL DOM ELEMENTS (Declared only once)
-    // =================================================================
-    const sidebar = document.getElementById("sidebar");
-    const openSidebarBtn = document.getElementById("open-sidebar");
-    const closeSidebarBtn = document.getElementById("close-sidebar");
-    const contentArea = document.getElementById("content-area");
-    const mainContent = document.getElementById("main-content"); // Keep if used for blur
-    const menuToggles = document.querySelectorAll(".menu-toggle");
-    const activeClass = "bg-gray-700";
-    
-    // --- Modals ---
-    const mainWrapper = document.getElementById("main-wrapper"); // The new blur target
-    const modalContainer = document.getElementById("modal-container");
-    
-    const editAdModal = document.getElementById("edit-ad-modal");
-    const editAdModalContent = document.getElementById("edit-ad-modal-content");
-    const closeEditModalBtn = document.getElementById("close-edit-modal");
-
-    const editCategoryModal = document.getElementById("edit-category-modal");
-    const editCategoryModalContent = document.getElementById("edit-category-modal-content");
-    const closeEditCategoryModalBtn = document.getElementById("close-edit-category-modal");
-
-    const deleteModal = document.getElementById("delete-ad-modal");
-    const confirmDeleteBtn = document.getElementById("confirm-delete-btn");
-    const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
-    
-    let itemToDelete = { id: null, type: null };
-
-    // =================================================================
-    //  2. CORE FUNCTIONS
-    // =================================================================
-
-    /**
-     * Main function to load page content dynamically via AJAX.
-     */
-    async function loadPage(page, pushState = true) {
-        closeAllModals(); // Close any open modals before navigating
-        contentArea.innerHTML = '<div class="text-center p-8">Loading...</div>';
-        try {
-            const response = await fetch(`<?php echo $base_url; ?>admin/pages/${page}`);
-            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-            contentArea.innerHTML = await response.text();
-            if (pushState) {
-                const newUrl = page === "dashboard" ? `<?php echo $base_url; ?>admin` : `<?php echo $base_url; ?>admin/${page}`;
-                history.pushState({ page }, '', newUrl);
-            }
-            updateActiveLink(page);
-        } catch (error) {
-            contentArea.innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded">${error.message}</div>`;
-        }
-    }
-
-    /**
-     * Updates the active state on sidebar links.
-     */
-    function updateActiveLink(page) {
-        document.querySelectorAll(".tab-link").forEach(link => link.classList.remove(activeClass));
-        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
-        if (activeLink) {
-            activeLink.classList.add(activeClass);
-            const parentSubmenu = activeLink.closest('.submenu');
-            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
-                parentSubmenu.previousElementSibling.click();
-            }
-        }
-    }
-
-    /**
-     * Generic functions to open and close any modal.
-     */
-    function openModal(modal) {
-        if (!modal) return;
-        modalContainer.classList.add('open');
-        modal.classList.add('open');
-        mainWrapper.classList.add("blur");
-        document.body.classList.add("modal-open");
-    }
-
-    function closeModal(modal) {
-        if (!modal) return;
-        modalContainer.classList.remove('open');
-        modal.classList.remove('open');
-        mainWrapper.classList.remove("blur");
-        document.body.classList.remove("modal-open");
-    }
-    
-    function closeAllModals() {
-        closeModal(editAdModal);
-        closeModal(editCategoryModal);
-        closeModal(deleteModal);
-    }
-
-    // =================================================================
-    //  3. EVENT LISTENERS
-    // =================================================================
-
-    // --- Sidebar and Menu Listeners ---
-    if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", () => sidebar.classList.add("-translate-x-full"));
-    
-    menuToggles.forEach(clickedToggle => {
-        clickedToggle.addEventListener("click", () => {
-            const submenu = clickedToggle.nextElementSibling;
-            if (!submenu || !submenu.classList.contains('submenu')) return;
-            const isOpen = submenu.classList.contains('open');
-            document.querySelectorAll('.submenu.open').forEach(openSubmenu => {
-                openSubmenu.classList.remove('open');
-                openSubmenu.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
-            });
-            if (!isOpen) {
-                submenu.classList.add('open');
-                clickedToggle.querySelector('svg').classList.add('rotate-180');
-            }
-        });
-    });
-
-    sidebar.addEventListener('click', (e) => {
-        const link = e.target.closest('.tab-link');
-        if (link) { e.preventDefault(); loadPage(link.dataset.page); }
-    });
-
-    window.addEventListener('popstate', (e) => loadPage(e.state?.page || 'dashboard', false));
-
-    // --- Main Event Delegation for Dynamically Loaded Content ---
-    contentArea.addEventListener('click', function(event) {
-        const editAdButton = event.target.closest('.open-edit-modal');
-        if (editAdButton) openModal(editAdModal, `/admin/util/get_ad_form.php?ad_id=${editAdButton.dataset.adId}`, editAdModalContent);
-        
-        const deleteAdButton = event.target.closest('.open-delete-modal');
-        if (deleteAdButton) openDeleteModal(deleteAdButton.dataset.adId, 'ad');
-        
-        const editCatButton = event.target.closest('.open-edit-category-modal');
-        if (editCatButton) openModal(editCategoryModal, `/admin/util/get_category_form.php?category_id=${editCatButton.dataset.categoryId}`, editCategoryModalContent);
-        
-        const deleteCatButton = event.target.closest('.open-delete-category-modal');
-        if (deleteCatButton) openDeleteModal(deleteCatButton.dataset.categoryId, 'category');
-    });
-
-    // --- Listeners for Persistent Modal Elements ---
-    modalContainer.addEventListener('submit', function(event) {
-        if (event.target.matches('#edit-ad-form')) {
-            event.preventDefault();
-            submitEditForm(event.target, 'ad');
-        }
-        if (event.target.matches('#edit-category-form')) {
-            event.preventDefault();
-            submitEditForm(event.target, 'category');
-        }
-    });
-
-    // Close buttons
-    if(closeEditModalBtn) closeEditModalBtn.addEventListener("click", () => closeModal(editAdModal));
-    if(closeEditCategoryModalBtn) closeEditCategoryModalBtn.addEventListener("click", () => closeModal(editCategoryModal));
-    if(cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", () => closeModal(deleteModal));
-    
-    // Confirm delete button
-    if (confirmDeleteBtn) confirmDeleteBtn.addEventListener("click", confirmDelete);
-
-    // =================================================================
-    //  4. MODAL AND FORM SUBMISSION LOGIC
-    // =================================================================
-
-    async function openModal(modal, url, contentTarget) {
-        if (!url) return openModal(modal); // For delete modal
-        contentTarget.innerHTML = "Loading...";
-        openModal(modal);
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to load content.');
-            contentTarget.innerHTML = await response.text();
-        } catch (error) {
-            contentTarget.innerHTML = `<p class="text-red-500">${error.message}</p>`;
-        }
-    }
-
-    async function submitEditForm(form, type) {
-        const url = type === 'ad' ? '/admin/util/edit-ad.php' : '/admin/util/update_category.php';
-        const modal = type === 'ad' ? editAdModal : editCategoryModal;
-        try {
-            const response = await fetch(url, { method: 'POST', body: new FormData(form) });
-            const result = await response.json();
-            if (result.success) {
-                alert(`${type.charAt(0).toUpperCase() + type.slice(1)} updated successfully!`);
-                closeModal(modal);
-                loadPage(type === 'ad' ? 'view-ads' : 'category');
-            } else { throw new Error(result.message); }
-        } catch(error) { alert(error.message); }
-    }
-
-    function openDeleteModal(id, type) {
-        itemToDelete = { id, type };
-        deleteModal.querySelector('h3').textContent = `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-        openModal(deleteModal);
-    }
-    
-    async function confirmDelete() {
-        if (!itemToDelete) return;
-        const { id, type } = itemToDelete;
-        const url = type === 'ad' ? '/admin/util/delete_ad.php' : '/admin/util/delete_category.php';
-        const formData = new FormData();
-        formData.append(type === 'ad' ? 'ad_id' : 'category_id', id);
-
-        try {
-            const response = await fetch(url, { method: 'POST', body: formData });
-            const result = await response.json();
-            if (result.success) {
-                alert(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted!`);
-                closeModal(deleteModal);
-                loadPage(type === 'ad' ? 'view-ads' : 'category');
-            } else { throw new Error(result.message); }
-        } catch(error) { alert(`Error: ${error.message}`); }
-    }
-    
-    // =================================================================
-    //  5. INITIAL PAGE LOAD
-    // =================================================================
-    const initialPage = '<?php echo htmlspecialchars($_GET["page"] ?? "dashboard"); ?>';
-    updateActiveLink(initialPage);
-});
-</script> -->
 <body class="bg-gray-100 font-sans">
     <div  class="flex min-h-screen">
         <aside id="sidebar" class="bg-gray-800 text-white w-64 p-4 space-y-6 fixed top-0 left-0 h-full z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -417,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Form will be loaded here -->
                 </div>
                 <div class="items-center px-4 py-3">
-                    <button id="close-edit-modal" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    <button id="close-edit-modal" class="close-edit-modal px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
                         Close
                     </button>
                 </div>
@@ -429,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
             <p class="text-2xl font-bold">Edit Category</p>
-            <button id="close-edit-category-modal" class="cursor-pointer text-2xl font-bold">&times;</button>
+            <button id="close-edit-category-modal" class="cursor-pointer text-2xl font-bold close-edit-modal">&times;</button>
         </div>
         <div id="edit-category-modal-content">Loading form...</div>
     </div>
@@ -440,9 +216,20 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
             <p class="text-2xl font-bold">Edit Blog Post</p>
-            <button id="close-edit-blog-modal" class="cursor-pointer text-2xl font-bold">&times;</button>
+            <button id="close-edit-blog-modal" class="cursor-pointer text-2xl font-bold close-edit-modal">&times;</button>
         </div>
         <div id="edit-blog-modal-content">Loading form...</div>
+    </div>
+</div>
+
+<!-- Edit Blog Category Modal -->
+<div id="edit-blog-cat-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="flex justify-between items-center pb-3">
+            <p class="text-2xl font-bold">Edit Blog Category</p>
+            <button id="close-edit-blog-cat-modal" class="cursor-pointer text-2xl font-bold close-edit-modal">&times;</button>
+        </div>
+        <div id="edit-blog-cat-modal-content">Loading form...</div>
     </div>
 </div>
 
