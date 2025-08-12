@@ -48,3 +48,11 @@ ADD COLUMN `smtp_user` VARCHAR(255) NULL,
 ADD COLUMN `smtp_pass` VARCHAR(255) NULL,
 ADD COLUMN `smtp_from_email` VARCHAR(255) NULL,
 ADD COLUMN `smtp_from_name` VARCHAR(255) NULL;
+
+-- Add slug column to ad_categories table
+ALTER TABLE `ad_categories`
+ADD COLUMN `slug` VARCHAR(255) NOT NULL UNIQUE AFTER `name`;
+
+-- Add slug column to ad_subcategories table
+ALTER TABLE `ad_subcategories`
+ADD COLUMN `slug` VARCHAR(255) NOT NULL UNIQUE AFTER `title`;

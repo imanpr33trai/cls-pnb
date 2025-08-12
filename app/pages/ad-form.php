@@ -166,7 +166,8 @@ include "partials/header.php";
     }
 
     .form-control.is-invalid~.invalid-feedback,
-    .form-select.is-invalid~.invalid-feedback {
+    .form-select.is-invalid~.invalid-feedback,
+    textarea.is-invalid~.invalid-feedback {
         display: block;
     }
 
@@ -174,6 +175,10 @@ include "partials/header.php";
         font-size: 0.8em;
         color: #6c757d;
         text-align: right;
+    }
+    .ck.ck-editor.is-invalid {
+        border: 1px solid #dc3545;
+        border-radius: 4px;
     }
 </style>
 
@@ -397,8 +402,18 @@ include "partials/header.php";
 
 <script>
     $(document).ready(function() {
+        let classicEditorInstance;
         ClassicEditor
             .create(document.querySelector('#descriptions'))
+            .then(editor => {
+                classicEditorInstance = editor;
+                // Sync editor content with the original textarea and validate on change
+                editor.model.document.on('change:data', () => {
+                    const textarea = $('#descriptions');
+                    textarea.val(editor.getData());
+                    validateField(textarea);
+                });
+            })
             .catch(error => {
                 console.error(error);
             });
@@ -406,6 +421,23 @@ include "partials/header.php";
         const adForm = $('form');
 
         function validateField(input) {
+            // Special handling for CKEditor-enabled textarea
+            if (input.attr('id') === 'descriptions' && classicEditorInstance) {
+                const editorContainer = $(classicEditorInstance.ui.view.element);
+                if (classicEditorInstance.getData().trim() === '') {
+                    input.addClass('is-invalid'); // Mark original textarea for our logic
+                    editorContainer.addClass('is-invalid'); // Mark editor visually
+                    input.siblings('.invalid-feedback').show(); // Show the message
+                    return false;
+                } else {
+                    input.removeClass('is-invalid');
+                    editorContainer.removeClass('is-invalid');
+                    input.siblings('.invalid-feedback').hide();
+                    return true;
+                }
+            }
+
+            // Default validation for other fields
             if (input.get(0).checkValidity()) {
                 input.removeClass('is-invalid');
                 return true;
@@ -414,7 +446,9 @@ include "partials/header.php";
                 return false;
             }
         }
-        adForm.find('input[required], select[required], textarea[required]').on('blur', function() {
+
+        // Add 'input' event for more responsive validation on regular fields
+        adForm.find('input[required], select[required], textarea[required]').on('blur input', function() {
             validateField($(this));
         });
 
@@ -481,7 +515,13 @@ include "partials/header.php";
         });
 
         adForm.on('submit', function(e) {
+            // Sync content one last time before submission
+            if (classicEditorInstance) {
+                $('#descriptions').val(classicEditorInstance.getData());
+            }
+
             let isFormValid = true;
+            // Validate all fields and track validity
             adForm.find('input[required], select[required], textarea[required]').each(function() {
                 if (!validateField($(this))) {
                     isFormValid = false;
@@ -495,9 +535,19 @@ include "partials/header.php";
             });
 
             if (!isFormValid) {
-                e.preventDefault();
-                alert('Please fix the errors highlighted on the form.');
-                $('.is-invalid').first().focus();
+                e.preventDefault(); // Stop submission
+                const firstInvalid = adForm.find('.is-invalid').first();
+                
+                if (firstInvalid.length > 0) {
+                    // Check if the first invalid element is the one with CKEditor
+                    if (firstInvalid.attr('id') === 'descriptions') {
+                        // Focus the actual editor UI
+                        classicEditorInstance.ui.view.editable.element.focus();
+                    } else {
+                        // Focus the standard input/select
+                        firstInvalid.focus();
+                    }
+                }
             }
         });
 

@@ -44,11 +44,7 @@ include_once(__DIR__ . '/../config/config.php');
     <meta name="twitter:description"
         content="Post your free classified ads in Punjab. Reach your customers with zero cost and instant exposure.">
     <meta name="twitter:image" content="https://punjabclassified.com/share-image.jpg">
-    <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
 
-    <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
-
-    <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <script type="application/ld+json">
