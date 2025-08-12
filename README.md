@@ -1,5 +1,10 @@
 # pnb-cls
 
+for clone 
+git clone -b url_refine https://github.com/imanpr33trai/cls-pnb.git
+cd cls-pnb
+composer i
+
 ## URL Structure Changes
 
 This project has been updated to use SEO-friendly and readable URLs (slugs) instead of ID-based URLs.
