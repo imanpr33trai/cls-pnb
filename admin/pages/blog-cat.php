@@ -1,17 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../../config/config.php';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category_1'])) {
-    $category_name = trim($_POST['category_name_blog']);
-    if (!empty($category_name)) {
-        $stmt = $conn->prepare("INSERT INTO blog_categories (name) VALUES (?)");
-        $stmt->bind_param("s", $category_name);
-        $stmt->execute();
-        $stmt->close();
-               header("Location: " . $_SERVER['REQUEST_URI']);
-        exit();
-    }
-}
 $stmt = $conn->prepare("SELECT id, name, status, created_at FROM blog_categories ORDER BY name ASC");
 $stmt->execute();
 $result = $stmt->get_result();

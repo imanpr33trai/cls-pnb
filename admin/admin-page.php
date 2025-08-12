@@ -3,6 +3,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (isset($_GET['page']) && $_GET['page'] === 'blog-cat' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category_1'])) {
+    require_once __DIR__ . '/../config/config.php';
+    $category_name = trim($_POST['category_name_blog']);
+    if (!empty($category_name)) {
+        $stmt = $conn->prepare("INSERT INTO blog_categories (name) VALUES (?)");
+        $stmt->bind_param("s", $category_name);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    }
+}
+
 if (!isset($_SESSION['admins_id'])) {
        header("Location: /admin/login");
     exit;

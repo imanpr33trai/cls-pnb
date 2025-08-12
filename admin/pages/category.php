@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_category'])) {
     $delete_stmt->close();
 }
 
-$stmt = $conn->prepare("SELECT id, name, image, status, created_at FROM ad_categories ORDER BY created_at DESC");
+$stmt = $conn->prepare("SELECT id, name, slug, image, status, created_at FROM ad_categories ORDER BY created_at DESC");
 $stmt->execute();
 $result = $stmt->get_result();
 $categories = $result->fetch_all(MYSQLI_ASSOC);
@@ -53,6 +53,9 @@ $stmt->close();
                                 Name
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Slug
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Status
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -77,6 +80,9 @@ $stmt->close();
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($category['name']); ?></p>
+                                    </td>
+                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                        <p class="text-gray-900 whitespace-no-wrap"><?php echo htmlspecialchars($category['slug']); ?></p>
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                         <span class="relative inline-block px-3 py-1 font-semibold leading-tight <?php echo $category['status'] === 'live' ? 'text-green-900' : 'text-yellow-900'; ?>">
