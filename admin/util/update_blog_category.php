@@ -1,5 +1,5 @@
 <?php
-// /admin/util/update_blog_category.php
+
 require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');

@@ -1,8 +1,8 @@
 <?php
-// /admin/util/get_ad_form.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Function to fetch categories from the database
+
 function getCategories($conn) {
     $categories = [];
     $result = $conn->query("SELECT id, name FROM ad_categories ORDER BY name ASC");
@@ -12,7 +12,7 @@ function getCategories($conn) {
     return $categories;
 }
 
-// Function to fetch subcategories for a given category
+
 function getSubcategories($conn, $categoryId) {
     $subcategories = [];
     $stmt = $conn->prepare("SELECT id, title FROM ad_subcategories WHERE category_id = ? ORDER BY title ASC");
@@ -45,13 +45,15 @@ if ($ad_id > 0) {
     <input type="hidden" name="update_ad" value="1">
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Ad Title -->
+         
+
         <div class="mb-4">
             <label for="ad_title" class="block text-gray-700 text-sm font-bold mb-2">Ad Title</label>
             <input type="text" id="ad_title" name="ad_title" value="<?php echo htmlspecialchars($ad['ad_title']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- Category -->
+         
+
         <div class="mb-4">
             <label for="category" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
             <select id="category" name="category" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -63,7 +65,8 @@ if ($ad_id > 0) {
             </select>
         </div>
 
-        <!-- Subcategory -->
+         
+
         <div class="mb-4">
             <label for="subcategory" class="block text-gray-700 text-sm font-bold mb-2">Subcategory</label>
             <select id="subcategory" name="subcategory" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -75,37 +78,43 @@ if ($ad_id > 0) {
             </select>
         </div>
 
-        <!-- Asking Price -->
+         
+
         <div class="mb-4">
             <label for="asking_price" class="block text-gray-700 text-sm font-bold mb-2">Asking Price</label>
             <input type="number" step="0.01" id="asking_price" name="asking_price" value="<?php echo htmlspecialchars($ad['asking_price']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- User Name -->
+         
+
         <div class="mb-4">
             <label for="user_name" class="block text-gray-700 text-sm font-bold mb-2">User Name</label>
             <input type="text" id="user_name" name="user_name" value="<?php echo htmlspecialchars($ad['user_name']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- Email -->
+         
+
         <div class="mb-4">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
             <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($ad['email']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- Phone -->
+         
+
         <div class="mb-4">
             <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
             <input type="text" id="phone" name="phone" value="<?php echo htmlspecialchars($ad['phone']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- Location -->
+         
+
         <div class="mb-4">
             <label for="location" class="block text-gray-700 text-sm font-bold mb-2">Location</label>
             <input type="text" id="location" name="location" value="<?php echo htmlspecialchars($ad['location']); ?>" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
-        <!-- Status -->
+         
+
         <div class="mb-4">
             <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status</label>
             <select id="status" name="status" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -117,7 +126,8 @@ if ($ad_id > 0) {
         </div>
     </div>
 
-    <!-- Description -->
+     
+
     <div class="mb-6">
         <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
         <textarea id="description" name="description" rows="6" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"><?php echo htmlspecialchars($ad['description']); ?></textarea>

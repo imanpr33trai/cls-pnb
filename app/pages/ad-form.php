@@ -1,16 +1,16 @@
 <?php
-// CRUCIAL: Must be the very first thing on the page
+
 
 include_once(__DIR__ . '/../../config/config.php');
 
-// --- Security: Redirect non-logged-in users ---
+
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['redirect_to'] = 'ad-form.php';
     header('Location: login.php');
     exit();
 }
 
-// --- Fetch Logged-in User Data ---
+
 $user_id = $_SESSION['user_id'];
 $user_data = [];
 $stmt_user = $conn->prepare("SELECT first_name, last_name, email, phone FROM users WHERE id = ?");
@@ -23,7 +23,7 @@ if ($result_user->num_rows === 1) {
 $stmt_user->close();
 
 
-// --- Math Captcha Logic ---
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $num1 = rand(1, 9);
     $num2 = rand(1, 9);
@@ -31,10 +31,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $_SESSION['captcha_answer'] = $num1 + $num2;
 }
 
-// --- Form Submission Logic ---
+
 $errors = [];
 if (isset($_POST['btn_save'])) {
-    // --- Collect and Sanitize Form Data ---
+    
     $category       = $_POST['adcategory'] ?? '';
     $subcategory    = $_POST['adsubcategory'] ?? '';
     $other          = trim($_POST['adothercat'] ?? '');
@@ -53,9 +53,9 @@ if (isset($_POST['btn_save'])) {
     $platforms      = $_POST['platform'] ?? [];
     $links          = $_POST['link'] ?? [];
 
-    // --- DETAILED IMAGE UPLOAD LOGIC ---
-    $image = ''; // Start with an empty image name
-    // Check if a file was submitted via the 'picture' input
+    
+    $image = ''; 
+    
     if (isset($_FILES['picture']) && $_FILES['picture']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['picture']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['picture']['tmp_name'];
@@ -65,13 +65,13 @@ if (isset($_POST['btn_save'])) {
 
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
             if (in_array($fileExtension, $allowedExtensions)) {
-                if ($fileSize < 5 * 1024 * 1024) { // Max 5MB
+                if ($fileSize < 5 * 1024 * 1024) { 
                     $newFileName = uniqid('ad_', true) . '.' . $fileExtension;
                     $uploadDir = dirname(__DIR__, 2) . '/assets/uploads/ads_form/';
                     $uploadPath = $uploadDir . $newFileName;
 
                     if (move_uploaded_file($fileTmpPath, $uploadPath)) {
-                        $image = $newFileName; // SUCCESS!
+                        $image = $newFileName; 
                     } else {
                         $errors[] = "Error: Could not move the uploaded file. Please check server directory permissions.";
                     }
@@ -82,7 +82,7 @@ if (isset($_POST['btn_save'])) {
                 $errors[] = "Error: Invalid file type. Please upload a JPG, PNG, WEBP, or GIF.";
             }
         } else {
-            // Handle other specific upload errors
+            
             $upload_errors = [
                 UPLOAD_ERR_INI_SIZE   => "The uploaded file exceeds the server's maximum file size limit.",
                 UPLOAD_ERR_FORM_SIZE  => "The uploaded file exceeds the form's maximum file size limit.",
@@ -96,17 +96,17 @@ if (isset($_POST['btn_save'])) {
         }
     }
 
-    // --- Server-Side Validation ---
+    
     if (empty($category)) { $errors[] = "Category is required."; }
-    // ... (add other validation rules as needed) ...
+    
     if (intval($captcha_answer) !== $_SESSION['captcha_answer']) { $errors[] = "The answer to the math question is incorrect."; }
 
 
-    // --- Process and Store Data if No Errors ---
+    
     if (empty($errors)) {
         $expires_at = date('Y-m-d H:i:s', strtotime($expireIn));
 
-        // *** CORRECTED PLATFORM/LINK LOGIC ***
+        
         $platform_names_array = [];
         $platform_links_array = [];
         foreach ($platforms as $index => $platform_name) {
@@ -118,12 +118,12 @@ if (isset($_POST['btn_save'])) {
                 }
             }
         }
-        // Convert arrays to comma-separated strings
+        
         $platform_names_str = implode(', ', $platform_names_array);
         $platform_links_str = implode(', ', $platform_links_array);
-        // *** END OF CORRECTION ***
+        
 
-        // Create the unique slug for the ad
+        
         $ad_slug = create_unique_slug($conn, $adTitle, 'ad_form', 'ad_slug');
 
         $stmt = $conn->prepare("INSERT INTO ad_form (
@@ -132,7 +132,7 @@ if (isset($_POST['btn_save'])) {
             expires_in, expires_at, image, platforms, platform_links, ad_slug
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        // Bind parameters with corrected types and variables
+        
         $stmt->bind_param(
             "ssssdssssssssssssss",
             $category, $subcategory, $other, $adTitle, $askingPrice, $description, $name,
@@ -152,11 +152,11 @@ if (isset($_POST['btn_save'])) {
     }
 }
 
-// --- Must include header AFTER all PHP logic ---
+
 include "partials/header.php";
 ?>
 <style>
-/* Add styles for validation feedback */
+
 .form-control.is-invalid, .form-select.is-invalid {
     border-color: #dc3545;
 }
@@ -178,8 +178,8 @@ include "partials/header.php";
 }
 </style>
 
-<!-- Breadcrump -->
-<!-- Breadcrump -->
+
+
 <section class="breadcrump  py-2.5">
     <div class="container">
         <div class="row">
@@ -190,8 +190,8 @@ include "partials/header.php";
         </div>
     </div>
 </section>
-<!-- Breadcrump -->
-<!-- Breadcrump -->
+
+
 
 
 <?php if (!isset($_SESSION['user_id'])): ?>
@@ -200,15 +200,15 @@ include "partials/header.php";
         <a href="<?php echo $base_url; ?>login.php" class="theme-btn">Login to Continue</a>
     </div>
 <?php else: ?>
-    <!-- Show the form -->
-    <!-- form section -->
-<!-- form section -->
+    
+    
+
 <section class="form-section pb-24">
     <div class="container">
         <div class="row">
             <div class="col">
                 <h1 class="fos-40 playfair-medium mb-7">Create Your Free ads</h1>
-                   <!-- Display Success/Error Messages -->
+                   
                 <?php if (!empty($_SESSION['form_success'])): ?>
                     <div class="alert alert-success"><?php echo $_SESSION['form_success']; ?></div>
                     <?php unset($_SESSION['form_success']); ?>
@@ -220,7 +220,7 @@ include "partials/header.php";
                 <?php endif; ?>
                 <form action="" method="POST" enctype="multipart/form-data">
 
-                    <!-- form row-->
+                    
                     <div class="row">
                         <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7">
                             <label for="categoryOfads">Category*</label>
@@ -248,7 +248,7 @@ include "partials/header.php";
                         <div class="invalid-feedback">Only letters, spaces, and hyphens are allowed.</div>
                     </div>
 
-                          <!-- Ad Title -->
+                          
                     <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                         <label for="adTitle">Ad Title*</label>
                         <input  type="text" name="adTitlemytit" id="adTitle" required maxlength="200" />
@@ -256,21 +256,21 @@ include "partials/header.php";
                         <div class="invalid-feedback">Title is required (max 200 characters).</div>
                     </div>
 
-                          <!-- Asking Price -->
+                          
                     <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                         <label for="adPrice">Asking price*</label>
                         <input type="number" name="askingPriceforad" id="adPrice" placeholder="Enter 0 if free" step="0.01" min="0" required/>
                         <div class="invalid-feedback">Please enter a valid price (e.g., 150.50).</div>
                     </div>
 
-                        <!-- Description -->
+                        
                     <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                         <label for="descriptions">Description*</label>
                         <textarea name="descriptionforad" id="descriptions" rows="8" required></textarea>
                         <div class="invalid-feedback">Description is required.</div>
                     </div>
 
-                          <!-- User Details (Pre-filled) -->
+                          
                     <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7">
                         <label for="aduserName">Your Name*</label>
                         <input type="text" name="adusername" id="aduserName" value="<?php echo htmlspecialchars($user_data['first_name'] . ' ' . $user_data['last_name']); ?>" readonly />
@@ -301,14 +301,14 @@ include "partials/header.php";
                             <input type="text" name="adcityuser" id="adusercityTown" placeholder="" />
                         </div>
 
-                        <!-- Postal Code -->
+                        
                     <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7">
                         <label for="adpostalcode">Postal code*</label>
                         <input type="text" name="adpostalCodeuser" id="adpostalcode" required pattern="\d{6}" maxlength="6" />
                         <div class="invalid-feedback">Must be a 6-digit postal code.</div>
                     </div>
 
-                          <!-- Expires In -->
+                          
                     <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7">
                         <label for="expiresindate">Expires In*</label>
                         <select name="adexpireingin" id="expiresindate" class="form-select" required>
@@ -322,7 +322,7 @@ include "partials/header.php";
                         <div class="invalid-feedback">Please select a duration.</div>
                     </div>
 
-                   <!-- Captcha -->
+                   
 <div class="col-lg-4 col-sm-12 d-flex flex-column mb-7">
     <label for="pleaseTypeThisCode"><?php echo $_SESSION['captcha_question'] ?? 'Please solve the math problem.'; ?>*</label>
     <input type="number" name="adtypecode" id="pleaseTypeThisCode" required />
@@ -341,15 +341,15 @@ include "partials/header.php";
         </div>
     </div>
 
-                        <!-- Preview Area -->
+                        
     <div class="col-lg-6 col-sm-12 d-flex flex-column mb-7 file-upload-main">
         <label>Preview Images</label>
         <div id="preview-images" class="d-flex flex-wrap gap-3"></div>
     </div>
 
-                       <!-- Platform/Link Section (Now Repeatable) -->
+                       
                     <div id="platform-container">
-                        <!-- Initial Row -->
+                        
                         <div class="row platform-row align-items-end mb-3">
                             <div class="col-lg-4 col-sm-12 d-flex flex-column">
                                 <label>Platform</label>
@@ -365,7 +365,7 @@ include "partials/header.php";
                             </div>
                             <div class="col-lg-7 col-sm-12 d-flex flex-column">
                                 <label>Link</label>
-                                <input type="url" name="link[]" class="form-control" placeholder="https://..." />
+                                <input type="url" name="link[]" class="form-control" placeholder="https:
                             </div>
                             <div class="col-lg-1 col-sm-12 d-flex">
                                 <button type="button" class="theme-btn remove-platform-btn" style="display:none;">X</button>
@@ -377,11 +377,11 @@ include "partials/header.php";
                     </div>
 
                         <div class="col-lg-12 col-sm-12 mb-7 text-center text-md-start">
-                            <!-- <a href="#" name="btn_save" class="theme-btn w-100 text-decoration-none">Post This Ad</a> -->
+                            
                             <button type="submit" name="btn_save" id="btn_save" class="theme-btn">Post This Ad</button>
                         </div>
                     </div>
-                    <!-- form row -->
+                    
                 </form>
             </div>
         </div>
@@ -390,25 +390,25 @@ include "partials/header.php";
 <?php endif; ?>
 
 
-<!-- CKEditor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-<!-- Include jQuery ONCE at the start -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- UNIFIED SCRIPT BLOCK FOR ALL PAGE FUNCTIONALITY -->
+<script src="https:
+
+<script src="https:
+
+
 <script>
 $(document).ready(function() {
-    // --- CKEditor Initialization ---
+    
     ClassicEditor
         .create( document.querySelector( '#descriptions' ) )
         .catch( error => {
             console.error( error );
         } );
 
-    // --- Setup ---
-    const adForm = $('form'); // Target the main form
+    
+    const adForm = $('form'); 
 
-    // --- Live Validation & Feedback ---
+    
     function validateField(input) {
         if (input.get(0).checkValidity()) {
             input.removeClass('is-invalid');
@@ -422,7 +422,7 @@ $(document).ready(function() {
         validateField($(this));
     });
 
-    // --- Character Counters ---
+    
     function setupCounter(inputId, counterClass, maxLength) {
         const input = $(inputId);
         const counter = input.parent().find(counterClass);
@@ -431,12 +431,12 @@ $(document).ready(function() {
         });
     }
     setupCounter('#adTitle', '.char-counter', 200);
-    // Counter for #descriptions removed as it's now a CKEditor instance
+    
 
-    // --- Image Preview ---
+    
     $('#imageaduser').on('change', function (e) {
         const previewContainer = $('#preview-images');
-        previewContainer.html(''); // Clear previous previews
+        previewContainer.html(''); 
         const file = e.target.files[0];
         if (!file) return;
 
@@ -452,13 +452,13 @@ $(document).ready(function() {
         };
         reader.readAsDataURL(file);
     });
-    // Remove preview image button
+    
     $('#preview-images').on('click', '.remove-preview-btn', function() {
         $(this).parent().remove();
         $('#imageaduser').val('');
     });
 
-    // --- Dynamic Subcategories ---
+    
     $('#categoryOfads').on('change', function() {
         var categoryId = $(this).val();
         if (categoryId) {
@@ -475,7 +475,7 @@ $(document).ready(function() {
         }
     });
 
-    // --- "Add More" Platforms Logic ---
+    
     $('#add-more-platforms').on('click', function(e) {
         e.preventDefault();
         const platformRow = $('.platform-row').first().clone();
@@ -484,22 +484,22 @@ $(document).ready(function() {
         $('#platform-container').append(platformRow);
     });
 
-    // --- "Remove" Platform Logic ---
+    
     $('#platform-container').on('click', '.remove-platform-btn', function() {
         $(this).closest('.platform-row').remove();
     });
 
-    // --- Final Form Submission Validation ---
+    
     adForm.on('submit', function(e) {
         let isFormValid = true;
-        // Check all required fields
+        
         adForm.find('input[required], select[required], textarea[required]').each(function() {
             if (!validateField($(this))) {
                 isFormValid = false;
             }
         });
         
-        // Also validate non-required fields that have a pattern
+        
         adForm.find('input[pattern]').each(function() {
              if ($(this).val() !== '' && !validateField($(this))) {
                 isFormValid = false;
@@ -507,13 +507,13 @@ $(document).ready(function() {
         });
 
         if (!isFormValid) {
-            e.preventDefault(); // Stop submission
+            e.preventDefault(); 
             alert('Please fix the errors highlighted on the form.');
             $('.is-invalid').first().focus();
         }
     });
 
-    // --- Success Popup Logic (from your code) ---
+    
     const successPopup = document.getElementById('successPopup');
     if (successPopup && successPopup.style.display !== 'none') {
         setTimeout(function () {
@@ -521,17 +521,17 @@ $(document).ready(function() {
         }, 2000);
     }
 
-    // --- Restrict inputs to numbers only ---
+    
   
 });
 function restrictToNumbers(selector) {
   $(selector).on("input", function () {
-    // Replace any character that is not a digit with an empty string
+    
     this.value = this.value.replace(/[^0-9]/g, "");
   });
 }
 
-// Apply the numeric restriction to the phone and postal code fields
+
 restrictToNumbers("#teluserads");
 restrictToNumbers("#adpostalcode");
 restrictToNumbers("#adPrice");

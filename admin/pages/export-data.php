@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/export-data.php
 require_once __DIR__ . '/../../config/config.php';
 
-// Function to output data as CSV
 function output_csv($filename, $data) {
     header('Content-Type: text/csv');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -13,10 +11,8 @@ function output_csv($filename, $data) {
     
     $output = fopen('php://output', 'w');
     
-    // Add headers
     fputcsv($output, array_keys($data[0]));
     
-    // Add data rows
     foreach ($data as $row) {
         fputcsv($output, $row);
     }
@@ -25,7 +21,7 @@ function output_csv($filename, $data) {
     exit;
 }
 
-// Handle export requests
+
 if (isset($_GET['export'])) {
     $export_type = $_GET['export'];
     
@@ -55,7 +51,7 @@ if (isset($_GET['export'])) {
         <p class="mt-2 text-gray-600">Download your site's data in CSV format.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            <!-- Export Users -->
+            
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-gray-700 mb-2">Export Users</h3>
                 <p class="text-gray-600 mb-4">Download a CSV file of all registered users.</p>
@@ -64,7 +60,7 @@ if (isset($_GET['export'])) {
                 </a>
             </div>
 
-            <!-- Export Subscribers -->
+            
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-gray-700 mb-2">Export Subscribers</h3>
                 <p class="text-gray-600 mb-4">Download a CSV file of all newsletter subscribers.</p>
@@ -73,7 +69,7 @@ if (isset($_GET['export'])) {
                 </a>
             </div>
 
-            <!-- Export Ads -->
+            
             <div class="bg-white p-6 rounded-lg shadow">
                 <h3 class="text-lg font-semibold text-gray-700 mb-2">Export Ads</h3>
                 <p class="text-gray-600 mb-4">Download a CSV file of all ads.</p>

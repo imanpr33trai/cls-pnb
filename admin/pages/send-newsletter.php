@@ -1,8 +1,8 @@
 <?php
-// /admin/pages/send-newsletter.php
+
 require_once __DIR__ . '/../../config/config.php';
 ?>
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="https:
 <div class="container mx-auto px-4 sm:px-8">
     <div class="py-8">
         <h2 class="text-2xl font-semibold leading-tight">Send Newsletter</h2>
@@ -32,16 +32,16 @@ require_once __DIR__ . '/../../config/config.php';
     </div>
 </div>
 
-<!-- CKEditor 5 Initialization -->
+
 
 <script>
     const newsletterForm = document.getElementById('send-newsletter-form');
     const newsletterStatus = document.getElementById('newsletter-status');
-    let editor; // To hold the editor instance
+    let editor; 
 
     ClassicEditor
         .create(document.querySelector('#newsletter-body'), {
-            // CKEditor configuration options can go here
+            
             toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo', 'insertTable' ],
         })
         .then(newEditor => {
@@ -55,7 +55,7 @@ require_once __DIR__ . '/../../config/config.php';
         e.preventDefault();
         
         const subject = document.getElementById('subject').value;
-        const body = editor.getData(); // Get content from CKEditor
+        const body = editor.getData(); 
 
         if (!subject || !body) {
             newsletterStatus.innerHTML = `<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">⚠️ Please fill in both the subject and the body.</div>`;
@@ -77,7 +77,7 @@ require_once __DIR__ . '/../../config/config.php';
             if (data.success) {
                 newsletterStatus.innerHTML = `<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">✅ ${data.message}</div>`;
                 newsletterForm.reset();
-                editor.setData(''); // Clear CKEditor
+                editor.setData(''); 
             } else {
                 throw new Error(data.message);
             }

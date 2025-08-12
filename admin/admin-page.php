@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['admins_id'])) {
-    // Use an absolute path for the redirect
+    
     header("Location: /admin/login");
     exit;
 }
@@ -23,14 +23,14 @@ if (!isset($_SESSION['admins_id'])) {
         .submenu.open { max-height: 500px; opacity: 1; visibility: visible; transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear; }
         .rotate-180 { transform: rotate(180deg); transition: transform 0.3s ease-in-out; }
         
-        /* Ensure main content has a base z-index */
+        
         #main-content { position: relative; z-index: 10; }
         #main-content.blur { filter: blur(4px); transition: filter 0.3s ease; }
         
-        /* Sidebar needs to be above main content */
+        
         #sidebar { z-index: 40; }
         
-        /* Modals need to be on top of EVERYTHING */
+        
         #edit-ad-modal, #delete-ad-modal, #edit-category-modal, #edit-blog-modal, #edit-blog-cat-modal{ z-index: 50; }
         
         body.modal-open { overflow: hidden; }
@@ -43,7 +43,7 @@ if (!isset($_SESSION['admins_id'])) {
             <div class="flex justify-between items-center">
                 <h3 class="text-2xl font-bold">Admin Panel</h3>
                 <button class="md:hidden p-2" id="close-sidebar">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http:
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -56,8 +56,10 @@ if (!isset($_SESSION['admins_id'])) {
                         </a>
                     </li>
                     
-                    <!-- Ads -->    
-                    <!-- Ads -->
+                     
+    
+                     
+
                     <li>
                         <button type="button" class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">📢</span> Ads</span>
@@ -70,7 +72,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Ad Categories -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">🏷️</span> Ad Categories</span>
@@ -83,7 +86,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Blogs -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">📝</span> Blogs</span>
@@ -95,7 +99,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Blog Categories -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">📚</span> Blog Categories</span>
@@ -106,7 +111,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Users -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">👥</span> Users</span>
@@ -117,7 +123,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Subscribers -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">📧</span> Subscribers</span>
@@ -129,7 +136,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Settings -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">⚙️</span> Settings</span>
@@ -142,7 +150,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Tools -->
+                     
+
                     <li>
                         <button class="menu-toggle w-full flex justify-between items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 text-left">
                             <span class="flex items-center"><span class="mr-3">🛠️</span> Tools</span>
@@ -155,7 +164,8 @@ if (!isset($_SESSION['admins_id'])) {
                         </ul>
                     </li>
 
-                    <!-- Logout -->
+                     
+
                     <li class="pt-4 border-t border-gray-700">
                         <a href="logout.php" class="flex items-center px-4 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200">
                            <span class="mr-3">🚪</span> Logout
@@ -190,7 +200,8 @@ if (!isset($_SESSION['admins_id'])) {
             <div class="mt-3 text-center">
                 <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Ad</h3>
                 <div id="edit-ad-modal-content" class="mt-2 px-7 py-3">
-                    <!-- Form will be loaded here -->
+                     
+
                 </div>
                 <div class="items-center px-4 py-3">
                     <button id="close-edit-modal" class="close-edit-modal px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
@@ -200,7 +211,8 @@ if (!isset($_SESSION['admins_id'])) {
             </div>
         </div>
     </div>
-    <!-- Edit Category Modal -->
+     
+
 <div id="edit-category-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
     <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
@@ -211,7 +223,8 @@ if (!isset($_SESSION['admins_id'])) {
     </div>
 </div>
 
-<!-- Edit Blog Modal -->
+ 
+
 <div id="edit-blog-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
     <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
@@ -222,7 +235,8 @@ if (!isset($_SESSION['admins_id'])) {
     </div>
 </div>
 
-<!-- Edit Blog Category Modal -->
+ 
+
 <div id="edit-blog-cat-modal" class="fixed inset-0 mx-auto overflow-y-auto h-full w-full hidden">
     <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
@@ -233,7 +247,8 @@ if (!isset($_SESSION['admins_id'])) {
     </div>
 </div>
 
-    <!-- Delete Ad Modal -->
+     
+
     <div id="delete-ad-modal" class="fixed inset-0 overflow-y-auto h-full w-full hidden">
         <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
@@ -258,309 +273,23 @@ if (!isset($_SESSION['admins_id'])) {
             </div>
         </div>
     </div>
-    <!-- /admin/admin-page.php -->
-<!-- Add this inside your #modal-container div -->
+     
+
+ 
 
 
 
-    <!-- Initialize the admin panel -->
-<!-- This is the <script> block in /admin/admin-page.php -->
 
-<!-- This is the <script> block in /admin/admin-page.php -->
+     
 
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById("sidebar");
-    const openSidebarBtn = document.getElementById("open-sidebar");
-    const closeSidebarBtn = document.getElementById("close-sidebar");
-    const contentArea = document.getElementById("content-area");
-    const tabLinks = document.querySelectorAll(".tab-link");
-    const menuToggles = document.querySelectorAll(".menu-toggle");
-    const activeClass = "bg-gray-700";
-const mainContent = document.getElementById("main-content");
-        const editAdModal = document.getElementById("edit-ad-modal");
-    const editAdModalContent = document.getElementById("edit-ad-modal-content");
-    const closeEditModalBtn = document.getElementById("close-edit-modal");
-    const deleteAdModal = document.getElementById("delete-ad-modal");
-    const confirmDeleteBtn = document.getElementById("confirm-delete-btn"); 
-    const cancelDeleteBtn = document.getElementById("cancel-delete-btn");
-    let adToDeleteId = null;
+ 
 
 
-    // Sidebar and Menu toggle logic (your existing code is good)
-        if (openSidebarBtn) openSidebarBtn.addEventListener("click", () => sidebar.classList.remove("-translate-x-full"));
-    if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", () => sidebar.classList.add("-translate-x-full"));
-    menuToggles.forEach(clickedToggle => {
-        clickedToggle.addEventListener("click", () => {
-            const clickedSubmenu = clickedToggle.nextElementSibling;
-            if (!clickedSubmenu || !clickedSubmenu.classList.contains('submenu')) return;
-            menuToggles.forEach(otherToggle => {
-                if (otherToggle !== clickedToggle) {
-                    const otherSubmenu = otherToggle.nextElementSibling;
-                    if (otherSubmenu && otherSubmenu.classList.contains('open')) {
-                        otherSubmenu.classList.remove('open');
-                        otherToggle.querySelector('svg').classList.remove('rotate-180');
-                    }
-                }
-            });
-            clickedSubmenu.classList.toggle("open");
-            clickedToggle.querySelector("svg").classList.toggle("rotate-180");
-        });
-    });
-
-    /**
-     * Main function to load content into the dashboard dynamically.
-     */
-    async function loadPage(page, pushState = true) {
-        contentArea.innerHTML = '<div class="text-center p-8">Loading...</div>';
-        
-        // THE FIX: Fetch from the dedicated AJAX endpoint your router now understands
-        const fetchUrl = `/admin/pages/${page}`;
-
-        try {
-            const response = await fetch(fetchUrl);
-            if (!response.ok) throw new Error(`Error: ${await response.text() || 'Page content not found'}`);
-
-            const html = await response.text();
-            contentArea.innerHTML = html;
-
-            if (pushState) {
-                // THE FIX: Push a clean user-facing URL to the browser history
-                const newUrl = page === "dashboard" ? `/admin` : `/admin/${page}`;
-                history.pushState({ page: page }, '', newUrl);
-            }
-            document.title = `Admin | ${page.charAt(0).toUpperCase() + page.slice(1).replace('-', ' ')}`;
-            updateActiveLink(page);
-        } catch (error) {
-            console.error("Error loading page:", error);
-            contentArea.innerHTML = `<div class="p-4 bg-red-100 text-red-700 rounded">${error.message}</div>`;
-        }
-    }
-
-    /**
-     * Updates the active state on sidebar links.
-     */
-    function updateActiveLink(page) {
-        tabLinks.forEach(link => link.classList.remove(activeClass));
-        const activeLink = document.querySelector(`.tab-link[data-page="${page}"]`);
-        if (activeLink) {
-            activeLink.classList.add(activeClass);
-            const parentSubmenu = activeLink.closest('.submenu');
-            if (parentSubmenu && !parentSubmenu.classList.contains('open')) {
-                parentSubmenu.previousElementSibling.click();
-            }
-        }
-    }
-
-    // --- Main Event Listener for all sidebar links ---
-  sidebar.addEventListener('click', (e) => {
-        const link = e.target.closest('.tab-link');
-        if (link) { e.preventDefault(); loadPage(link.dataset.page); }
-    });
-
-    // --- Browser Back/Forward Button Support ---
- window.addEventListener('popstate', (e) => loadPage(e.state?.page || 'dashboard', false));
-
- mainContent.addEventListener('click', function(event) {
-        const target = event.target;
-        
-        // --- HANDLE EDIT MODAL BUTTON CLICK ---
-        if (target.matches('.open-edit-modal')) {
-            openEditModal(target.dataset.adId);
-        }
-
-        // --- HANDLE DELETE MODAL BUTTON CLICK ---
-        if (target.matches('.open-delete-modal')) {
-            openDeleteModal(target.dataset.adId);
-        }
-
-        // --- HANDLE EDIT FORM SUBMISSION ---
-        if (target.matches('#edit-ad-form button[type="submit"]')) {
-            const form = target.closest('#edit-ad-form');
-            if (form) {
-                event.preventDefault();
-                submitEditForm(form);
-            }
-        }
-    });
-
-    // --- MODAL FUNCTIONS ---
-    function openModal(modal) {
-        modal.classList.remove("hidden");
-        mainContent.classList.add("blur");
-        document.body.classList.add("modal-open");
-    }
-    function closeModal(modal) {
-        modal.classList.add("hidden");
-        mainContent.classList.remove("blur");
-        document.body.classList.remove("modal-open");
-    }
-
-    async function openEditModal(adId) {
-        if (!adId) return;
-        editAdModalContent.innerHTML = "Loading form...";
-        openModal(editAdModal);
-        try {
-            const response = await fetch(`<?php echo $base_url; ?>admin/util/get_ad_form.php?ad_id=${adId}`);
-            if (!response.ok) throw new Error('Failed to load edit form.');
-            editAdModalContent.innerHTML = await response.text();
-        } catch (error) { editAdModalContent.innerHTML = `<p class="text-red-500">${error.message}</p>`; }
-    }
-
-    if (closeEditModalBtn) closeEditModalBtn.addEventListener("click", () => closeModal(editAdModal));
-
-    async function submitEditForm(form) {
-        try {
-            const response = await fetch('<?php echo $base_url; ?>admin/util/edit-ad.php', { method: 'POST', body: new FormData(form) });
-            const result = await response.json();
-            if (result.success) {
-                alert('Ad updated successfully!');
-                closeModal(editAdModal);
-                loadPage(new URLSearchParams(window.location.search).get('page') || 'view-ads');
-            } else { throw new Error(result.message || 'Failed to update ad.'); }
-        } catch(error) { alert(error.message); }
-    }
-
-    function openDeleteModal(adId) { adToDeleteId = adId; openModal(deleteAdModal); }
-    if (cancelDeleteBtn) cancelDeleteBtn.addEventListener("click", () => closeModal(deleteAdModal));
-
-    if (confirmDeleteBtn) {
-        confirmDeleteBtn.addEventListener("click", async () => {
-            if (!adToDeleteId) return;
-            try {
-                const formData = new FormData();
-                formData.append('ad_id', adToDeleteId);
-                const response = await fetch(`<?php echo $base_url; ?>admin/util/delete_ad.php`, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.success) {
-                    
-                    closeModal(deleteAdModal);
-                    loadPage(new URLSearchParams(window.location.search).get('page') || 'view-ads');
-                } else { throw new Error(result.message || 'Failed to delete ad.'); }
-            } catch(error) { alert(error.message); }
-        });
-    }
+ 
 
 
-    // --- Load Initial Page Content ---
-    // The PHP router now passes the initial page name via $_GET['page']
-    const initialPage = '<?php echo htmlspecialchars($_GET["page"] ?? "dashboard"); ?>';
-    updateActiveLink(initialPage);
-    
-    // The initial HTML is already loaded by the PHP include at the top of the page,
-    // so we don't need to call loadPage() on the first visit.
-});
+ 
 
-// /admin/admin-page.php (inside the <script> block)
-
-document.addEventListener('DOMContentLoaded', function() {
-    // --- ADD these variables to your CACHE DOM ELEMENTS section ---
-    const editCategoryModal = document.getElementById("edit-category-modal");
-    const editCategoryModalContent = document.getElementById("edit-category-modal-content");
-    const closeEditCategoryModalBtn = document.getElementById("close-edit-category-modal");
-    // You can reuse the delete modal for categories
-    const deleteModal = document.getElementById('delete-ad-modal'); // Assuming it's a generic delete modal
-    let itemToDelete = { id: null, type: null };
-
-    // --- ADD this inside your main `mainContent.addEventListener('click', ...)` block ---
-    mainContent.addEventListener('click', function(event) {
-        const target = event.target;
-        
-        // ... your existing .open-edit-modal and .open-delete-modal logic for ADS ...
-        
-        // --- NEW: HANDLE CATEGORY MODAL BUTTONS ---
-        const editCatButton = target.closest('.open-edit-category-modal');
-        if (editCatButton) {
-            openEditCategoryModal(editCatButton.dataset.categoryId);
-        }
-
-        const deleteCatButton = target.closest('.open-delete-category-modal');
-        if (deleteCatButton) {
-            openDeleteModal(deleteCatButton.dataset.categoryId, 'category');
-        }
-    });
-
-    // --- ADD this inside the `modalContainer.addEventListener('submit', ...)` block ---
-    modalContainer.addEventListener('submit', function(event){
-        // ... your existing #edit-ad-form logic ...
-
-        // --- NEW: HANDLE CATEGORY FORM SUBMISSION ---
-        if(event.target.matches('#edit-category-form')){
-            event.preventDefault();
-            submitEditCategoryForm(event.target);
-        }
-    });
-
-    // --- ADD these new functions to your SCRIPT block ---
-
-    // --- MODAL FUNCTIONS (Updated openDeleteModal) ---
-    function openDeleteModal(id, type) {
-        itemToDelete = { id: id, type: type }; // Store both ID and type (e.g., 'ad' or 'category')
-        // You can customize the modal title if you want
-        // deleteModal.querySelector('h3').textContent = `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-        openModal(deleteModal);
-    }
-
-    // --- CATEGORY MODAL LOGIC ---
-    async function openEditCategoryModal(categoryId) {
-        if (!categoryId) return;
-        editCategoryModalContent.innerHTML = "Loading form...";
-        openModal(editCategoryModal);
-        try {
-            const response = await fetch(`<?php echo $base_url; ?>admin/util/get_category_form.php?category_id=${categoryId}`);
-            if (!response.ok) throw new Error('Failed to load category edit form.');
-            editCategoryModalContent.innerHTML = await response.text();
-        } catch (error) {
-            editCategoryModalContent.innerHTML = `<p class="text-red-500">${error.message}</p>`;
-        }
-    }
-
-    if (closeEditCategoryModalBtn) closeEditCategoryModalBtn.addEventListener("click", () => closeModal(editCategoryModal));
-    
-    async function submitEditCategoryForm(form) {
-        try {
-            const response = await fetch('<?php echo $base_url; ?>admin/util/update_category.php', { method: 'POST', body: new FormData(form) });
-            const result = await response.json();
-            if (result.success) {
-                alert('Category updated successfully!');
-                closeModal(editCategoryModal);
-                loadPage('category'); // Refresh the category page
-            } else { throw new Error(result.message || 'Failed to update category.'); }
-        } catch(error) { alert(error.message); }
-    }
-
-    // --- CONFIRM DELETE LOGIC (Updated to be generic) ---
-    if (confirmDeleteBtn) {
-        confirmDeleteBtn.addEventListener("click", async () => {
-            if (!itemToDelete || !itemToDelete.id || !itemToDelete.type) return;
-
-            let url = '';
-            let formData = new FormData();
-            
-            if(itemToDelete.type === 'ad') {
-                url = `<?php echo $base_url; ?>admin/util/delete_ad.php`;
-                formData.append('ad_id', itemToDelete.id);
-            } else if (itemToDelete.type === 'category') {
-                url = `<?php echo $base_url; ?>admin/util/delete_category.php`;
-                formData.append('category_id', itemToDelete.id);
-            } else {
-                return; // Unknown type
-            }
-
-            try {
-                const response = await fetch(url, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.success) {
-                    alert(`${itemToDelete.type.charAt(0).toUpperCase() + itemToDelete.type.slice(1)} deleted successfully!`);
-                    closeModal(deleteModal);
-                    loadPage(itemToDelete.type === 'ad' ? 'view-ads' : 'category'); // Refresh the correct page
-                } else { throw new Error(result.message); }
-            } catch(error) { alert(`Error: ${error.message}`); }
-        });
-    }
-
-});
-</script> -->
 
 </body>
 

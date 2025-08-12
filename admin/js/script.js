@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // --- 1. CACHE STATIC DOM ELEMENTS ---
   const sidebar = document.getElementById("sidebar");
   const openSidebarBtn = document.getElementById("open-sidebar");
   const closeSidebarBtn = document.getElementById("close-sidebar");
@@ -8,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const menuToggles = document.querySelectorAll(".menu-toggle");
   const activeClass = "bg-gray-700";
 
-  // --- Modal elements ---
   const editAdModal = document.getElementById("edit-ad-modal");
   const deleteAdModal = document.getElementById("delete-ad-modal");
   const editCategoryModal = document.getElementById("edit-category-modal");
@@ -16,8 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const editBlogCatModal = document.getElementById("edit-blog-cat-modal");
 
   let itemToDelete = { id: null, type: null };
-
-  // --- 2. CORE FUNCTIONS ---
 
   function openSidebar() {
     sidebar.classList.remove("-translate-x-full");
@@ -73,8 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // --- 3. MODAL FUNCTIONS ---
-
   function openModal(modal) {
     if (modal) {
       modal.classList.remove("hidden");
@@ -105,14 +99,15 @@ document.addEventListener("DOMContentLoaded", function () {
     itemToDelete = { id, type };
     const modalTitle = deleteAdModal.querySelector("h3");
     if (modalTitle) {
-        let typeName = type.replace(/[-_]/g, ' ');
-        typeName = typeName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        modalTitle.textContent = `Delete ${typeName}`;
+      let typeName = type.replace(/[-_]/g, " ");
+      typeName = typeName
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      modalTitle.textContent = `Delete ${typeName}`;
     }
     openModal(deleteAdModal);
   }
-
-  // --- 4. ACTION FUNCTIONS (Forms, Delete, Status Toggle) ---
 
   async function submitForm(formElement, actionUrl, modalElement) {
     const formData = new FormData(formElement);
@@ -142,35 +137,38 @@ document.addEventListener("DOMContentLoaded", function () {
       alert(`Error: ${error.message}`);
     }
   }
-  
+
   async function toggleUserStatus(userId) {
-      try {
-          const response = await fetch('/admin/util/toggle_user_status.php', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-              },
-              body: JSON.stringify({ user_id: userId })
-          });
-          const result = await response.json();
-          if(result.success) {
-              loadPage('view_users'); // Reload the user list to show the change
-          } else {
-              throw new Error(result.message);
-          }
-      } catch (error) {
-          alert(`Error toggling user status: ${error.message}`);
+    try {
+      const response = await fetch("/admin/util/toggle_user_status.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        loadPage("view_users");
+      } else {
+        throw new Error(result.message);
       }
+    } catch (error) {
+      alert(`Error toggling user status: ${error.message}`);
+    }
   }
 
   async function confirmDelete() {
     if (!itemToDelete.id || !itemToDelete.type) return;
 
-    const url = `/admin/util/delete_${itemToDelete.type.replace('-', '_')}.php`;
+    const url = `/admin/util/delete_${itemToDelete.type.replace("-", "_")}.php`;
     const formData = new FormData();
-    // Use 'user_id' for user deletion, and the dynamic key for others
-    const idKey = itemToDelete.type === 'user' ? 'user_id' : `${itemToDelete.type.replace('-', '_')}_id`;
+
+    const idKey =
+      itemToDelete.type === "user"
+        ? "user_id"
+        : `${itemToDelete.type.replace("-", "_")}_id`;
     formData.append(idKey, itemToDelete.id);
 
     try {
@@ -180,26 +178,26 @@ document.addEventListener("DOMContentLoaded", function () {
         closeModal(deleteAdModal);
         let pageToLoad;
         switch (itemToDelete.type) {
-            case 'ad':
-                pageToLoad = 'view-ads';
-                break;
-            case 'blog':
-                pageToLoad = 'view-blogs';
-                break;
-            case 'category':
-                pageToLoad = 'category';
-                break;
-            case 'blog-cat':
-                pageToLoad = 'blog-cat';
-                break;
-            case 'user':
-                pageToLoad = 'view_users';
-                break;
-            case 'subscriber':
-                pageToLoad = 'view-subscribers';
-                break;
-            default:
-                pageToLoad = 'dashboard';
+          case "ad":
+            pageToLoad = "view-ads";
+            break;
+          case "blog":
+            pageToLoad = "view-blogs";
+            break;
+          case "category":
+            pageToLoad = "category";
+            break;
+          case "blog-cat":
+            pageToLoad = "blog-cat";
+            break;
+          case "user":
+            pageToLoad = "view_users";
+            break;
+          case "subscriber":
+            pageToLoad = "view-subscribers";
+            break;
+          default:
+            pageToLoad = "dashboard";
         }
         loadPage(pageToLoad);
       } else {
@@ -210,9 +208,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // --- 5. EVENT LISTENERS ---
-
-  // Static listeners
   if (openSidebarBtn) openSidebarBtn.addEventListener("click", openSidebar);
   if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", closeSidebar);
 
@@ -221,13 +216,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const submenuToToggle = clickedToggle.nextElementSibling;
       const isCurrentlyOpen = submenuToToggle.classList.contains("open");
 
-      // First, close all submenus
       menuToggles.forEach((toggle) => {
         toggle.nextElementSibling.classList.remove("open");
         toggle.querySelector("svg")?.classList.remove("rotate-180");
       });
 
-      // If the clicked menu was not already open, open it.
       if (!isCurrentlyOpen) {
         submenuToToggle.classList.add("open");
         clickedToggle.querySelector("svg")?.classList.add("rotate-180");
@@ -248,45 +241,61 @@ document.addEventListener("DOMContentLoaded", function () {
     loadPage(e.state?.page || "dashboard", false);
   });
 
-  // Modal confirm button
   document
     .getElementById("confirm-delete-btn")
     ?.addEventListener("click", confirmDelete);
 
-  // --- EVENT DELEGATION for dynamic content ---
   mainContent.addEventListener("click", function (event) {
     const target = event.target;
 
-    // Edit Modals
     const editAdButton = target.closest(".open-edit-modal");
     if (editAdButton) {
       const adId = editAdButton.dataset.adId;
       const contentDiv = editAdModal.querySelector("#edit-ad-modal-content");
-      openEditModal(editAdModal, contentDiv, `/admin/util/get_ad_form.php?ad_id=${adId}`);
+      openEditModal(
+        editAdModal,
+        contentDiv,
+        `/admin/util/get_ad_form.php?ad_id=${adId}`
+      );
     }
 
     const editCategoryButton = target.closest(".open-edit-category-modal");
     if (editCategoryButton) {
       const categoryId = editCategoryButton.dataset.categoryId;
-      const contentDiv = editCategoryModal.querySelector("#edit-category-modal-content");
-      openEditModal(editCategoryModal, contentDiv, `/admin/util/get_category_form.php?category_id=${categoryId}`);
+      const contentDiv = editCategoryModal.querySelector(
+        "#edit-category-modal-content"
+      );
+      openEditModal(
+        editCategoryModal,
+        contentDiv,
+        `/admin/util/get_category_form.php?category_id=${categoryId}`
+      );
     }
-    
+
     const editBlogCatButton = target.closest(".open-edit-blog-cat-modal");
     if (editBlogCatButton) {
       const blogCategoryId = editBlogCatButton.dataset.blogCategoryId;
-      const contentDiv = editBlogCatModal.querySelector("#edit-blog-cat-modal-content");
-      openEditModal(editBlogCatModal, contentDiv, `/admin/util/get_blog_cat_form.php?blog_category_id=${blogCategoryId}`);
+      const contentDiv = editBlogCatModal.querySelector(
+        "#edit-blog-cat-modal-content"
+      );
+      openEditModal(
+        editBlogCatModal,
+        contentDiv,
+        `/admin/util/get_blog_cat_form.php?blog_category_id=${blogCategoryId}`
+      );
     }
 
     const editBlogButton = target.closest(".open-edit-blog-modal");
     if (editBlogButton) {
       const blogId = editBlogButton.dataset.blogId;
       const contentDiv = document.getElementById("edit-blog-modal-content");
-      openEditModal(document.getElementById("edit-blog-modal"), contentDiv, `/admin/util/get_blog_form.php?blog_id=${blogId}`);
+      openEditModal(
+        document.getElementById("edit-blog-modal"),
+        contentDiv,
+        `/admin/util/get_blog_form.php?blog_id=${blogId}`
+      );
     }
 
-    // Delete Modals
     const deleteAdButton = target.closest(".open-delete-modal");
     if (deleteAdButton) {
       openDeleteConfirmationModal(deleteAdButton.dataset.adId, "ad");
@@ -294,41 +303,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const deleteCategoryButton = target.closest(".open-delete-category-modal");
     if (deleteCategoryButton) {
-      openDeleteConfirmationModal(deleteCategoryButton.dataset.categoryId, "category");
+      openDeleteConfirmationModal(
+        deleteCategoryButton.dataset.categoryId,
+        "category"
+      );
     }
-    
+
     const deleteBlogCatButton = target.closest(".open-delete-blog-cat-modal");
     if (deleteBlogCatButton) {
-      openDeleteConfirmationModal(deleteBlogCatButton.dataset.blogCategoryId, "blog-cat");
+      openDeleteConfirmationModal(
+        deleteBlogCatButton.dataset.blogCategoryId,
+        "blog-cat"
+      );
     }
 
     const deleteBlogButton = target.closest(".open-delete-blog-modal");
     if (deleteBlogButton) {
       openDeleteConfirmationModal(deleteBlogButton.dataset.blogId, "blog");
     }
-    
+
     const deleteUserButton = target.closest(".open-delete-user-modal");
-    if(deleteUserButton) {
-        openDeleteConfirmationModal(deleteUserButton.dataset.userId, 'user');
-    }
-    
-    const deleteSubscriberButton = target.closest(".open-delete-subscriber-modal");
-    if(deleteSubscriberButton) {
-        openDeleteConfirmationModal(deleteSubscriberButton.dataset.subscriberId, 'subscriber');
+    if (deleteUserButton) {
+      openDeleteConfirmationModal(deleteUserButton.dataset.userId, "user");
     }
 
-    // User Status Toggle
+    const deleteSubscriberButton = target.closest(
+      ".open-delete-subscriber-modal"
+    );
+    if (deleteSubscriberButton) {
+      openDeleteConfirmationModal(
+        deleteSubscriberButton.dataset.subscriberId,
+        "subscriber"
+      );
+    }
+
     const toggleUserStatusButton = target.closest(".toggle-user-status-btn");
-    if(toggleUserStatusButton) {
-        toggleUserStatus(toggleUserStatusButton.dataset.userId);
+    if (toggleUserStatusButton) {
+      toggleUserStatus(toggleUserStatusButton.dataset.userId);
     }
   });
 
-  // Event delegation for form submission and modal closing
   document.body.addEventListener("click", function (event) {
     const target = event.target;
 
-    // --- Close Modal Logic ---
     const closeButton = target.closest(".close-edit-modal");
     if (closeButton) {
       const modal = closeButton.closest(".fixed.inset-0");
@@ -350,7 +367,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (event.target.matches("#edit-category-form")) {
       event.preventDefault();
-      submitForm(event.target, "/admin/util/update_category.php", editCategoryModal);
+      submitForm(
+        event.target,
+        "/admin/util/update_category.php",
+        editCategoryModal
+      );
     }
     if (event.target.matches("#edit-blog-form")) {
       event.preventDefault();
@@ -358,11 +379,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (event.target.matches("#edit-blog-cat-form")) {
       event.preventDefault();
-      submitForm(event.target, "/admin/util/update_blog_category.php", editBlogCatModal);
+      submitForm(
+        event.target,
+        "/admin/util/update_blog_category.php",
+        editBlogCatModal
+      );
     }
   });
 
-  // --- 6. INITIAL PAGE LOAD ---
   function getCurrentPage() {
     const path = window.location.pathname;
     const page = path.split("/admin/")[1] || "dashboard";

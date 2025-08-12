@@ -1,5 +1,5 @@
 <?php
-// /DatabaseSessionHandler.php
+    
 
 class DatabaseSessionHandler implements SessionHandlerInterface {
     /** @var mysqli */
@@ -13,19 +13,15 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
         $this->db = $db_connection;
     }
 
-    /**
-     * Called when a session starts.
-     */
+        
     public function open($savePath, $sessionName): bool {
-        // We already have a DB connection, so we can just return true.
+            
         return true;
     }
 
-    /**
-     * Called when a session is closed.
-     */
+        
     public function close(): bool {
-        // Our persistent connection doesn't need to be closed here.
+            
         return true;
     }
 
@@ -43,7 +39,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
                 return $row['data'] ?? '';
             }
         }
-        return ''; // Return empty string if no session is found
+        return '';     
     }
 
     /**
@@ -53,20 +49,20 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
      * @return bool
      */
     public function write($id, $data): bool {
-        // Extract user_id from the session data if it exists
+            
         $user_id = null;
         if (!empty($_SESSION['user_id'])) {
             $user_id = $_SESSION['user_id'];
         }
 
-        // Use REPLACE INTO to perform an "UPSERT" (update or insert)
+            
         $stmt = $this->db->prepare(
             "REPLACE INTO sessions (id, user_id, data, access) VALUES (?, ?, ?, ?)"
         );
         
-        $access_time = time(); // Current Unix timestamp
+        $access_time = time();     
         
-        // Bind all four parameters
+            
         $stmt->bind_param('sisi', $id, $user_id, $data, $access_time);
         
         return $stmt->execute();

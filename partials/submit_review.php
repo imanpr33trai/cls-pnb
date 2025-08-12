@@ -1,7 +1,7 @@
 <?php
 
 
-include_once('../config/config.php'); // always load this first
+include_once('../config/config.php');     
 include_once('../partials/header.php');
 
 $ad_id = isset($_POST['ad_id']) ? intval($_POST['ad_id']) : 0;

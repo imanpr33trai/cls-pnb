@@ -1,16 +1,16 @@
 <?php
+ 
 
-// router.php - Handles all routing for the application
+ 
 
-// Include essential configuration and functions first
 include_once(__DIR__ . '/config/config.php');
 include_once(__DIR__ . '/config/functions.php');
 
 
 
 
+ 
 
-// Get the request URI and remove the query string
 $request_uri = strtok($_SERVER['REQUEST_URI'], '?');
 
 
@@ -22,10 +22,11 @@ $segment_count = count($path_segments);
 if ($segment_count === 0) {
     require 'home.php';
     exit();
-}
-// Define routes using a switch for static routes and regex for dynamic ones
+} 
+
 switch (true) {
-    // --- Static Routes ---
+    
+
     case $request_uri === '/':
 
         include __DIR__ . '/app/pages/home.php';
@@ -73,53 +74,53 @@ switch (true) {
         include __DIR__ . '/app/pages/search-results.php';
         break;
 
-    // --- AJAX/API Handlers ---
+        
     case $request_uri === '/search':
-        // This route should only include the backend logic file.
-        // Ensure search.php is in your project's root directory.
+            
+            
         include __DIR__ . 'ajax/search.php';
         break;
 
 
 
 
-// --- Admin Panel Routes ---
-// If the request starts with /admin, delegate to the admin-router.
+    
+    
 case preg_match('/^\/admin/', $request_uri):
-    // The admin-router is designed to handle the full URI starting with /admin,
-    // so we pass the request URI to it without modification.
+        
+        
     include __DIR__ . '/admin-router.php';
-    exit; // Important: exit after handling admin routes
+    exit;     
 
 
 
 
-    // Handles URLs like /article/some-cool-slug
+        
     case preg_match('/^\/article\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
 
 
-        $_GET['slug'] = $matches[1]; // Extract slug from URL
+        $_GET['slug'] = $matches[1];     
         include __DIR__ . '/app/pages/single-article.php';
         break;
 
-    // Handles URLs like /category/gadgets
+        
     case preg_match('/^\/category\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
 
 
-        $_GET['slug'] = $matches[1]; // Extract slug from URL
+        $_GET['slug'] = $matches[1];     
         include __DIR__ . '/app/pages/single-category.php';
         break;
 
-    // Handles URLs like /ad/my-awesome-product
+        
     case preg_match('/^\/ads\/([a-zA-Z0-9-_]+)\/?$/', $request_uri, $matches):
 
 
-        $_GET['slug'] = $matches[1]; // Extract slug from URL
+        $_GET['slug'] = $matches[1];     
         include __DIR__ . '/app/pages/single-ad.php';
         break;
 
 
-    // --- 404 Not Found ---
+        
     default:
        
         header("HTTP/1.0 404 Not Found");

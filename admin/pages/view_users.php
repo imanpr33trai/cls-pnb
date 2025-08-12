@@ -1,8 +1,8 @@
 <?php
-// /admin/pages/view_users.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all users
+
 $stmt = $conn->prepare("SELECT id, first_name, last_name, email, status, auth_provider, created_at FROM users ORDER BY created_at DESC");
 $stmt->execute();
 $result = $stmt->get_result();

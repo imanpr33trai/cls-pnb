@@ -1,5 +1,5 @@
 <?php
-// /admin/util/update_blog.php
+
 require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_id'])) {
     $category_id = (int)$_POST['category_id'];
     $content = trim($_POST['content']);
 
-    // Fetch current image
+    
     $stmt = $conn->prepare("SELECT image FROM blog_posts WHERE id = ?");
     $stmt->bind_param("i", $blog_id);
     $stmt->execute();
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_id'])) {
     $new_image_name = $existing_blog['image'];
     $stmt->close();
 
-    // Handle file upload
+    
     if (isset($_FILES['blog_image']) && $_FILES['blog_image']['error'] == 0) {
         $upload_dir = __DIR__ . '/../../assets/uploads/';
         if (!empty($new_image_name) && file_exists($upload_dir . $new_image_name)) {

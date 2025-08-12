@@ -1,30 +1,30 @@
 <?php
-// =========================================================================
-// PART 1: ALL PHP LOGIC - CONSOLIDATED AND SECURE
-// =========================================================================
+    
+    
+    
 
-// CRUCIAL: Must be the very first line of the file.
+    
 
 include_once(__DIR__ . '/../../config/config.php');
 include_once(__DIR__ . '/../../config/functions.php');
 
 
-// --- 1. INITIALIZE ALL VARIABLES ---
+    
 $blog = null;
 $table_of_contents = [];
-$user = null; // The user VIEWING the page
+$user = null;     
 $related_posts = [];
 $nextArticle = null;
 $prevArticle = null;
 $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 
-// --- 2. VALIDATE THE BLOG SLUG FROM THE URL ---
+    
 $blog_slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
 
-// --- 3. FETCH ALL DATA IF WE HAVE A VALID BLOG SLUG ---
+    
 if (!empty($blog_slug)) {
-    // --- A. FETCH THE MAIN BLOG POST DETAILS ---
+        
     $stmt = $conn->prepare("SELECT * FROM blog_posts WHERE blog_slug = ?");
     $stmt->bind_param("s", $blog_slug);
     $stmt->execute();
@@ -32,14 +32,14 @@ if (!empty($blog_slug)) {
 
     if ($result && $result->num_rows === 1) {
         $blog = $result->fetch_assoc();
-        $blog_id = $blog['id']; // Get ID for other queries
+        $blog_id = $blog['id'];     
         $blog_created_at = $blog['created_at'];
         $blog_category_id = $blog['category_id'];
 
-        // --- B. PARSE DESCRIPTION FOR TABLE OF CONTENTS ---
+            
         if (!empty($blog['description'])) {
             $doc = new DOMDocument();
-            // Load the HTML, suppressing errors for any minor issues
+                
             @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $blog['description']);
 
             $headings = $doc->getElementsByTagName('h2');
@@ -53,11 +53,11 @@ if (!empty($blog_slug)) {
                     ];
                 }
             }
-            // Save the modified HTML back to the blog description
+                
             $blog['description'] = preg_replace('~<(?:!DOCTYPE|/?(?:html|body|xml))[^>]*>\s*~i', '', $doc->saveHTML());
         }
 
-        // --- C. FETCH RELATED POSTS ---
+            
         $related_stmt = $conn->prepare("SELECT * FROM blog_posts WHERE category_id = ? AND id != ? ORDER BY created_at DESC LIMIT 3");
         $related_stmt->bind_param("ii", $blog_category_id, $blog_id);
         $related_stmt->execute();
@@ -67,7 +67,7 @@ if (!empty($blog_slug)) {
         }
         $related_stmt->close();
 
-        // --- D. FETCH PAGINATION (NEXT/PREVIOUS POSTS) ---
+            
         $next_stmt = $conn->prepare("SELECT title, blog_slug FROM blog_posts WHERE created_at > ? ORDER BY created_at ASC LIMIT 1");
         $next_stmt->bind_param("s", $blog_created_at);
         $next_stmt->execute();
@@ -83,7 +83,7 @@ if (!empty($blog_slug)) {
     $stmt->close();
 }
 
-// --- 4. FETCH LOGGED-IN USER INFO (for the comment form) ---
+    
 if (isset($_SESSION['user_id'])) {
     $user_id_session = $_SESSION['user_id'];
     $user_stmt = $conn->prepare("SELECT id, first_name, last_name FROM users WHERE id = ?");
@@ -93,16 +93,15 @@ if (isset($_SESSION['user_id'])) {
     $user_stmt->close();
 }
 
-// --- 5. INCLUDE HEADER ---
+    
 include_once(__DIR__ . '/../../partials/header.php');
 
-// =========================================================================
-// PART 2: THE HTML STRUCTURE (UNCHANGED DESIGN)
-// =========================================================================
+    
+    
+    
 ?>
 
-<!-- Breadcrump -->
-<section class="breadcrump sm:py-3">
+    <section class="breadcrump sm:py-3">
     <div class="container">
         <div class="">
             <div class="d-flex gap-2">
@@ -113,19 +112,17 @@ include_once(__DIR__ . '/../../partials/header.php');
         </div>
     </div>
 </section>
-<!-- Breadcrump -->
-
-<!-- article details -->
-<section class="single-article-details pb-20">
+    
+    <section class="single-article-details pb-20">
     <div class="container">
-        <?php if (!$blog): // Handle case where blog is not found 
+        <?php if (!$blog):     
                 ?>
             <div class="text-center mt-5">
                 <h1>Blog Post Not Found</h1>
                 <p>The post you are looking for does not exist or may have been moved.</p>
                 <a href="<?= $base_url ?>articles" class="theme-btn">Back to Articles</a>
             </div>
-        <?php else: // Display the blog post 
+        <?php else:     
                 ?>
             <div class="lg:flex gap-7">
                 <div class="col-lg-9 article-body ps-0">
@@ -147,7 +144,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                     <div class="col-12">
                         <h1 class="poppins-medium fos-30 mb-5"><?= htmlspecialchars($blog['title']); ?></h1>
                         <div class="article-content">
-                            <?= $blog['description']; // This is now pre-processed and safe 
+                            <?= $blog['description'];     
                                 ?>
                         </div>
 
@@ -218,10 +215,8 @@ include_once(__DIR__ . '/../../partials/header.php');
         <?php endif; ?>
     </div>
 </section>
-<!-- article details -->
-
-<!-- Pagination -->
-<section class="pagination-sec container pb-24">
+    
+    <section class="pagination-sec container pb-24">
     <div class="py-3">
         <div class="">
             <div class="col d-flex align-items-center justify-content-between">
@@ -250,26 +245,17 @@ include_once(__DIR__ . '/../../partials/header.php');
         </div>
     </div>
 </section>
-<!-- Pagination -->
-<!-- Related blogs -->
-<?php if (!empty($related_posts)): ?>
+        <?php if (!empty($related_posts)): ?>
     <section class="related-blog bg-gray-50 py-12 md:py-16">
         <div class="container mx-auto">
 
-            <!-- Section Header -->
-            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Related Blog Posts</h2>
+                            <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Related Blog Posts</h2>
 
-            <!-- Responsive Grid Container -->
-            <!--
-            - Default: 1 column (mobile)
-            - sm (640px+): 2 columns
-            - lg (1024px+): 3 columns
-        -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 
                 <?php foreach ($related_posts as $related): ?>
                     <?php
-                    // --- Prepare data inside the loop for cleaner HTML ---
+                        
                     $relatedImages = json_decode($related['image'], true);
                     $relatedImage = !empty($relatedImages[0])
                         ? $base_url . 'assets/uploads/blog_form/' . rawurlencode($relatedImages[0])
@@ -286,20 +272,17 @@ include_once(__DIR__ . '/../../partials/header.php');
                     $article_url = $base_url . 'article/' . htmlspecialchars($related['blog_slug']);
                     ?>
 
-                    <!-- Card Start: Styled entirely with Tailwind CSS -->
-                    <div
+                                            <div
                         class="group flex flex-col bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden mb-1">
 
-                        <!-- Image container with a fixed aspect ratio for uniformity -->
-                        <a href="<?= $article_url ?>" class="block overflow-hidden">
+                                                    <a href="<?= $article_url ?>" class="block overflow-hidden">
                             <div class="aspect-w-16 aspect-h-9">
                                 <img src="<?= $relatedImage ?>" alt="<?= $title ?>"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 img-ads" />
                             </div>
                         </a>
 
-                        <!-- Card Body -->
-                        <div class="p-5 flex flex-col flex-grow">
+                                                    <div class="p-5 flex flex-col flex-grow">
                             <h3 class="text-lg font-semibold text-gray-900 mb-2 leading-tight">
 
                                 <a href="<?= $article_url ?>"
@@ -312,8 +295,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                             </p>
                         </div>
 
-                        <!-- Card Footer -->
-                        <div class="p-4 border-t border-gray-100 bg-gray-50 flex items-center gap-3">
+                                                    <div class="p-4 border-t border-gray-100 bg-gray-50 flex items-center gap-3">
                             <img src="<?= $base_url; ?>assets/images/userimage.png" alt="Author: <?= $author_name ?>"
                                 class="w-9 h-9 rounded-full">
                             <div>
@@ -323,16 +305,13 @@ include_once(__DIR__ . '/../../partials/header.php');
                         </div>
 
                     </div>
-                    <!-- Card End -->
-
+                        
                 <?php endforeach; ?>
 
-            </div> <!-- End Grid -->
-        </div>
+            </div>             </div>
     </section>
 <?php endif; ?>
-<!-- Related blogs -->
-
+    
 
 
 <?php include_once(__DIR__ . '/../../partials/footer.php'); ?>
@@ -377,7 +356,7 @@ include_once(__DIR__ . '/../../partials/header.php');
             });
         <?php endif; ?>
 
-        // Smooth scroll for Table of Contents
+            
         $('.toc-link').on('click', function (e) {
             e.preventDefault();
             const targetId = $(this).attr('href');

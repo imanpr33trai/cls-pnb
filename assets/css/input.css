@@ -16,19 +16,10 @@
   .container {
     width: 100% !important;
 
-    /* 
-     * Center the container. This only has an effect if you also
-     * set a max-width, which we do below. 
-     */
     margin-left: auto;
     margin-right: auto;
     @apply max-w-screen-2xl;
-    /* 
-     * OPTIONAL BUT RECOMMENDED:
-     * Set a single, absolute max-width to prevent the layout
-     * from becoming too wide on huge screens (e.g., 4K monitors).
-     * `screen-2xl` uses your 1440px breakpoint value.
-     */
+
     @apply px-[15px] sm:px-[30px] md:px-[40px] lg:px-[72px];
   }
 }

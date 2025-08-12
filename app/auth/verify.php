@@ -1,8 +1,8 @@
 <?php
 
-// Include essential configuration and functions
+
 include_once(__DIR__ . '/../../config/config.php');
-include_once(__DIR__ . '/../../config/functions.php'); // Assuming you have a functions.php
+include_once(__DIR__ . '/../../config/functions.php'); 
 
 
 
@@ -10,8 +10,8 @@ include_once(__DIR__ . '/../../config/functions.php'); // Assuming you have a fu
 $errors = [];
 $success_message = '';
 
-// If user is not in the verification process, redirect them away.
-// This means $_SESSION['verification_email'] must be set by register.php
+
+
 if (!isset($_SESSION['verification_email']) || empty($_SESSION['verification_email'])) {
     header('Location: ' . $base_url . '/app/auth/register.php');
     exit();
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($otp) || !is_numeric($otp) || strlen($otp) !== 6) {
         $errors[] = "Please enter a valid 6-digit OTP.";
     } else {
-        // Find the user by their email and unverified status
+        
         $stmt = $conn->prepare("SELECT id, first_name, last_name, email, verification_otp, otp_expires_at FROM users WHERE email = ? AND status = 'unverified'");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -40,20 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (new DateTime() > new DateTime($user['otp_expires_at'])) {
             $errors[] = "The OTP has expired. Please request a new one by re-registering.";
         } else {
-            // SUCCESS! Activate the account
+            
             $update_stmt = $conn->prepare("UPDATE users SET status = 'active', verification_otp = NULL, otp_expires_at = NULL WHERE id = ?");
             $update_stmt->bind_param("i", $user['id']);
 
             if ($update_stmt->execute()) {
-                // Verification successful, log the user in
+                
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
                 $_SESSION['user_email'] = $user['email'];
 
-                unset($_SESSION['verification_email']); // Clean up session
+                unset($_SESSION['verification_email']); 
 
-                header('Location: ' . $base_url); // Redirect to homepage
+                header('Location: ' . $base_url); 
                 exit();
             } else {
                 $errors[] = "A database error occurred during account activation. Please try again.";
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Include header and footer to maintain design
+
 include_once(__DIR__ . '/../../partials/header.php');
 ?>
 

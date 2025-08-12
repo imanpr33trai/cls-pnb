@@ -1,29 +1,24 @@
-# /.htaccess (Final, Clean Version)
-
-# Prevent automatic directory slash append
+ 
+ 
 DirectorySlash Off
 
 RewriteEngine On
-
-# Prevent redirect loops for admin and login
+ 
 RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
-
-# ----------------------------------------------------------------------
-# Rule 1: Redirect requests from "file.php" to "/file"
-# ----------------------------------------------------------------------
-# This cleans up the URL in the user's browser for direct page access.
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
-# IGNORE specific files and critical folders
+ 
+ 
+ 
+ 
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC] 
 RewriteCond %{REQUEST_URI} !^/(google_callback|github_callback|admin-create|seed)\.php$ [NC]
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
 RewriteCond %{REQUEST_URI} !^/admin/util/ [NC]
 RewriteCond %{REQUEST_URI} !^/config/ [NC]
 RewriteRule ^ /%1 [R=301,L]
-
-# ----------------------------------------------------------------------
-# Rule 2: Front Controller for clean URLs
-# ----------------------------------------------------------------------
+ 
+ 
+ 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !^/ajax/ [NC]
 RewriteCond %{REQUEST_URI} !^/admin/util/ [NC]

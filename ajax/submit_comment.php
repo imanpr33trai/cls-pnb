@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($blog_id > 0 && $user_id > 0 && !empty($comment)) {
         try {
-            // 1. Fetch the user's name from the users table
+            
             $user_stmt = $conn->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
             $user_stmt->bind_param("i", $user_id);
             $user_stmt->execute();
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($user_row = $user_result->fetch_assoc()) {
                 $user_name = trim($user_row['first_name'] . ' ' . $user_row['last_name']);
 
-                // 2. Insert the comment with the fetched user_name
+                
                 $insert_stmt = $conn->prepare("INSERT INTO blog_comments (blog_id, user_name, comment) VALUES (?, ?, ?)");
                 $insert_stmt->bind_param("iss", $blog_id, $user_name, $comment);
 
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $user_stmt->close();
         } catch (Exception $e) {
-            // Log error if needed: error_log($e->getMessage());
+            
             $response['message'] = 'A server error occurred. Please try again later.';
         }
     } else {

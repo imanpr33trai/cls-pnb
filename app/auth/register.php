@@ -1,31 +1,31 @@
 <?php
 
 
-// Include essential configuration files.
+
 include_once(__DIR__ . '/../../config/config.php');
 
-// Redirect logged-in users to the homepage.
+
 if (isset($_SESSION['user_id'])) {
     header('Location: ' . $base_url);
     exit();
 }
 
-// Include Composer's autoloader for packages like PHPMailer.
+
 include_once(__DIR__ . '/../../vendor/autoload.php');
 
-// Bring PHPMailer classes into the global namespace.
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-//======================================================================
-// 2. PROCESS FORM SUBMISSION (POST REQUEST)
-// This block only runs when the form is submitted.
-//======================================================================
+
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = [];
 
-    // --- Step 2a: Sanitize and Validate Input ---
+    
     $first_name = trim($_POST['first_name'] ?? '');
     $last_name = trim($_POST['last_name'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Passwords do not match.';
     }
 
-    // --- Step 2b: If validation fails, redirect back with errors ---
+    
     if (!empty($errors)) {
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_input'] = $_POST;
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // --- Step 2c: Check for Duplicate Email ---
+    
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -64,13 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "An account with this email already exists. Please <a href='login.php'>log in</a>.";
         $_SESSION['form_errors'] = $errors;
         $_SESSION['old_input'] = $_POST;
-        $stmt->close(); // Close statement here
+        $stmt->close(); 
         header('Location: ' . $base_url . 'register.php');
         exit();
     }
     $stmt->close();
 
-    // --- Step 2d: Create User, OTP, and Send Email ---
+    
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $otp = rand(100000, 999999);
     $otp_expires_at = (new DateTime('+15 minutes'))->format('Y-m-d H:i:s');
@@ -79,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssssssss", $first_name, $last_name, $country, $email, $phone, $hashed_password, $otp, $otp_expires_at);
 
     if ($stmt->execute()) {
-        $stmt->close(); // Close statement here
+        $stmt->close(); 
         $mail = new PHPMailer(true);
         try {
-            // SMTP settings from your config file
+            
             $mail->isSMTP();
             $mail->Host       = $_ENV['SMTP_HOST'];
             $mail->SMTPAuth   = true;
@@ -131,37 +131,39 @@ $mail->Body = "
     } else {
         $errors[] = "A critical error occurred with the database. Please try again later.";
         error_log("User registration INSERT failed for email {$email}: " . $stmt->error);
-        $stmt->close(); // Close statement here
+        $stmt->close(); 
         $_SESSION['form_errors'] = $errors;
         header('Location: ' . $base_url . 'register.php');
         exit();
     }
 }
 
-//======================================================================
-// 3. PREPARE VIEW (This runs on a normal page load)
-//======================================================================
 
-// Get any errors or old input from the session to display on the page
+
+
+
+
 $errors = $_SESSION['form_errors'] ?? [];
 $old_input = $_SESSION['old_input'] ?? [];
-// Clear them from the session so they don't appear again on refresh
+
 unset($_SESSION['form_errors'], $_SESSION['old_input']);
 
-// Helper function to safely repopulate form fields
+
 function oldValue(string $field, array $data): string {
     return htmlspecialchars($data[$field] ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-// Include header and social login generators
+
 include_once(__DIR__ . '/../../partials/header.php');
 include_once(__DIR__ . '/../../partials/google-login.php');
 include_once(__DIR__ . '/../../partials/github_login.php');
 ?>
 
-<!-- The HTML <section> element starts after this point -->
+ 
 
-<!-- login page Start -->
+
+ 
+
 <section class="account-main sm:py-14">
     <div class="container">
         <div class="">
@@ -171,7 +173,8 @@ include_once(__DIR__ . '/../../partials/github_login.php');
                 </div>
                 <div class="col-lg-5 items-center login-sec-2">
                     <h1 class="fos-7 text-center poppins-medium">Sign up now</h1>
-                    <!-- <h6 class="fos-16">Welcome to Punjab Classified enter your details below.</h6> -->
+                     
+
 
                     <?php if (!empty($success)): ?>
                         <div class="alert alert-success"><?php echo $success; ?></div>
@@ -205,7 +208,8 @@ include_once(__DIR__ . '/../../partials/github_login.php');
                             <label for="phonenumbid" class="form-label">Phone Number (Optional)</label>
                             <input type="tel" name="phone" class="form-control" id="phonenumbid"
                                 placeholder="Enter Your Phone Number" />
-                            <!-- This is the new hidden field. It will store the country name. -->
+                             
+
                             <input type="hidden" name="country" id="country_name_hidden">
 
                         </div>
@@ -268,10 +272,12 @@ include_once(__DIR__ . '/../../partials/github_login.php');
     </div>
 </section>
 
-<!-- login page End -->
+ 
 
-<!-- footer -->
+
+ 
+
 <?php
 include_once(__DIR__ . '/../../partials/footer.php');
 ?>
-<!-- footer -->
+ 

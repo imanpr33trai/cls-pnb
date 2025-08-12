@@ -1,15 +1,15 @@
 <?php
-// /admin/pages/site-settings.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Fetch the current site settings
+
 $stmt = $conn->prepare("SELECT * FROM site_settings WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
 $settings = $result->fetch_assoc();
 $stmt->close();
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
     $site_name = trim($_POST['site_name']);
     $admin_phone = trim($_POST['admin_phone']);
@@ -20,9 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
 
     $upload_dir = __DIR__ . '/../../assets/images/';
 
-    // Handle header logo upload
+    
     if (!empty($_FILES['header_logo']['name'])) {
-        // Delete old logo if it exists
+        
         if (!empty($header_logo) && file_exists($upload_dir . $header_logo)) {
             unlink($upload_dir . $header_logo);
         }
@@ -30,9 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
         move_uploaded_file($_FILES['header_logo']['tmp_name'], $upload_dir . $header_logo);
     }
 
-    // Handle footer logo upload
+    
     if (!empty($_FILES['footer_logo']['name'])) {
-        // Delete old logo if it exists
+        
         if (!empty($footer_logo) && file_exists($upload_dir . $footer_logo)) {
             unlink($upload_dir . $footer_logo);
         }
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
     
     if ($update_stmt->execute()) {
         echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Settings updated successfully!</div>";
-        // Refresh settings after update
+        
         $stmt = $conn->prepare("SELECT * FROM site_settings WHERE id = 1");
         $stmt->execute();
         $result = $stmt->get_result();

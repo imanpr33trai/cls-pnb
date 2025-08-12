@@ -1,6 +1,6 @@
 <?php
-// /admin/pages/backup-restore.php
-// This page now only displays the UI for backup and restore.
+
+
 require_once __DIR__ . '/../../config/config.php';
 ?>
 

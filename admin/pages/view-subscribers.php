@@ -1,8 +1,8 @@
 <?php
-// /admin/pages/view-subscribers.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all subscribers
+
 $stmt = $conn->prepare("SELECT id, email, created_at FROM subscribers ORDER BY created_at DESC");
 $stmt->execute();
 $result = $stmt->get_result();

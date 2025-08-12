@@ -110,14 +110,14 @@ include_once(__DIR__ . '/../../config/functions.php');
     <div class="container">
         <div class="row">
             <div id="pagination-container" class="col d-flex align-items-center justify-content-between">
-                <!-- Pagination will be dynamically inserted here -->
+                
             </div>
         </div>
     </div>
 </section>
-<!-- Pagination -->
-<!-- Pagination -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https:
 
 <script>
 $(document).ready(function() {
@@ -127,22 +127,22 @@ $(document).ready(function() {
     function updatePagination(pagination) {
         const { totalPages, currentPage } = pagination;
         const paginationContainer = $('#pagination-container');
-        paginationContainer.empty(); // Clear old pagination
+        paginationContainer.empty(); 
 
         if (totalPages <= 1) {
-            return; // Don't show pagination if there's only one page
+            return; 
         }
 
         let paginationHTML = '';
 
-        // Previous Button
+        
         if (currentPage > 1) {
             paginationHTML += `<a href="#" class="pagination-btn" data-page="${currentPage - 1}">&larr; Previous</a>`;
         } else {
             paginationHTML += `<span class="pagination-btn disabled">&larr; Previous</span>`;
         }
 
-        // Page Numbers
+        
         paginationHTML += '<div class="flex gap-1.5">';
         for (let i = 1; i <= totalPages; i++) {
             const activeClass = (i === currentPage) ? 'active' : '';
@@ -150,7 +150,7 @@ $(document).ready(function() {
         }
         paginationHTML += '</div>';
 
-        // Next Button
+        
         if (currentPage < totalPages) {
             paginationHTML += `<a href="#" class="pagination-btn" data-page="${currentPage + 1}">Next &rarr;</a>`;
         } else {
@@ -168,32 +168,32 @@ $(document).ready(function() {
                 category_id: categoryId,
                 page: page
             },
-            dataType: 'json', // Expect a JSON response
+            dataType: 'json', 
             success: function(response) {
                 $('#blog-container').html(response.html);
                 updatePagination(response.pagination);
-                currentPage = response.pagination.currentPage; // Update current page
+                currentPage = response.pagination.currentPage; 
             },
             error: function() {
-                // alert('Something went wrong while fetching blogs.');
+                
                 $('#blog-container').html('<p class="text-center w-100 py-5 text-danger">Error loading articles. Please try again.</p>');
             }
         });
     }
 
-    // Initial load
+    
     loadBlogs(currentCategory, currentPage);
 
-    // Event handler for category filters
+    
     $('.blog-category-filter').click(function(e) {
         e.preventDefault();
         $('.blog-category-filter').removeClass('active');
         $(this).addClass('active');
         currentCategory = $(this).data('id');
-        loadBlogs(currentCategory, 1); // Reset to page 1
+        loadBlogs(currentCategory, 1); 
     });
 
-    // Delegated event handler for pagination clicks
+    
     $('#pagination-container').on('click', 'a.pagination-btn, a.pagination-nums', function(e) {
         e.preventDefault();
         const page = $(this).data('page');
@@ -205,10 +205,9 @@ $(document).ready(function() {
 </script>
 
 
-<!-- footer -->
-<!-- footer -->
+
+
 <?php
 include_once(__DIR__ . '../../../partials/footer.php');
 ?>
-<!-- footer -->
-<!-- footer -->
+

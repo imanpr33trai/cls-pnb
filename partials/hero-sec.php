@@ -17,8 +17,7 @@
                     </button>
 
                 </div>
-                <!-- Overlay Result Area -->
-                <div id="overlay" class="voice-overlay">
+                                    <div id="overlay" class="voice-overlay">
                     <div class="close-btn" onclick="document.getElementById('overlay').style.display='none';">&times;</div>
                     <div class="loader" id="loader">
                         <img src="<?php echo $base_url; ?>assets/images/loader.svg" alt="Loading...">

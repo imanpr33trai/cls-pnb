@@ -91,11 +91,6 @@
   font-family: playfair-black;
 }
 
-/* //////////////////////////////////////////// */
-/* //////////////////////////////////////////// */
-
-/* global settings */
-/* global settings */
 :root {
   --theme-color-pink: #fb295b;
   --theme-color-white: #ffffff;
@@ -106,10 +101,7 @@
   margin: 0;
   padding: 0;
 }
-/* .container {
-  max-width: 1440px !important;
-  padding: 0px 72px;
-} */
+
 .fos-90 {
   font-size: 90px;
 }
@@ -201,20 +193,8 @@ input[type="checkbox"]:checked {
 }
 a {
   text-decoration: none;
-  /* color: white; */
 }
-/*
-a:hover {
-  color: #000000;
-} */
-/* global settings */
-/* global settings */
 
-/* //////////////////////////////////////////// */
-/* //////////////////////////////////////////// */
-
-/* theme btns */
-/* theme btns */
 .review-item {
   opacity: 1;
   transition: opacity 0.3s ease-in;
@@ -243,14 +223,7 @@ a:hover {
   background: transparent;
   color: var(--theme-color-pink);
 }
-/* theme btns */
-/* theme btns */
 
-/* //////////////////////////////////////////// */
-/* //////////////////////////////////////////// */
-
-/* header part */
-/* header part */
 .navbar {
   background-color: #191919;
 }
@@ -283,24 +256,12 @@ a:hover {
   color: var(--theme-color-white);
 }
 
-/* Target the select dropdown */
-
-/* Style the options inside the dropdown */
 header select option {
-  background-color: #000000; /* change this to your desired color */
-  color: white; /* text color of options */
-}
-/* header part */
-/* header part */
+  background-color: #000000;
 
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* You can include this CSS to animate the mic icon while listening */
+  color: white;
+}
+
 #startVoiceSearch.listening {
   animation: pulse 1s infinite;
 }
@@ -343,9 +304,6 @@ header select option {
 .voice-overlay.d-none {
   display: none;
 }
-
-/* keyword search */
-/* keyword search */
 
 #overlay {
   display: none;
@@ -401,13 +359,6 @@ header select option {
   color: #fff;
 }
 
-/* keyword search */
-/* keyword search */
-
-/* header popup */
-/* header popup */
-/* header popup */
-/* header popup */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -451,19 +402,7 @@ header .main-search-con {
 .head-search-area input {
   font-size: 14px;
 }
-/* header popup */
-/* header popup */
-/* header popup */
-/* header popup */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
-/* popups and header searches */
 
-/* hero sec */
-/* hero sec */
 .hero-sec {
   min-height: 548px;
 }
@@ -474,32 +413,20 @@ header .main-search-con {
   padding: 20px 12px;
   outline: none;
   border: none;
-  /* max-height: 50px; */
 }
 
-/* hero sec */
-/* hero sec */
-
-/* section-1 */
-/* section-1 */
 .section-1 {
   padding: 80px 0px;
 }
 .section-1-advertisements .image-secs img {
   min-height: 100%;
 }
-/* section-1 */
-/* section-1 */
 
-/* categories sec */
-/* categories sec */
 .sec-categories {
   background-color: #f0f0f0;
 }
 .single-cat {
   padding: 60px 30px 60px 30px;
-  /* max-width: 11.11%;
-  min-width: 11.11%; */
 
   transition: all ease 0.2s;
   gap: 14px;
@@ -532,11 +459,7 @@ header .main-search-con {
 .single-cat.active-category img {
   filter: invert(1);
 }
-/* categories sec */
-/* categories sec */
 
-/* section 3 search */
-/* section 3 search */
 .sec-search {
   padding: 70px 0 30px 0;
 }
@@ -603,7 +526,7 @@ header .main-search-con {
 
 .header-links-new .main-search-con {
   background-color: #383838;
-  /* padding: 7px 13px; */
+
   height: 50px;
   align-items: center;
   justify-content: center;
@@ -626,11 +549,7 @@ header .main-search-con {
   outline: none;
   color: var(--theme-color-white);
 }
-/* section 3 search */
-/* section 3 search */
 
-/* Login & register page */
-/* Login & register page */
 .account-main {
   padding: 100px 0;
 }
@@ -641,10 +560,7 @@ header .main-search-con {
   padding: 22px 22px;
   border: 1px solid #6666665e;
 }
-/* label {
-  margin-bottom: 7px;
-  font-size: 16px;
-} */
+
 .hide a h6 {
   color: #666666;
 }
@@ -656,10 +572,7 @@ header .main-search-con {
   background-color: #c9c9c9;
   flex-grow: 1;
 }
-/* Login & register page */
-/* Login & register page */
-/* singl category page */
-/* singl category page */
+
 .sidebar-category {
   padding: 30px 30px;
   background-color: #e6e6e6;
@@ -693,7 +606,6 @@ header .main-search-con {
   position: absolute;
   bottom: -20px;
   left: 0;
-  /* margin: 20px 0; */
 }
 .subcats-fetched a:hover {
   font-family: poppins-medium;
@@ -703,25 +615,14 @@ header .main-search-con {
   color: var(--theme-color-pink);
   right: 0%;
 }
-/* singl category page */
-/* singl category page */
 
-/* Breadcrump all pages */
-/* Breadcrump all pages */
-/* .breadcrump {
-  padding: 50px 0 30px 0;
-} */
 .breadcrump-link-1 {
   color: #a3a3a3;
 }
 .breadcrump-link-2 {
   color: #191919;
 }
-/* Breadcrump all pages */
-/* Breadcrump all pages */
 
-/* Form */
-/* Form */
 .form-pnb label {
   font-size: 14px;
 }
@@ -760,11 +661,7 @@ textarea {
   align-items: center;
   gap: 20px;
 }
-/* Form */
-/* Form */
 
-/* articles page */
-/* articles page */
 .all-blog-cats {
   display: flex;
   column-gap: 60px;
@@ -796,11 +693,6 @@ textarea {
   padding-bottom: 50px;
 }
 
-/* articles page */
-/* articles page */
-
-/* single article page */
-/* single article page */
 .article-img {
   width: 100%;
 }
@@ -821,7 +713,8 @@ textarea {
   object-fit: cover;
 }
 .responsive-cat-box {
-  flex: 0 0 100%; /* xs: 1 per row */
+  flex: 0 0 100%;
+
   max-width: 48%;
 }
 .share-with-community {
@@ -849,20 +742,12 @@ textarea {
   text-decoration: none;
   font-size: 18px;
 }
-/* single article page */
-/* single article page */
 
-/* single ad page */
-/* single ad page */
 .reviews-col {
   border: 1px solid #e6e7ea;
   padding: 16px 16px;
 }
-/* single ad page */
-/* single ad page */
 
-/* pagination */
-/* pagination */
 .pagination-btn {
   border: 1px solid #000000;
   border-radius: 0 !important;
@@ -882,11 +767,7 @@ textarea {
   background-color: #000000;
   color: #ffffff;
 }
-/* pagination */
-/* pagination */
 
-/* footer */
-/* footer */
 footer {
   background-color: #252525;
   padding: 48px 72px 30px 48px;
@@ -900,7 +781,6 @@ footer {
 }
 .form-newsletter {
   position: relative;
-  /* text-align: end; */
 }
 .form-newsletter img {
   position: absolute;
@@ -912,17 +792,7 @@ footer {
   margin-right: 20px;
   text-decoration: none;
 }
-/* footer */
-/* footer */
 
-/* messages */
-/* messages */
-
-/* messages */
-/* messages */
-
-/* search header */
-/* search header */
 .search-results-box {
   position: absolute;
   top: 100%;
@@ -968,8 +838,6 @@ footer {
   background-color: #262626;
 }
 
-/* review system stars */
-/* review system stars */
 .review-stars .star {
   font-size: 32px;
   color: #000;
@@ -981,45 +849,20 @@ footer {
   color: #ffd700;
 }
 
-/* review system stars */
-/* review system stars */
-
-/* search header */
-/* search header */
-
-/* @media (min-width: 1065px) {
-  .single-cat {
-    max-width: 25%;
-    min-width: 25%;
-  }
-} */
-
-/* @media screen and (max-width: 500px) {
-  .posts-search-con {
-    flex-direction: column;
-    align-items: center;
-    row-gap: 20px;
-  }
-  .line-head {
-    display: none;
-  }
-} */
-
-/* --- Custom Article Grid (Conflict-Free) --- */
-
-/* 1. The main container for all the cards */
 .article-grid {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap to the next line */
-  gap: 2rem; /* Creates space between cards (adjust as needed) */
+  flex-wrap: wrap;
+
+  gap: 2rem;
 }
 
-/* 2. The individual article card */
 .article-card {
   display: flex;
-  flex-direction: column; /* Stacks card content vertically */
+  flex-direction: column;
+
   background-color: #ffffff;
-  border-radius: 0.3rem; /* 12px */
+  border-radius: 0.3rem;
+
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   overflow: hidden;
   transition: all 0.3s ease-in-out;
@@ -1031,21 +874,15 @@ footer {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
 }
 
-/* 3. Responsive sizing for the cards */
-/* Mobile First: Cards are full width by default */
 .article-card {
   flex-basis: 100%;
 }
 
-/* Tablet: Two columns */
-
-/* Desktop: Three columns */
-
-/* --- Card Content Styling --- */
 .card-img-blog img {
   width: 100%;
-  height: 220px; /* Fixed height for uniform look */
-  object-fit: cover; /* Ensures image fills the space without distortion */
+  height: 220px;
+
+  object-fit: cover;
 }
 .card-img-ad img-fluid {
   min-height: 200px;
@@ -1053,20 +890,23 @@ footer {
 
 .card-body-blog {
   padding: 1.5rem;
-  flex-grow: 1; /* This is key: makes the body take up available space */
+  flex-grow: 1;
 }
 
 .card-body-blog .card-title {
-  font-size: 1.25rem; /* 20px */
+  font-size: 1.25rem;
+
   font-weight: 600;
   line-height: 1.4;
-  color: #1f2937; /* Dark gray */
+  color: #1f2937;
+
   text-decoration: none;
   margin-bottom: 0.75rem;
 }
 
 .card-body-blog .card-excerpt {
-  color: #4b5563; /* Medium gray */
+  color: #4b5563;
+
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -1076,7 +916,8 @@ footer {
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  background-color: #f9fafb; /* Very light gray */
+  background-color: #f9fafb;
+
   border-top: 1px solid #e5e7eb;
   font-size: 0.8rem;
   color: #6b7280;
@@ -1087,46 +928,49 @@ footer {
   height: 32px;
   border-radius: 50%;
 }
-/* --- Responsive Page Header & Category Filters --- */
 
-/* Main container for the entire header block */
 .page-header {
   margin-bottom: 20px;
 }
 
-/* Container for the top row (Title and Button) */
 .page-header-top {
   display: flex;
-  justify-content: space-between; /* Pushes title and button to opposite ends */
+  justify-content: space-between;
+
   align-items: center;
   margin-bottom: 10px;
-  flex-wrap: wrap; /* Allows items to wrap on very small screens */
-  gap: 1rem; /* Adds space if they wrap */
+  flex-wrap: wrap;
+
+  gap: 1rem;
 }
 
-/* Styling for the main page title */
 .page-title {
-  font-size: 2.5rem; /* 40px */
-  font-family: "Playfair Display", serif; /* Assuming this from your class name */
-  font-weight: 500; /* medium */
+  font-size: 2.5rem;
+
+  font-family: "Playfair Display", serif;
+
+  font-weight: 500;
+
   margin: 0;
-  color: #1f2937; /* A modern dark gray */
+  color: #1f2937;
 }
 
-/* The container for the category filter links */
 .category-filters-container {
   display: flex;
-  flex-wrap: wrap; /* THIS IS THE KEY: allows filters to wrap to the next line */
-  gap: 0.75rem; /* Creates space between and below the filter tags */
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
 }
 
-/* Styling for each individual category filter link */
 .category-filter-link {
   display: inline-block;
   padding: 0.6rem 1.25rem;
-  background-color: #f3f4f6; /* Light gray */
-  color: #374151; /* Darker gray text */
-  border-radius: 9999px; /* Creates the "pill" shape */
+  background-color: #f3f4f6;
+
+  color: #374151;
+
+  border-radius: 9999px;
+
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -1134,28 +978,22 @@ footer {
   transition: all 0.2s ease-in-out;
 }
 
-/* Hover and Active states for the filters */
 .category-filter-link:hover {
   background-color: #e5e7eb;
   color: #111827;
 }
 
 .category-filter-link.active {
-  background-color: #007bff; /* Example active color (blue) */
+  background-color: #007bff;
+
   color: #ffffff;
   border-color: #0056b3;
 }
-
-/* --- Media Query for Mobile Responsiveness --- */
-/* On screens smaller than 768px (tablets/phones) */
 
 .blog-category-filter:hover {
   color: var(--theme-color-pink);
 }
 @media (min-width: 360px) {
-  /* .container {
-    padding: 15px;
-  } */
   label {
     font-size: 12px !important;
   }
@@ -1165,14 +1003,7 @@ footer {
   select {
     font-size: 12px !important;
   }
-  /* .single-cat {
-    max-width: 50%;
-    min-width: 48%;
-    padding: 20px 10px 20px 10px;
-  } */
-  /* .container {
-    padding: 5px 15px;
-  } */
+
   .fos-90 {
     font-size: 50px;
   }
@@ -1243,28 +1074,13 @@ footer {
   .related-blog .article-card .dateblog {
     font-size: 0.7rem;
   }
-  /* .related-blog .col-12.col-sm-6.col-lg-4 {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-  } */
-  /* .col-lg-9.ps-0,
-  .col-lg-3.pe-0 {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-  } */
-  /* .user-info {
-    justify-content: center !important;
-  } */
+
   .social-share {
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;
   }
-  /* .pagination-sec .col {
-    gap: 15px;
-    max-width: 400px;
-    margin: auto;
-  } */
+
   .form-section input {
     height: 40px;
     padding: 10px 15px;
@@ -1306,12 +1122,7 @@ footer {
   footer {
     padding: 20px;
   }
-  /* .container {
-    padding: 0px 30px;
-  } */
-  /* .single-cat {
-    min-width: 32%;
-  } */
+
   .responsive-cat-box {
     flex: 0 0 32%;
     max-width: 49%;
@@ -1333,22 +1144,14 @@ footer {
   }
 }
 @media (min-width: 768px) {
-  /* .page-header-top {
-    
-    flex-direction: column;
-    align-items: flex-start; 
-  } */
-
   .page-title {
-    font-size: 2rem; /* Make title slightly smaller on mobile */
-    /* margin-bottom: 1rem; Add space below the title when stacked */
+    font-size: 2rem;
   }
 
   .theme-btn {
     text-align: center;
   }
   .article-card {
-    /* 50% width minus half the gap */
     flex-basis: calc(50% - 1rem);
   }
   .search-results-box {
@@ -1361,9 +1164,7 @@ footer {
   .fos-32 {
     font-size: 25px;
   }
-  /* .container {
-    padding: 0px 72px;
-  } */
+
   .navbar-brand img {
     max-width: 250px;
   }
@@ -1379,12 +1180,7 @@ footer {
   .hero-sec .fos-16 {
     font-size: 12px;
   }
-  /* .head-searching-content :nth-child(1) {
-    width: 100%;
-  }
-  .head-searching-content :nth-child(2) {
-    width: 100%;
-  } */
+
   .section-1 {
     padding: 50px 0px;
   }
@@ -1396,10 +1192,7 @@ footer {
 
     margin: auto;
   }
-  /* .single-cat {
-    max-width: 50%;
-    min-width: 50%;
-  } */
+
   .responsive-cat-box {
     flex: 0 0 33.3333%;
     max-width: 32.3333%;
@@ -1429,9 +1222,7 @@ footer {
   .single-post-title.mb-20 {
     margin-bottom: 20px;
   }
-  /* .post-image-single {
-    object-fit: contain;
-  } */
+
   .post-image-single.mb-60 {
     margin-bottom: 36px;
   }
@@ -1462,9 +1253,6 @@ footer {
   }
 }
 @media (min-width: 992px) {
-  /* .container {
-    padding: 0px 50px;
-  } */
   .navbar-brand img {
     max-width: 250px;
   }
@@ -1477,14 +1265,7 @@ footer {
   .section-1-text .fos-40 {
     font-size: 30px;
   }
-  /* .single-cat {
-    max-width: 33.33%;
-    min-width: 33.33%;
-  } */
-  /* .search-cont-after {
-    flex-direction: column;
-    align-items: center;
-  } */
+
   .posts-search-con {
     flex-grow: 1;
     max-width: 100%;
@@ -1502,11 +1283,7 @@ footer {
     justify-content: center !important;
   }
 }
-/* @media (min-width: 990px) and (max-width: 1023px) {
-  header nav {
-    max-height: 70px !important;
-  }
-} */
+
 @media (min-width: 1024px) {
   header nav {
     flex-wrap: nowrap;
@@ -1523,11 +1300,8 @@ footer {
     height: 40px;
     padding: 0px 10px;
   }
-  /* header nav{
-    justify-content: ;
-  } */
+
   .article-card {
-    /* 33.33% width minus two-thirds of the gap */
     flex-basis: calc(33.333% - 1.34rem);
   }
 }
@@ -1545,9 +1319,6 @@ footer {
   }
 }
 @media (min-width: 1440px) {
-  /* .container {
-    padding: 0px 72px !important;
-  } */
   label {
     font-size: 16px !important;
   }
@@ -1576,156 +1347,6 @@ footer {
     font-size: 1rem;
   }
 }
-
-/* =================================================================== */
-/* 1. Standard Media Query Breakpoints (Mobile-First)                */
-/* =================================================================== */
-
-/* Base styles are the default (for mobile) */
-
-/* Small (sm) Breakpoint - 576px and UP */
-/* @media (min-width: 576px) {
-}
-
-
-@media (min-width: 768px) {
-  .search-results-box {
-    left: 0;
-    right: 0;
-  }
-  .container {
-    padding: 0px 16px;
-  }
-  .navbar-brand img {
-    max-width: 250px;
-  }
-  .hero-sec {
-    min-height: 389px;
-  }
-  .hide-text {
-    display: none;
-  }
-  .hero-sec .fos-90 {
-    font-size: 40px;
-  }
-  .hero-sec .fos-16 {
-    font-size: 12px;
-  }
-  .section-1 {
-    padding: 50px 0px;
-  }
-  .section-1-text .fos-40 {
-    font-size: 24px;
-  }
-  .single-cat {
-    max-width: 50%;
-    min-width: 50%;
-  }
-  .account-main {
-    padding: 30px 0;
-  }
-  .login-sec-2 {
-    padding: 25px 0;
-  }
-  footer {
-    padding: 30px 16px 30px 16px;
-  }
-  .footer-links {
-    text-align: center;
-  }
-  .sec-search .fos-40 {
-    font-size: 30px;
-  }
-  .search-posts-input-cont {
-    display: flex;
-  }
-  .theme-btn {
-    height: 40px;
-    font-size: 0.775rem;
-  }
-  .main-search-con {
-    height: 40px;
-    padding: 0px 10px;
-    flex-wrap: nowrap;
-  }
-  .head-searching-content input {
-    height: 40px;
-  }
-  .article-card {
-    flex-basis: calc(50% - 1rem);
-  }
-  .page-header-top {
-    flex-direction: row;
-    align-items: center;
-  }
-  .page-title {
-    font-size: 2.5rem;
-    margin-bottom: 0;
-  }
-  .theme-btn {
-    width: auto;
-  }
-}
-
-@media (min-width: 992px) {
-  .container {
-    padding: 0px 50px;
-  }
-  .hero-sec .fos-90 {
-    font-size: 70px;
-  }
-  .section-1 {
-    padding: 60px 0px;
-  }
-  .section-1-text .fos-40 {
-    font-size: 30px;
-  }
-  .single-cat {
-    max-width: 33.33%;
-    min-width: 33.33%;
-  }
-  .search-cont-after {
-    flex-direction: row;
-    align-items: center;
-  }
-  .posts-search-con {
-    flex-grow: 0;
-    max-width: 532px;
-    min-width: 532px;
-  }
-}
-
-
-@media (min-width: 1200px) {
-  .single-cat {
-    max-width: 25%;
-    min-width: 25%;
-  }
-  .article-card {
-    flex-basis: calc(33.333% - 1.34rem);
-  }
-}
-
-
-@media (min-width: 1400px) {
-
-}
-
-
-@media (max-width: 575.98px) {
-  .posts-search-con {
-    flex-direction: column;
-    align-items: center;
-    row-gap: 20px;
-  }
-  .line-head {
-    display: none;
-  }
-  footer {
-    padding: 20px;
-  }
-} */
-/* Global styles for the section */
 
 .img-ads {
   width: 100%;

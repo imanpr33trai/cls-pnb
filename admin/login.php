@@ -1,25 +1,25 @@
 <?php
-// /admin/login.php (Combined and Corrected)
 
-// --- 1. CONFIGURATION AND SESSION START ---
-// The path must go up one level to find the config folder.
+
+
+
 require_once __DIR__ . '/../config/config.php';
 
-// Start session if not already started. This must be at the very top.
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// If admin is already logged in, redirect to the dashboard
+
 if (isset($_SESSION['admins_id'])) {
-    // Redirect to the canonical admin URL, which the router will handle.
+    
     header("Location: /admin/dashboard"); 
     exit();
 }
 
-// --- 2. FORM PROCESSING LOGIC ---
+
 $errors = [];
-// This block will ONLY run when the form is submitted
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -29,62 +29,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Prepare a secure statement to find the admin by username OR email
+        
         $stmt = $conn->prepare("SELECT * FROM admins WHERE username = ? OR email = ?");
         $stmt->bind_param("ss", $username, $username);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($admin = $result->fetch_assoc()) {
-            // User found, now verify the password
+            
             if (password_verify($password, $admin['password'])) {
-                // --- LOGIN SUCCESSFUL ---
-                session_regenerate_id(true); // Security: prevent session fixation
+                
+                session_regenerate_id(true); 
                 $_SESSION['admins_id'] = $admin['id'];
                 $_SESSION['admins_username'] = $admin['username'];
                 
-                // Redirect to the admin dashboard
+                
                 header("Location: " . $base_url . 'admin');
                 exit();
             } else {
-                // Password incorrect
+                
                 $errors[] = "Invalid username or password.";
             }
         } else {
-            // No user found with that username/email
+            
             $errors[] = "The Email or username is not exist.";
         }
         $stmt->close();
     }
     
-    // If we are here, login failed. Store the error to display it.
-    // The session variable is more reliable across redirects if needed, but for a single file it's fine.
+    
+    
     $_SESSION['login_error'] = implode('<br>', $errors);
 
-    // Redirect back to the login page itself to prevent form resubmission
+    
     header("Location: /admin/login");
     exit();
 }
 
-// --- 3. DISPLAY LOGIC (This runs on a normal page load) ---
-// Get any errors from the session (set by the POST block above)
+
+
 $login_error = $_SESSION['login_error'] ?? null;
-unset($_SESSION['login_error']); // Clear the error so it doesn't show again
+unset($_SESSION['login_error']); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Admin Login</title>
-    <!-- The base_url from config.php ensures the path to CSS is always correct -->
+     
+
     <link rel="stylesheet" href="<?php echo htmlspecialchars($base_url); ?>assets/css/output.css">
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="w-full max-w-lg">
         
-        <!-- ========================================================== -->
-        <!-- THE FIX: The form action is now empty, so it submits to itself. -->
-        <!-- ========================================================== -->
+         
+
+         
+
+         
+
         <form method="POST" action="" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
 

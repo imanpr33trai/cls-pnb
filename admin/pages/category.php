@@ -1,12 +1,12 @@
 <?php
-// /admin/pages/category.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Handle category deletion
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_category'])) {
     $category_id = (int)$_POST['category_id'];
 
-    // First, get the image filename to delete it from the server
+    
     $stmt = $conn->prepare("SELECT image FROM ad_categories WHERE id = ?");
     $stmt->bind_param("i", $category_id);
     $stmt->execute();
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_category'])) {
     }
     $stmt->close();
 
-    // Now, delete the category from the database
+    
     $delete_stmt = $conn->prepare("DELETE FROM ad_categories WHERE id = ?");
     $delete_stmt->bind_param("i", $category_id);
     if ($delete_stmt->execute()) {
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_category'])) {
 }
 
 
-// Fetch all categories from the database
+
 $stmt = $conn->prepare("SELECT id, name, image, status, created_at FROM ad_categories ORDER BY created_at DESC");
 $stmt->execute();
 $result = $stmt->get_result();
@@ -105,19 +105,3 @@ $stmt->close();
     </div>
 </div>
 
-<!-- Edit Category Modal -->
-<!-- <div id="edit-category-modal" class="fixed inset-0 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div class="flex justify-between items-center pb-3">
-            <p class="text-2xl font-bold">Edit Category</p>
-            <div id="close-edit-category-modal" class="cursor-pointer z-50">
-                <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
-                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
-                </svg>
-            </div>
-        </div>
-        <div id="edit-category-modal-content">
-            Form will be loaded here
-        </div>
-    </div>
-</div> -->

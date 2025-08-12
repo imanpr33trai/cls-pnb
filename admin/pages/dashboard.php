@@ -1,5 +1,5 @@
 <?php
-// Add this at the top of each page in the pages directory
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -11,31 +11,31 @@ if (!isset($_SESSION['admins_id'])) {
 
 require_once __DIR__ . '/../../config/config.php';
 
-// --- Fetching Data ---
 
-// Site Settings
+
+
 $setting = $conn->query("SELECT * FROM site_settings WHERE id = 1")->fetch_assoc();
 
-// Total Counts
+
 $total_ads = $conn->query("SELECT COUNT(*) as count FROM ad_form")->fetch_assoc()['count'];
 $total_blogs = $conn->query("SELECT COUNT(*) as count FROM blog_posts")->fetch_assoc()['count'];
 $total_users = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
 $ad_categories_count = $conn->query("SELECT COUNT(*) as count FROM ad_categories")->fetch_assoc()['count'];
 $blog_categories_count = $conn->query("SELECT COUNT(*) as count FROM blog_categories")->fetch_assoc()['count'];
 
-// Counts for "Today"
+
 $today_date = date('Y-m-d');
 $ads_today = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE DATE(created_at) = '$today_date'")->fetch_assoc()['count'];
 $blogs_today = $conn->query("SELECT COUNT(*) as count FROM blog_posts WHERE DATE(created_at) = '$today_date'")->fetch_assoc()['count'];
 $pending_ads = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE status = 'pending'")->fetch_assoc()['count'];
 
-// Counts for "This Week"
+
 $start_of_week = date('Y-m-d H:i:s', strtotime('monday this week'));
 $ads_this_week = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
 $blogs_this_week = $conn->query("SELECT COUNT(*) as count FROM blog_posts WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
 $users_this_week = $conn->query("SELECT COUNT(*) as count FROM users WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
 
-// Real Subscribers data
+
 $total_subscribers = $conn->query("SELECT COUNT(*) as count FROM subscribers")->fetch_assoc()['count'];
 $subscribers_today = $conn->query("SELECT COUNT(*) as count FROM subscribers WHERE DATE(created_at) = '$today_date'")->fetch_assoc()['count'];
 $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
@@ -45,7 +45,7 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
 <div class="container mx-auto px-4 py-8">
     <h2 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h2>
 
-    <!-- Main Stats Grid -->
+    
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="lg:col-span-4 bg-white shadow-lg rounded-lg p-6 flex items-center">
             <?php if (!empty($setting['header_logo'])): ?>
@@ -56,7 +56,7 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
                 <p class="text-gray-600">Welcome to the admin panel.</p>
             </div>
         </div>
-        <!-- Total Ads -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between">
@@ -67,7 +67,7 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
             </div>
             <p class="text-sm text-gray-400 mt-4">+<?= $ads_this_week ?> this week</p>
         </div>
-        <!-- Total Blogs -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between">
@@ -78,7 +78,7 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
             </div>
             <p class="text-sm text-gray-400 mt-4">+<?= $blogs_this_week ?> this week</p>
         </div>
-        <!-- Total Users -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between">
@@ -89,7 +89,7 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
             </div>
             <p class="text-sm text-gray-400 mt-4">+<?= $users_this_week ?> this week</p>
         </div>
-        <!-- Total Subscribers -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between">
@@ -102,27 +102,27 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
         </div>
     </div>
 
-    <!-- Actionable Items Grid -->
+    
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- New Ad Posts -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Ad Posts (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">➕ <?= $ads_today ?> New Ads Posted</p>
             <button class="mt-4 w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition-colors">Review Pending Ads</button>
         </div>
-        <!-- New Blog Posts -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Blog Posts (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">📝 <?= $blogs_today ?> New Blogs Submitted</p>
             <button class="mt-4 w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition-colors">Approve Blogs</button>
         </div>
-        <!-- New Subscribers -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Subscribers (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">📬 <?= $subscribers_today ?> New Newsletter Subscribed</p>
             <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors">View Emails</button>
         </div>
-        <!-- Ad Categories -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">Ad Categories</h4>
             <p class="text-2xl font-bold    
@@ -130,13 +130,13 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
             text-gray-800">🏷️ <?= $ad_categories_count ?> Categories</p>
             <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Manage Ad Categories</button>
         </div>
-        <!-- Blog Categories -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">Blog Categories</h4>
             <p class="text-2xl font-bold text-gray-800">📚 <?= $blog_categories_count ?> Categories</p>
             <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Edit Blog Categories</button>
         </div>
-        <!-- Pending Ad Approvals -->
+        
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">Pending Ad Approvals</h4>
             <p class="text-2xl font-bold text-gray-800">⏳ <?= $pending_ads ?> Ads Awaiting Review</p>

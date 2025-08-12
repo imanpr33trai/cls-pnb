@@ -1,14 +1,14 @@
 <?php
-// /admin/pages/reported-ads.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Handle actions: dismiss report or delete ad
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['report_id'], $_POST['action'])) {
     $report_id = (int)$_POST['report_id'];
     $action = $_POST['action'];
 
     if ($action === 'dismiss') {
-        // Just delete the report, leave the ad as is.
+        
         $stmt = $conn->prepare("DELETE FROM reported_ads WHERE id = ?");
         $stmt->bind_param("i", $report_id);
         if ($stmt->execute()) {
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['report_id'], $_POST['
     } elseif ($action === 'delete_ad' && isset($_POST['ad_id'])) {
         $ad_id = (int)$_POST['ad_id'];
         
-        // First, delete the ad from ad_form (ON DELETE CASCADE will handle related reports)
+        
         $stmt = $conn->prepare("DELETE FROM ad_form WHERE id = ?");
         $stmt->bind_param("i", $ad_id);
         if ($stmt->execute()) {
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['report_id'], $_POST['
     }
 }
 
-// Fetch all reported ads
+
 $stmt = $conn->prepare("
     SELECT 
         r.id AS report_id,

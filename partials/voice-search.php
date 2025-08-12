@@ -1,7 +1,7 @@
 <?php
 include_once("../config/config.php");
 
-$base_url = "http://punjab-classified-site-php.test/"; // Replace with your actual base_url
+$base_url = "http://punjab-classified-site-php.test/";     
 $q = isset($_GET['q']) ? trim($conn->real_escape_string($_GET['q'])) : '';
 if ($q === '') {
     echo "<p>No search term provided.</p>";
@@ -10,7 +10,7 @@ if ($q === '') {
 
 $normalized_q = strtolower(str_replace(' ', '', $q));
 
-// Function to run query for given term
+    
 function searchAds($term, $conn) {
     $term = strtolower(str_replace(' ', '', $term));
     $sql = "SELECT id, ad_title, location, image FROM ad_form
@@ -27,13 +27,13 @@ function searchAds($term, $conn) {
     return $conn->query($sql);
 }
 
-// Search full query first
+    
 $exactResults = searchAds($q, $conn);
 
-// Start HTML structure
+    
 echo "<div style='display: flex; gap: 40px;'>";
 
-// Column 1: Exact Results
+    
 echo "<div style='flex: 1;'>";
 echo "<h4 style='color: white;'>Exact Match</h4>";
 if ($exactResults->num_rows > 0) {
@@ -50,10 +50,10 @@ if ($exactResults->num_rows > 0) {
 }
 echo "</div>";
 
-// Split query into words and search separately
+    
 $keywords = explode(' ', $q);
 if (count($keywords) > 1) {
-    // Column 2: First Word Related
+        
     echo "<div style='flex: 1;'>";
     echo "<h4 style='color: white;'>Related to \"" . htmlspecialchars($keywords[0]) . "\"</h4>";
     $word1Results = searchAds($keywords[0], $conn);
@@ -71,7 +71,7 @@ if (count($keywords) > 1) {
     }
     echo "</div>";
 
-    // Column 3: Second Word Related
+        
     echo "<div style='flex: 1;'>";
     echo "<h4 style='color: white;'>Related to \"" . htmlspecialchars($keywords[1]) . "\"</h4>";
     $word2Results = searchAds($keywords[1], $conn);
@@ -90,7 +90,7 @@ if (count($keywords) > 1) {
     echo "</div>";
 }
 
-echo "</div>"; // Close flex container
+echo "</div>";     
 echo "<hr style='border-top: 1px solid white; margin-top: 20px;'>";
 
 ?>

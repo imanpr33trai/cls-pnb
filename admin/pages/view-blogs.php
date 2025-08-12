@@ -1,8 +1,8 @@
 <?php
-// /admin/pages/view-blogs.php
+
 require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all blog posts
+
 $stmt = $conn->prepare("
     SELECT 
         p.id, 
