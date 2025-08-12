@@ -1,40 +1,12 @@
 <?php
-// /config/debug.php (Complete, Self-Contained Debugging System)
-
-// =================================================================
-//  PHP DEBUGGING & ERROR HANDLING SETUP
-// =================================================================
-
-// --- MASTER SWITCH: Set to `false` when your site goes live ---
 define('IS_DEVELOPMENT_MODE', false);
-
-// --- LOG FILE SETUP ---
 define('DEBUG_LOG_FILE', __DIR__ . '/../logs/debug.log');
-
-// Auto-create logs directory if it doesn't exist
-// $log_dir = dirname(DEBUG_LOG_FILE);
-// if (!is_dir($log_dir)) {
-//     // Attempt to create the directory with permissions that allow the web server to write to it.
-//     // The umask will be applied, so 0777 usually results in 0755.
-//     if (!mkdir($log_dir, 0777, true) && !is_dir($log_dir)) {
-//         // If directory creation fails, trigger an error. This is a configuration problem.
-//         trigger_error("Failed to create log directory: {$log_dir}", E_USER_WARNING);
-//     }
-// }
-
 ini_set('log_errors', '1');
 ini_set('error_log', DEBUG_LOG_FILE);
-// We use our own handlers for displaying errors, so PHP's display can be off.
-// This prevents duplicate error messages if the handler fails.
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-// --- CONSOLE COMMUNICATION CORE ---
 
-/**
- * A self-contained function to send data to the browser console.
- * It's the engine for all other debug functions.
- */
 function _send_to_console(array $payload)
 {
     if (!IS_DEVELOPMENT_MODE || headers_sent() || PHP_SAPI === 'cli') {
@@ -66,13 +38,11 @@ function _send_to_console(array $payload)
     })();</script>";
 }
 
-/**
- * Displays a formatted error message directly on the web page.
- */
+
 function _display_error_on_page(string $title, string $message, string $file, int $line, ?string $trace = null)
 {
     if (PHP_SAPI === 'cli' || headers_sent()) {
-        return; // Don't display HTML in CLI mode or if headers are already sent.
+        return;
     }
 
     echo '<div style="border: 2px solid #dc3545; background-color: #f8d7da; color: #721c24; padding: 15px; margin: 15px; font-family: monospace; z-index: 99999; position: relative;">';
@@ -88,12 +58,7 @@ function _display_error_on_page(string $title, string $message, string $file, in
 }
 
 
-// --- PHP ERROR AND EXCEPTION HANDLERS ---
 
-/**
- * Catches all PHP errors, warnings, and notices.
- * Logs to file, sends to console, and displays on page.
- */
 function custom_error_handler(int $errno, string $errstr, string $errfile, int $errline): bool
 {
     $log_message = "PHP Error: [{$errno}] {$errstr} in {$errfile} on line {$errline}";
@@ -111,14 +76,10 @@ function custom_error_handler(int $errno, string $errstr, string $errfile, int $
             ]
         ]);
     }
-    // Prevent PHP's default handler from running, as we have our own display logic.
     return true;
 }
 
-/**
- * Catches all uncaught exceptions.
- * Logs to file, sends to console, displays on page, and halts execution.
- */
+
 function custom_exception_handler(Throwable $exception): void
 {
     $log_message = "Uncaught Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
@@ -144,14 +105,10 @@ function custom_exception_handler(Throwable $exception): void
         ]);
     }
 
-    // Halt script execution after a fatal exception.
     exit(1);
 }
 
-/**
- * Catches fatal errors that other handlers miss (e.g., parse errors).
- * Logs to file and attempts to display on page.
- */
+
 function custom_shutdown_handler(): void
 {
     $error = error_get_last();
@@ -160,7 +117,6 @@ function custom_shutdown_handler(): void
         error_log($log_message);
 
         if (IS_DEVELOPMENT_MODE) {
-            // Attempt to display the error. This might not always work if output has already started.
             _display_error_on_page(
                 'PHP Fatal Error',
                 $error['message'],
@@ -170,24 +126,3 @@ function custom_shutdown_handler(): void
         }
     }
 }
-
-// Only set up the handlers and automatic logging if this is NOT an AJAX request.
-// if (!defined('AJAX_REQUEST')) {
-//     set_error_handler('custom_error_handler');
-//     set_exception_handler('custom_exception_handler');
-//     register_shutdown_function('custom_shutdown_handler');
-
-//     // --- AUTOMATIC SUPERGLOBAL LOGGING ---
-//     if (IS_DEVELOPMENT_MODE) {
-//         if (!empty($_GET)) {
-//             console_log($_GET, '$_GET Data');
-//         }
-//         if (!empty($_POST)) {
-//             console_log($_POST, '$_POST Data');
-//         }
-//         if (!empty($_FILES)) {
-//             console_log($_FILES, '$_FILES Data');
-//         }
-//     }
-// }
-?>

@@ -1,15 +1,11 @@
 <?php
-// /admin/pages/email-settings.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Fetch the current email settings
+require_once __DIR__ . '/../../config/config.php';
 $stmt = $conn->prepare("SELECT smtp_host, smtp_port, smtp_secure, smtp_user, smtp_pass, smtp_from_email, smtp_from_name FROM site_settings WHERE id = 1");
 $stmt->execute();
 $result = $stmt->get_result();
 $settings = $result->fetch_assoc();
 $stmt->close();
-
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email_settings'])) {
     $smtp_host = trim($_POST['smtp_host']);
     $smtp_port = (int)$_POST['smtp_port'];
@@ -18,8 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email_settings
     $smtp_from_email = trim($_POST['smtp_from_email']);
     $smtp_from_name = trim($_POST['smtp_from_name']);
     
-    // Only update password if a new one is provided
-    $smtp_pass = !empty(trim($_POST['smtp_pass'])) ? trim($_POST['smtp_pass']) : $settings['smtp_pass'];
+       $smtp_pass = !empty(trim($_POST['smtp_pass'])) ? trim($_POST['smtp_pass']) : $settings['smtp_pass'];
 
     $update_stmt = $conn->prepare("
         UPDATE site_settings 
@@ -30,8 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email_settings
     
     if ($update_stmt->execute()) {
         echo "<div class='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4'>✅ Email settings updated successfully!</div>";
-        // Refresh settings after update
-        $stmt = $conn->prepare("SELECT smtp_host, smtp_port, smtp_secure, smtp_user, smtp_pass, smtp_from_email, smtp_from_name FROM site_settings WHERE id = 1");
+               $stmt = $conn->prepare("SELECT smtp_host, smtp_port, smtp_secure, smtp_user, smtp_pass, smtp_from_email, smtp_from_name FROM site_settings WHERE id = 1");
         $stmt->execute();
         $result = $stmt->get_result();
         $settings = $result->fetch_assoc();

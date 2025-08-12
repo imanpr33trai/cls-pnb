@@ -1,20 +1,17 @@
 <?php
-// /admin/util/get_blog_form.php
 require_once __DIR__ . '/../../config/config.php';
 
 $blog_id = isset($_GET['blog_id']) ? (int)$_GET['blog_id'] : 0;
 
 if ($blog_id > 0) {
-    // Fetch blog post
-    $stmt = $conn->prepare("SELECT * FROM blog_posts WHERE id = ?");
+       $stmt = $conn->prepare("SELECT * FROM blog_posts WHERE id = ?");
     $stmt->bind_param("i", $blog_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $blog = $result->fetch_assoc();
     $stmt->close();
 
-    // Fetch categories
-    $cat_stmt = $conn->prepare("SELECT id, name FROM blog_categories ORDER BY name ASC");
+       $cat_stmt = $conn->prepare("SELECT id, name FROM blog_categories ORDER BY name ASC");
     $cat_stmt->execute();
     $categories = $cat_stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $cat_stmt->close();

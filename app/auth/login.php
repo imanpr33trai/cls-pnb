@@ -1,11 +1,4 @@
 <?php
-// echo '<div style="background: #ffc; padding: 10px; border: 1px solid #dda; margin: 10px;"><strong>DEBUGGER:</strong> app/auth/login.php loaded.</div>';
-// // FOR DEBUGGING - REMOVE IN PRODUCTION
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
-
 
 include_once(__DIR__ . '/../../config/config.php');
 include(__DIR__ . '/../../partials/github_login.php');
@@ -14,11 +7,7 @@ include(__DIR__ . '/../../partials/google-login.php');
 include_once(__DIR__ . '/../../config/functions.php');
 
 
-
-// USE $errors array to match your HTML block
 $errors = [];
-
-// If user is already logged in, redirect them away
 if (isset($_SESSION['user_id'])) {
     header("Location: " . $base_url);
     exit();
@@ -29,7 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = $_POST['password'];
     $accepted = isset($_POST['accept-login']);
 
-    // --- Validate all inputs first ---
     if (empty($email)) {
         $errors[] = "Email address is required.";
     }
@@ -40,9 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errors[] = "You must agree to the Terms of Use to log in.";
     }
 
-    // --- If no basic errors, check the database ---
     if (empty($errors)) {
-        // Use your working "SELECT *" logic
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -52,21 +38,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user = $res->fetch_assoc();
 
             if (password_verify($password, $user['password'])) {
-                // Login is successful! Set session variables.  
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
                 $_SESSION['user_email'] = $user['email'];
                 $_SESSION['user_image'] = $user['image'];
 
-                // Redirect to index.php
                 header("Location: " . $base_url);
-                exit; // Crucial to stop the script here
+                exit;
             } else {
-                // **Security Improvement**: Use a generic error
                 $errors[] = "Invalid email or password.";
             }
         } else {
-            // **Security Improvement**: Use the same generic error
             $errors[] = "Invalid email or password.";
         }
         $stmt->close();
@@ -75,8 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 
 <?php include_once(__DIR__ . '/../../partials/header.php'); ?>
-<!-- login page Start -->
-<!-- login page Start -->
+
+
 <section class=" container">
     <div class="account-main">
 
@@ -91,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
 
-                <!-- THE NEW, CORRECTED BLOCK GOES HERE -->
+
                 <?php
                 if (!empty($errors)) {
                     echo '<div class="alert alert-danger">';
@@ -101,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     echo '</div>';
                 }
                 ?>
-                <!-- END OF CORRECTED BLOCK -->
+
 
 
 
@@ -177,13 +159,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 </section>
 
-<!-- login page End -->
-<!-- login page End -->
 
-<!-- footer -->
-<!-- footer -->
+
+
+
+
 <?php
 include_once(__DIR__ . '/../../partials/footer.php');
 ?>
-<!-- footer -->
-<!-- footer -->

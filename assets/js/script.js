@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     spokenText.textContent = `You said: "${transcript}"`;
     inputField.value = transcript;
 
-    // Fetch search results from server
     fetch("partials/voice-search.php?q=" + encodeURIComponent(transcript))
       .then((res) => res.text())
       .then((data) => {
@@ -37,15 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
-  recognition.onend = function () {
-    // recognition stopped
-  };
+  recognition.onend = function () {};
 
   recognition.onerror = function (event) {
     spokenText.textContent = "Error: " + event.error;
   };
 
-  // Hide overlay on click outside
   document.addEventListener("click", function (e) {
     if (!overlay.contains(e.target) && e.target !== micBtn) {
       overlay.classList.add("d-none");
@@ -55,18 +51,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function restrictToNumbers(selector) {
   $(selector).on("input", function () {
-    // Replace any character that is not a digit with an empty string
     this.value = this.value.replace(/[^0-9]/g, "");
   });
 }
-
-// Apply the numeric restriction to the phone and postal code fields
 restrictToNumbers("#teluserads");
 restrictToNumbers("#adpostalcode");
 restrictToNumbers("#adPrice");
 restrictToNumbers("#location");
-
-// --- Restrict Other Category to letters, spaces, and hyphens ---
 $("#otherCategory").on("input", function () {
   this.value = this.value.replace(/[^a-zA-Z\s\-]/g, "");
 });

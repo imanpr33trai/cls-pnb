@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/pending-blogs.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Handle status updates
+require_once __DIR__ . '/../../config/config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_id'], $_POST['status'])) {
     $blog_id = (int)$_POST['blog_id'];
     $status = $_POST['status'];
@@ -18,8 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_id'], $_POST['st
         $stmt->close();
     }
 }
-
-// Fetch all blog posts with 'pending' status
 $stmt = $conn->prepare("
     SELECT 
         p.id, 

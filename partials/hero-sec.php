@@ -1,6 +1,6 @@
 <section class="w-full bg-[url(/assets/images/hero-image.svg)] min-w-full">
-        
-<div class="hero-sec container  d-flex justify-content-center align-items-center">
+
+    <div class="hero-sec container  d-flex justify-content-center align-items-center">
         <div class="row w-full">
             <div class="flex justify-center items-center flex-col">
                 <h1 class="playfair-medium text-white lg:fos-90 xs:text-4xl sm:text-5xl text-md-center"><span
@@ -17,7 +17,7 @@
                     </button>
 
                 </div>
-                <!-- Overlay Result Area -->
+
                 <div id="overlay" class="voice-overlay">
                     <div class="close-btn" onclick="document.getElementById('overlay').style.display='none';">&times;</div>
                     <div class="loader" id="loader">

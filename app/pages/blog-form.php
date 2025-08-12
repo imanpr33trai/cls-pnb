@@ -1,20 +1,12 @@
 <?php
-// =========================================================================
-// PART 1: ALL PHP LOGIC - THIS IS THE ONLY PHP LOGIC BLOCK YOU NEED
-// =========================================================================
-
 
 include_once('config/config.php');
 include_once(__DIR__ . '/../../config/functions.php');
-
-// --- 1. Security: Redirect non-logged-in users ---
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['redirect_to'] = 'Blog-form.php';
     header('Location: login.php');
     exit();
 }
-
-// --- 2. Fetch Logged-in User Data for Pre-filling the Form ---
 $user_id = $_SESSION['user_id'];
 $user_data = [];
 $stmt_user = $conn->prepare("SELECT first_name, last_name, email, phone FROM users WHERE id = ?");
@@ -25,21 +17,16 @@ if ($result_user && $result_user->num_rows === 1) {
     $user_data = $result_user->fetch_assoc();
 }
 $stmt_user->close();
-
-// --- 3. Form Submission Logic ---
 $errors = [];
 if (isset($_POST['btn_save_2'])) {
-    // --- Collect and Sanitize Form Data ---
     $blogtitle       = trim($_POST['blogtitle'] ?? '');
     $blogusername    = $user_data['first_name'] . ' ' . $user_data['last_name'];
     $blogcategory    = $_POST['categoryblog'] ?? '';
     $blogdiscription = trim($_POST['Descriptionusrblog'] ?? '');
     $blogemail       = $user_data['email'];
     $blogmob         = trim($_POST['adsusermobblog'] ?? '');
-    $platforms       = $_POST['platform'] ?? []; // Comes as an array
-    $links           = $_POST['link'] ?? [];     // Comes as an array
-
-    // --- Server-Side Validation ---
+    $platforms       = $_POST['platform'] ?? [];
+    $links           = $_POST['link'] ?? [];
     if (empty($blogtitle)) {
         $errors[] = "Article Title is required.";
     }
@@ -56,7 +43,6 @@ if (isset($_POST['btn_save_2'])) {
         $errors[] = "Description is too long (max 5000 characters).";
     }
 
-    // --- Enhanced Image Upload Logic ---
     $imageNames = [];
     if (isset($_FILES['pictures']) && !empty($_FILES['pictures']['name'][0])) {
         $uploadDir = 'assets/uploads/blog_form/';
@@ -78,9 +64,7 @@ if (isset($_POST['btn_save_2'])) {
     }
     $encodedImages = json_encode($imageNames);
 
-    // --- Process and Store Data if No Errors ---
     if (empty($errors)) {
-        // Prepare platforms/links for database (JSON encode)
         $platform_data = [];
         foreach ($platforms as $index => $platform_name) {
             if (!empty($platform_name) && isset($links[$index]) && !empty($links[$index])) {
@@ -89,10 +73,9 @@ if (isset($_POST['btn_save_2'])) {
         }
         $platform_json = json_encode($platform_data);
 
-        // Insert into DB
         $blog_slug = create_unique_slug($conn, $blogtitle, 'blog_posts', 'blog_slug', 4);
         $stmt = $conn->prepare("INSERT INTO blog_posts (title, blog_slug, author_name, category_id, description, email, phone, image, platform, platform_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $empty_str = ''; // platform_link is no longer used individually
+        $empty_str = '';
         $stmt->bind_param("sssissssss", $blogtitle, $blog_slug, $blogusername, $blogcategory, $blogdiscription, $blogemail, $blogmob, $encodedImages, $platform_json, $empty_str);
 
         if ($stmt->execute()) {
@@ -105,21 +88,14 @@ if (isset($_POST['btn_save_2'])) {
         $stmt->close();
     }
 }
-
-// --- 4. Include Header (Now that all PHP logic is done) ---
-include_once(__DIR__ . '/../../partials/header.php');
-
-// =========================================================================
-// PART 2: THE HTML STRUCTURE (USING THE DATA WE FETCHED ABOVE)
-// =========================================================================
-?>
+include_once(__DIR__ . '/../../partials/header.php'); ?>
 <style>
     #multi-preview-area span {
         font-size: 18px;
         line-height: 1;
     }
 
-    /* ... Your existing styles for preview images are good ... */
+
     .form-control.is-invalid,
     .form-select.is-invalid {
         border-color: #dc3545;
@@ -144,8 +120,8 @@ include_once(__DIR__ . '/../../partials/header.php');
     }
 </style>
 
-<!-- Breadcrump -->
-<!-- Breadcrump -->
+
+
 <section class="breadcrump">
     <div class="container">
         <div class="row py-1.5">
@@ -156,8 +132,8 @@ include_once(__DIR__ . '/../../partials/header.php');
         </div>
     </div>
 </section>
-<!-- Breadcrump -->
-<!-- Breadcrump -->
+
+
 <?php
 
 ?>
@@ -168,14 +144,14 @@ include_once(__DIR__ . '/../../partials/header.php');
         <a href="<?php echo $base_url; ?>login.php" class="theme-btn">Login to Continue</a>
     </div>
 <?php else: ?>
-    <!-- form section -->
-    <!-- form section -->
+
+
     <section class="form-section pb-24">
         <div class="container">
             <div class="row">
                 <div class="col">
                     <h1 class="fos-40 playfair-medium mb-7">Create Your Free Articles</h1>
-                    <!-- Display Success/Error Messages -->
+
                     <?php if (!empty($_SESSION['form_success'])): ?>
                         <div class="alert alert-success"><?php echo $_SESSION['form_success'];
                                                             unset($_SESSION['form_success']); ?></div>
@@ -184,7 +160,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                         <div class="alert alert-danger"><?php foreach ($errors as $err) echo "<p class='mb-0'>$err</p>"; ?></div>
                     <?php endif; ?>
                     <form action="" method="POST" enctype="multipart/form-data">
-                        <!-- form row-->
+
                         <div class="row xs:text-tiny sm:text-sm ">
                             <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                                 <label for="blogtitles">Article Title*</label>
@@ -212,18 +188,13 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 <div class="invalid-feedback">Please select a category.</div>
                             </div>
 
-                            <!-- Description -->
-                            <!-- <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
-                            <label for="descriptionsblogs">Description*</label>
-                            <textarea name="Descriptionusrblog" id="descriptionsblogs" rows="8" required minlength="50" maxlength="5000"></textarea>
-                            <div class="char-counter">0/5000</div>
-                            <div class="invalid-feedback">Description is required (50-5000 characters).</div>
-                        </div> -->
 
-                            <!-- Inside your Blog-form.php form -->
+
+
+
                             <div class="col-lg-12 col-sm-12 d-flex flex-column mb-7">
                                 <label for="descriptionsblogs">Article Content*</label>
-                                <!-- The ID "descriptionsblogs" is important -->
+
                                 <textarea name="Descriptionusrblog" id="descriptionsblogs" rows="20"></textarea>
                             </div>
 
@@ -259,10 +230,10 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 <hr>
                                 <h5 class="xs:text-lg playfair-medium sm:text-xl"> Social/Portfolio Links (Optional)</h5>
                             </div>
-                            <!-- Platform & Link Repeatable Section -->
+
 
                             <div id="platform-container" class="col-12">
-                                <!-- Initial Row -->
+
                                 <div class="row platform-row align-items-end ">
                                     <div class="col-lg-4 col-sm-12 d-flex flex-column mb-3">
                                         <label>Platform</label>
@@ -294,7 +265,7 @@ include_once(__DIR__ . '/../../partials/header.php');
                                 <button type="submit" name="btn_save_2" class="theme-btn">Post This Blog</button>
                             </div>
                         </div>
-                        <!-- form row -->
+
                     </form>
                 </div>
             </div>
@@ -304,8 +275,7 @@ include_once(__DIR__ . '/../../partials/header.php');
     <script>
         document.getElementById('previewimagesblogs').addEventListener('change', function(e) {
             const previewContainer = document.getElementById('multi-preview-area');
-            previewContainer.innerHTML = ''; // Clear previous previews
-
+            previewContainer.innerHTML = '';
             const files = e.target.files;
             if (!files.length) return;
 
@@ -331,7 +301,6 @@ include_once(__DIR__ . '/../../partials/header.php');
 
                     removeBtn.onclick = () => {
                         previewDiv.remove();
-                        // Optional: Clear file from input (reset input if all removed)
                         if (previewContainer.children.length === 1) {
                             e.target.value = '';
                         }
@@ -346,36 +315,33 @@ include_once(__DIR__ . '/../../partials/header.php');
         });
     </script>
 
-    <!-- form section -->
-    <!-- form section -->
+
+
 <?php endif; ?>
 
 
-<!-- footer -->
-<!-- footer -->
+
+
 <?php
 include_once(__DIR__ . '/../../partials/footer.php');
 ?>
-<!-- footer -->
-<!-- footer -->
-<!-- CKEditor -->
+
+
+
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-<!-- Include jQuery if it's not in your footer -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Unified script for the blog form -->
+
 <script>
     $(document).ready(function() {
-        const blogForm = $('form'); // Use a generic selector for the form
-
-        // --- Initialize CKEditor ---
+        const blogForm = $('form');
         ClassicEditor
-            .create( document.querySelector( '#descriptionsblogs' ) )
-            .catch( error => {
-                console.error( error );
-            } );
+            .create(document.querySelector('#descriptionsblogs'))
+            .catch(error => {
+                console.error(error);
+            });
 
-        // --- Live validation feedback ---
         blogForm.find('input[required], select[required], textarea[required]').on('blur', function() {
             if (this.checkValidity()) {
                 $(this).removeClass('is-invalid');
@@ -384,16 +350,13 @@ include_once(__DIR__ . '/../../partials/footer.php');
             }
         });
 
-        // --- Character Counters ---
         function setupCounter(inputId, counterClass, maxLength) {
             $(inputId).on('input', function() {
                 $(this).parent().find(counterClass).text($(this).val().length + '/' + maxLength);
             });
         }
         setupCounter('#blogtitles', '.char-counter', 150);
-        // Counter for descriptionsblogs is removed
 
-        // --- "Add More" Platforms Logic ---
         $('#add-more-platforms').on('click', function(e) {
             e.preventDefault();
             const platformRow = $('.platform-row').first().clone();
@@ -402,27 +365,24 @@ include_once(__DIR__ . '/../../partials/footer.php');
             $('#platform-container').append(platformRow);
         });
 
-        // --- "Remove" Platform Logic ---
         $('#platform-container').on('click', '.remove-platform-btn', function() {
             $(this).closest('.platform-row').remove();
         });
 
-        // --- Final validation on submit ---
         blogForm.on('submit', function(e) {
             if (!this.checkValidity()) {
                 e.preventDefault();
                 alert('Please fix the errors highlighted on the form.');
-                // Trigger blur on all fields to show all errors
                 blogForm.find('input, select, textarea').trigger('blur');
                 $('.is-invalid').first().focus();
             }
         });
     });
+
     function restrictToNumbers(selector) {
-      $(selector).on("input", function () {
-        // Replace any character that is not a digit with an empty string
-        this.value = this.value.replace(/[^0-9]/g, "");
-      });
+        $(selector).on("input", function() {
+            this.value = this.value.replace(/[^0-9]/g, "");
+        });
     }
 
     restrictToNumbers("#teluserblog");

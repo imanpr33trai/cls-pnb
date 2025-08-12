@@ -1,5 +1,4 @@
 <?php
-// /admin/util/update_category.php
 require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
@@ -10,8 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category_id'])) {
     $category_name = htmlspecialchars(trim($_POST['category_name']));
     $status = htmlspecialchars(trim($_POST['status']));
     
-    // Fetch current image
-    $stmt = $conn->prepare("SELECT image FROM ad_categories WHERE id = ?");
+       $stmt = $conn->prepare("SELECT image FROM ad_categories WHERE id = ?");
     $stmt->bind_param("i", $category_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,15 +17,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['category_id'])) {
     $new_image_name = $existing_category['image'];
     $stmt->close();
 
-    // Handle file upload
-    if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
+       if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
         $upload_dir = __DIR__ . '/../../assets/uploads/';
-        // Delete old image if it exists
-        if (!empty($new_image_name) && file_exists($upload_dir . $new_image_name)) {
+               if (!empty($new_image_name) && file_exists($upload_dir . $new_image_name)) {
             unlink($upload_dir . $new_image_name);
         }
-        // Upload new image
-        $new_image_name = time() . '_' . basename($_FILES['category_image']['name']);
+               $new_image_name = time() . '_' . basename($_FILES['category_image']['name']);
         $target_file = $upload_dir . $new_image_name;
         if (!move_uploaded_file($_FILES['category_image']['tmp_name'], $target_file)) {
             $response['message'] = 'Error uploading new image.';

@@ -1,21 +1,8 @@
 <?php
 require_once __DIR__ . '/../../config/config.php';
-
-// Show all errors for debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Folder for logo upload
-// $upload_dir = '../../admin/upload/';
-// if (!is_dir($upload_dir)) {
-//     mkdir($upload_dir, 0777, true);
-// }
-
-// Fetch existing settings
-$setting = $conn->query("SELECT * FROM site_settings WHERE id = 1")->fetch_assoc();
-
-// Handle form submission
+error_reporting(E_ALL);$setting = $conn->query("SELECT * FROM site_settings WHERE id = 1")->fetch_assoc();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $site_name = $_POST['site_name'] ?? '';
     $admin_phone = $_POST['admin_phone'] ?? '';
@@ -24,24 +11,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $header_logo = $setting['header_logo'] ?? '';
     $footer_logo = $setting['footer_logo'] ?? '';
 
-    // Upload header logo
-    if (!empty($_FILES['header_logo']['name'])) {
+       if (!empty($_FILES['header_logo']['name'])) {
         $header_logo_file = time() . '_' . basename($_FILES['header_logo']['name']);
         if (move_uploaded_file($_FILES['header_logo']['tmp_name'], $upload_dir . $header_logo_file)) {
             $header_logo = 'upload/' . $header_logo_file;
         }
     }
 
-    // Upload footer logo
-    if (!empty($_FILES['footer_logo']['name'])) {
+       if (!empty($_FILES['footer_logo']['name'])) {
         $footer_logo_file = time() . '_' . basename($_FILES['footer_logo']['name']);
         if (move_uploaded_file($_FILES['footer_logo']['tmp_name'], $upload_dir . $footer_logo_file)) {
             $footer_logo = 'upload/' . $footer_logo_file;
         }
     }
 
-    // Check if row exists
-    $exists = $conn->query("SELECT id FROM site_settings WHERE id = 1")->num_rows > 0;
+       $exists = $conn->query("SELECT id FROM site_settings WHERE id = 1")->num_rows > 0;
 
     if ($exists) {
         $stmt = $conn->prepare("UPDATE site_settings SET site_name=?, header_logo=?, footer_logo=?, admin_phone=?, admin_details=? WHERE id=1");
@@ -60,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 }
-
-// Re-fetch in case updated
 $setting = $conn->query("SELECT * FROM site_settings WHERE id = 1")->fetch_assoc();
 ?>
 

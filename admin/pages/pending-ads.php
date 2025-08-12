@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/pending-ads.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Handle status updates
+require_once __DIR__ . '/../../config/config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ad_id'], $_POST['status'])) {
     $ad_id = (int)$_POST['ad_id'];
     $status = $_POST['status'];
@@ -19,8 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ad_id'], $_POST['stat
     }
 }
 
-
-// Fetch all ads with 'pending' status
 $stmt = $conn->prepare("
     SELECT 
         a.id, 

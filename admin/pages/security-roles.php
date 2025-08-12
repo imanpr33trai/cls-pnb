@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/security-roles.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all admins
+require_once __DIR__ . '/../../config/config.php';
 $stmt = $conn->prepare("SELECT id, full_name, email, role, profile_image FROM admins ORDER BY full_name ASC");
 $stmt->execute();
 $result = $stmt->get_result();
@@ -49,12 +47,7 @@ $stmt->close();
                                             <div class="flex-shrink-0 w-10 h-10">
                                                 <img class="w-full h-full rounded-full"
                                                      <?php
-// /admin/pages/security-roles.php
-require_once __DIR__ . '/../../config/config.php';
-
-// --- Handle Form Submissions ---
-
-// Add/Edit Role
+                                                     require_once __DIR__ . '/../../config/config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_role'])) {
     $role_id = $_POST['role_id'] ?? null;
     $role_name = trim($_POST['role_name']);
@@ -65,12 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_role'])) {
         $error_message = "Role name and at least one permission are required.";
     } else {
         if ($role_id) {
-            // Update existing role
-            $stmt = $conn->prepare("UPDATE security_roles SET role_name = ?, permissions = ? WHERE id = ?");
+                       $stmt = $conn->prepare("UPDATE security_roles SET role_name = ?, permissions = ? WHERE id = ?");
             $stmt->bind_param("ssi", $role_name, $permissions_json, $role_id);
         } else {
-            // Insert new role
-            $stmt = $conn->prepare("INSERT INTO security_roles (role_name, permissions) VALUES (?, ?)");
+                       $stmt = $conn->prepare("INSERT INTO security_roles (role_name, permissions) VALUES (?, ?)");
             $stmt->bind_param("ss", $role_name, $permissions_json);
         }
 
@@ -80,14 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_role'])) {
         $stmt->close();
     }
 }
-
-// Assign Role to Admin
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_role'])) {
     $admin_id = $_POST['admin_id'];
     $role_id = $_POST['role_id'];
 
-    // Prevent changing role for admin ID 1
-    if ($admin_id != 1) {
+       if ($admin_id != 1) {
         $stmt = $conn->prepare("UPDATE admins SET role_id = ? WHERE id = ?");
         $stmt->bind_param("ii", $role_id, $admin_id);
         if (!$stmt->execute()) {
@@ -96,28 +84,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['assign_role'])) {
         $stmt->close();
     }
 }
-
-// Delete Role
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_role'])) {
     $role_id = $_POST['role_id'];
-    // Add safety check: don't delete role ID 1 (super admin)
-    if ($role_id != 1) {
-        // Set users with this role to a default role or null
-        $update_admins = $conn->prepare("UPDATE admins SET role_id = NULL WHERE role_id = ?");
+       if ($role_id != 1) {
+               $update_admins = $conn->prepare("UPDATE admins SET role_id = NULL WHERE role_id = ?");
         $update_admins->bind_param("i", $role_id);
         $update_admins->execute();
         $update_admins->close();
 
-        // Delete the role
-        $stmt = $conn->prepare("DELETE FROM security_roles WHERE id = ?");
+               $stmt = $conn->prepare("DELETE FROM security_roles WHERE id = ?");
         $stmt->bind_param("i", $role_id);
         $stmt->execute();
         $stmt->close();
     }
 }
 
-
-// --- Fetch Data for Display ---
 $roles_stmt = $conn->prepare("SELECT * FROM security_roles ORDER BY role_name ASC");
 $roles_stmt->execute();
 $roles_result = $roles_stmt->get_result();
@@ -134,8 +115,6 @@ $admins_stmt->execute();
 $admins_result = $admins_stmt->get_result();
 $admins = $admins_result->fetch_all(MYSQLI_ASSOC);
 $admins_stmt->close();
-
-// Define available permissions
 $available_permissions = [
     'manage_ads' => 'Manage Ads',
     'manage_users' => 'Manage Users',
@@ -158,7 +137,7 @@ $available_permissions = [
             </div>
         <?php endif; ?>
 
-        <!-- Add/Edit Role Form -->
+        
         <div class="mt-8 p-6 bg-white rounded-lg shadow">
             <h3 class="text-lg font-semibold mb-4">Add New Role</h3>
             <form action="" method="POST">
@@ -185,7 +164,7 @@ $available_permissions = [
             </form>
         </div>
 
-        <!-- Existing Roles Table -->
+        
         <div class="mt-8">
             <h3 class="text-lg font-semibold mb-4">Existing Roles</h3>
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -210,7 +189,7 @@ $available_permissions = [
                                     ?>
                                 </td>
                                 <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <!-- Edit and Delete buttons would go here -->
+                                    
                                      <form action="" method="POST" onsubmit="return confirm('Are you sure? This cannot be undone.');">
                                         <input type="hidden" name="role_id" value="<?php echo $role['id']; ?>">
                                         <button type="submit" name="delete_role" class="text-red-600 hover:text-red-900 font-semibold" <?php if($role['id'] == 1) echo 'disabled'; ?>>Delete</button>
@@ -223,7 +202,7 @@ $available_permissions = [
             </div>
         </div>
 
-        <!-- Admins List -->
+        
         <div class="mt-8">
              <h3 class="text-lg font-semibold mb-4">Administrator Accounts</h3>
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">

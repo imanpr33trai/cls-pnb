@@ -30,10 +30,10 @@ This outline details recommended changes to prepare the application for a produc
 
 ### 1. Security Enhancements (High Priority)
 
-*   **SQL Injection Vulnerabilities:**
-    *   **Files:** `partials/search-hero.php`, `partials/voice-search.php`, `partials/get_subcategories.php`.
-    *   **Issue:** These files directly insert user input into database queries without using prepared statements, creating a critical security risk.
-    *   **Action:** Rewrite all database queries in these files to use prepared statements (`prepare`, `bind_param`, `execute`).
+*   **CRITICAL - SQL Injection Vulnerabilities:**
+    *   **Files:** `partials/search-hero.php`, `partials/voice-search.php`.
+    *   **Issue:** These files contain severe, unpatched SQL injection vulnerabilities. They directly execute raw user input and are not used by the main application, which relies on a secure AJAX handler.
+    *   **Action:** These files are a major security liability and should be **deleted immediately**.
 *   **Cross-Site Scripting (XSS) Prevention:**
     *   **Issue:** User-provided data (`$_POST`, `$_GET`) is not consistently sanitized before being displayed on the page.
     *   **Action:** Review all `echo` statements and ensure `htmlspecialchars()` is used for any user-controllable data to prevent XSS attacks.
@@ -116,9 +116,9 @@ This directory contains snippets of UI used across multiple pages.
 *   **Files**: `header.php`, `footer.php`, `hero-sec.php`, `category-sec.php`, etc.
 *   **Purpose**: To provide consistent and reusable parts of the user interface.
 *   **Production Action**:
-    *   **CRITICAL - Remove Insecure Scripts**: The files `partials/search-hero.php` and `partials/voice-search.php` contain severe SQL injection vulnerabilities. They should be **deleted immediately**, as their functionality has been replaced by secure AJAX handlers.
+    *   **CRITICAL - Insecure & Unused Scripts**: The files `partials/search-hero.php` and `partials/voice-search.php` contain severe SQL injection vulnerabilities. They are **not used** by the application and should be **deleted immediately**. Their functionality has been replaced by secure AJAX handlers.
+    *   **CRITICAL - Obsolete Review Handler**: The file `partials/submit_review.php` is an obsolete handler that has been replaced by `ajax/submit_review_ajax.php`. It should be **deleted** to remove dead code.
     *   **CRITICAL - Consolidate JavaScript**: The `footer.php` contains multiple, conflicting, and redundant JavaScript blocks. This will lead to unpredictable behavior. All page-specific JavaScript should be moved into a single, well-organized file (e.g., `assets/js/main.js`) and included once. The current inline scripts should be removed.
-    *   **Cleanup**: Delete legacy handlers like `partials/submit_review.php` that have been replaced by AJAX endpoints.
 
 ### 5. AJAX Endpoints (`/ajax/`)
 

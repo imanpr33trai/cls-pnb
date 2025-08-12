@@ -1,32 +1,18 @@
 <?php
-// This file is included by the router, so the config and header are expected to be loaded there.
-// However, to be safe and allow for direct access if needed, we'll include them here.
-include_once(__DIR__ . '/../../config/config.php');
 include_once(__DIR__ . '/../../partials/header.php');
-
-// Get search query and category from URL
 $query = isset($_GET['q']) ? trim($_GET['q']) : '';
 $category_id = isset($_GET['cat']) ? $_GET['cat'] : 'all';
-
-// Prepare the base SQL query for a "deeper" search
 $sql = "SELECT id, ad_title, description, image, ad_slug, location, city_town_neighbourhood FROM ad_form WHERE status = 'live'";
-
-// --- Build the query dynamically ---
 $params = [];
 $types = "";
-
-// Add search term condition for a deeper search
 if ($query !== '') {
     $sql .= " AND (ad_title LIKE ? OR description LIKE ? OR location LIKE ? OR city_town_neighbourhood LIKE ? OR organisation LIKE ?)";
     $search_term = "%" . $query . "%";
-    // Add the search term for each field
     for ($i = 0; $i < 5; $i++) {
         $params[] = &$search_term;
     }
     $types .= "sssss";
 }
-
-// Add category condition
 if ($category_id !== 'all' && is_numeric($category_id)) {
     $sql .= " AND category = ?";
     $params[] = &$category_id;
@@ -34,21 +20,18 @@ if ($category_id !== 'all' && is_numeric($category_id)) {
 }
 
 $sql .= " ORDER BY created_at DESC";
-
-// --- Prepare and execute the statement ---
 $stmt = $conn->prepare($sql);
 
 if ($stmt) {
     if (!empty($params)) {
         $stmt->bind_param($types, ...$params);
     }
-    
+
     $stmt->execute();
     $result = $stmt->get_result();
     $ads = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
 } else {
-    // Handle SQL error
     $ads = [];
     echo "<p>There was an error preparing the search query.</p>";
 }
@@ -68,8 +51,8 @@ if ($stmt) {
                 <?php foreach ($ads as $ad): ?>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
                         <a href="/ads/<?= htmlspecialchars($ad['ad_slug']) ?>">
-                            <?php 
-                                $image_path = !empty($ad['image']) ? $base_url . 'uploads/' . htmlspecialchars($ad['image']) : $base_url . 'assets/images/placeholder.jpg';
+                            <?php
+                            $image_path = !empty($ad['image']) ? $base_url . 'uploads/' . htmlspecialchars($ad['image']) : $base_url . 'assets/images/placeholder.jpg';
                             ?>
                             <img src="<?= $image_path ?>" alt="<?= htmlspecialchars($ad['ad_title']) ?>" class="w-full h-48 object-cover">
                         </a>
@@ -103,6 +86,5 @@ if ($stmt) {
 </main>
 
 <?php
-// Include the footer
 include_once(__DIR__ . '/footer.php');
 ?>

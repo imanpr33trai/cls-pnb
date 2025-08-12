@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/view-ads.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Fetch all ads from the database
+require_once __DIR__ . '/../../config/config.php';
 $stmt = $conn->prepare("
     SELECT 
         a.id, 

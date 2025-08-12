@@ -1,6 +1,4 @@
 <?php
-// /github-callback.php (Corrected with cURL for email fetching)
-
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/config.php';
 
@@ -19,8 +17,7 @@ $provider = new Github([
 ]);
 
 try {
-    // 1. CSRF Protection Check
-    if (empty($_GET['state']) || empty($_SESSION['oauth2state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
+       if (empty($_GET['state']) || empty($_SESSION['oauth2state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
         unset($_SESSION['oauth2state']);
         throw new Exception("Invalid state parameter, possible CSRF attack.");
     }
@@ -31,27 +28,21 @@ try {
         throw new Exception("Authorization 'code' not found.");
     }
 
-    // 2. Exchange authorization code for an access token
-    $token = $provider->getAccessToken('authorization_code', [
+       $token = $provider->getAccessToken('authorization_code', [
         'code' => $_GET['code']
     ]);
 
-    // 3. Get User Details
-    $githubUser = $provider->getResourceOwner($token);
+       $githubUser = $provider->getResourceOwner($token);
     $githubUserData = $githubUser->toArray();
 
     
-    // ========================================================================
-    //  THE FIX IS HERE: Use cURL to fetch user emails
-    // ========================================================================
-    
+             
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://api.github.com/user/emails');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $token->getToken(),
-        'User-Agent: PNB-Classifieds-App' // GitHub API requires a User-Agent header
-    ]);
+        'User-Agent: PNB-Classifieds-App'    ]);
     $emails_response = curl_exec($ch);
     $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
@@ -70,8 +61,7 @@ try {
             break;
         }
     }
-    // If no primary/verified email is found, fallback to the public email on the profile
-    if (empty($primary_email) && !empty($githubUserData['email'])) {
+       if (empty($primary_email) && !empty($githubUserData['email'])) {
         $primary_email = $githubUserData['email'];
     }
     if (empty($primary_email)) {
@@ -79,19 +69,14 @@ try {
     }
 
 
-    // ========================================================================
-    //  END OF THE FIX
-    // ========================================================================
-
-    // Prepare data for our database
-    $github_id = $githubUserData['id'];
+         
+       $github_id = $githubUserData['id'];
     $name = $githubUserData['name'] ?? $githubUserData['login'];
     $name_parts = explode(' ', $name, 2);
     $first_name = $name_parts[0];
     $last_name = $name_parts[1] ?? '';
 
-    // 4. Process User Data (Find, Link, or Create - This logic is correct)
-    $user = null;
+       $user = null;
 
     $stmt = $conn->prepare("SELECT * FROM users WHERE github_id = ?");
     $stmt->bind_param("s", $github_id);
@@ -127,8 +112,7 @@ try {
         }
     }
 
-    // 5. Final Session Creation and Redirect
-    session_regenerate_id(true);
+       session_regenerate_id(true);
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
     $_SESSION['user_email'] = $user['email'];

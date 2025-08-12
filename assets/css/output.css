@@ -1207,9 +1207,6 @@
   .no-underline {
     text-decoration-line: none !important;
   }
-  .underline {
-    text-decoration-line: underline !important;
-  }
   .placeholder-gray-400 {
     &::-moz-placeholder {
       color: var(--color-gray-400) !important;

@@ -1,22 +1,13 @@
 <?php
-// /partials/search-handler.php (Secure and Debug-Ready)
-
-// Make this the first line to catch all errors
-
 
 include_once __DIR__ . '/../config/config.php';
-
-// Prepare the final response array which will always contain a debug key
 $response = [
     'results' => [],
-    'debug' => [] // We will add debugging information here
+    'debug' => []
 ];
-
-// Start Debugging
 $response['debug'][] = "Handler script initiated.";
 
 try {
-    // Check for POST data
     $keyword = trim($_POST['keyword'] ?? '');
     $location = trim($_POST['location'] ?? '');
     $response['debug'][] = "Received POST data: keyword='{$keyword}', location='{$location}'";
@@ -25,7 +16,6 @@ try {
         throw new Exception("No search terms provided.");
     }
 
-    // --- SAFE & DYNAMIC SQL QUERY BUILDING ---
     $sql = "
         SELECT 
             ad.id, ad.ad_title, ad.description, ad.location, 
@@ -59,7 +49,6 @@ try {
     $response['debug']['sql_query'] = $sql;
     $response['debug']['sql_params'] = $params;
 
-    // --- EXECUTE WITH PREPARED STATEMENT ---
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception("SQL prepare failed: " . $conn->error);
@@ -82,11 +71,8 @@ try {
     $stmt->close();
     $response['debug'][] = "Script finished successfully.";
 } catch (Exception $e) {
-    // If anything fails, log the error into the debug array
     $response['debug']['error'] = $e->getMessage();
-    http_response_code(500); // Set a server error status
+    http_response_code(500);
 }
-
-// --- ALWAYS return a valid JSON response ---
 header('Content-Type: application/json');
 echo json_encode($response);

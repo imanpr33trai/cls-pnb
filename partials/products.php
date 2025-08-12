@@ -1,7 +1,7 @@
 <?php
 include_once(__DIR__ . '/../config/config.php');
 
-// Homepage
+
 
 /**
  * Renders a single, static product card.
@@ -13,7 +13,6 @@ include_once(__DIR__ . '/../config/config.php');
  */
 function render_product_card(array $product): string
 {
-    // ... (all the data preparation and sanitization code is the same) ...
     $defaults = ['name' => 'Ad Title Missing', 'price' => 0.00, 'image' => 'assets/images/test-img.png', 'location' => 'Not specified', 'ad_link' => '#', 'currencySymbol' => ''];
     $product = array_merge($defaults, $product);
     $name = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
@@ -26,7 +25,6 @@ function render_product_card(array $product): string
     $iconHeart = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>';
     $iconLocation = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>';
 
-    // --- HTML Structure ---
     $html = <<<HTML
     <div class="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
         <div class="bg-white shadow-md overflow-hidden product-card h-full flex flex-col">
@@ -70,16 +68,14 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
 
     $html = '<div class="flex flex-wrap -mx-2">';
 
-    // The SQL query is now a template for a prepared statement
     $sql = "SELECT ad_title, asking_price, image, ad_slug, location FROM ad_form WHERE status = 'live' AND expires_at > NOW() ORDER BY id DESC LIMIT ? OFFSET ?";
 
-    // Prepare, bind parameters, and execute. This prevents SQL injection.
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo "DEBUG: Prepare failed: " . $conn->error . "<br>";
         return $html . '</div>';
     }
-    $stmt->bind_param("ii", $limit, $offset); // "ii" means two integer parameters
+    $stmt->bind_param("ii", $limit, $offset);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -88,7 +84,6 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
 
         if ($num_rows > 0) {
             while ($ad = $result->fetch_assoc()) {
-                // Map the database columns to the keys our component expects
                 $card_data = [
                     'name' => $ad['ad_title'],
                     'price' => $ad['asking_price'],
@@ -96,11 +91,9 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
                     'image' => !empty($ad['image']) ? $base_url . 'assets/uploads/ads_form/' . $ad['image'] : $base_url . 'assets/images/test-img.png',
                     'ad_link' => $base_url . 'ads/' . $ad['ad_slug']
                 ];
-                // Call the component function for each ad and append the HTML
                 $html .= render_product_card($card_data);
             }
         } else {
-            // Only show this message if it's the very first batch (offset=0) and no ads are found.
             if ($offset === 0) {
                 $html = '<div class="w-full"><p class="text-center text-gray-500">No active ads found.</p></div>';
             }
@@ -113,5 +106,3 @@ function render_ads_from_database(mysqli $conn, string $base_url, int $limit = 8
     $html .= '</div>';
     return $html;
 }
-
-// Call the function to render ads when products.php is accessed directly

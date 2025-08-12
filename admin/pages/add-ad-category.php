@@ -1,16 +1,12 @@
 <?php
-// /admin/pages/add-ad-category.php
 require_once __DIR__ . '/../../config/config.php';
-
-// Handle form submission for adding a new category
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category'])) {
     $category_name = htmlspecialchars(trim($_POST['category_name']));
     $image_name = '';
 
     if (!empty($category_name) && isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
         $upload_dir = __DIR__ . '/../../assets/uploads/';
-        // Create directory if it doesn't exist
-        if (!is_dir($upload_dir)) {
+               if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0755, true);
         }
         $image_name = time() . '_' . basename($_FILES['category_image']['name']);
@@ -32,8 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_category'])) {
         echo "<div class='bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4'>⚠️ Please fill in all fields and select an image.</div>";
     }
 }
-
-// Handle form submission for adding a new subcategory
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subcategory'])) {
     $category_id = (int)$_POST['category_id'];
     $subcategory_title = htmlspecialchars(trim($_POST['subcategory_title']));
@@ -51,8 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subcategory'])) {
         echo "<div class='bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4'>⚠️ Please fill in all fields.</div>";
     }
 }
-
-// Fetch all parent categories for the subcategory form
 $category_stmt = $conn->prepare("SELECT id, name FROM ad_categories ORDER BY name");
 $category_stmt->execute();
 $category_result = $category_stmt->get_result();
@@ -62,7 +54,7 @@ $category_stmt->close();
 
 <div class="container mx-auto px-4 sm:px-8">
     <div class="py-8">
-        <!-- Add Category Form -->
+        
         <div class="mb-10">
             <h2 class="text-2xl font-semibold leading-tight">Add New Ad Category</h2>
             <div class="mt-4 p-6 bg-white rounded-lg shadow">
@@ -92,7 +84,7 @@ $category_stmt->close();
             </div>
         </div>
 
-        <!-- Add Subcategory Form -->
+        
         <div>
             <h2 class="text-2xl font-semibold leading-tight">Add New Subcategory</h2>
             <div class="mt-4 p-6 bg-white rounded-lg shadow">

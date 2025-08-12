@@ -7,8 +7,6 @@ header('Content-Type: application/json');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 include('../config/config.php');
-
-// We need to start the session to access $_SESSION['user_id']
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -21,7 +19,6 @@ $rating = isset($_POST['rating']) ? intval($_POST['rating']) : 0;
 $comment = isset($_POST['comment']) ? trim($_POST['comment']) : '';
 
 if ($ad_id && $user_id && $rating >= 1 && $rating <= 5 && !empty($comment)) {
-    // First fetch user data
     $user_stmt = $conn->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
     $user_stmt->bind_param("i", $user_id);
     $user_stmt->execute();
@@ -37,11 +34,9 @@ if ($ad_id && $user_id && $rating >= 1 && $rating <= 5 && !empty($comment)) {
         exit;
     }
 
-    // Proceed with inserting the new review
     $stmt = $conn->prepare("INSERT INTO ad_reviews (ad_id, user_id, rating, comment) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("iiis", $ad_id, $user_id, $rating, $comment);
     if ($stmt->execute()) {
-        // Now we have the user data to use
         $user_name = $user['first_name'] . ' ' . $user['last_name'];
 
         echo json_encode([

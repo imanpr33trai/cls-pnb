@@ -1,5 +1,4 @@
 <?php
-// /admin/util/edit-ad.php
 require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
@@ -10,8 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_ad'])) {
     $ad_id = isset($_POST['ad_id']) ? (int)$_POST['ad_id'] : 0;
 
     if ($ad_id > 0) {
-        // Sanitize and retrieve form data
-        $ad_title = htmlspecialchars($_POST['ad_title']);
+               $ad_title = htmlspecialchars($_POST['ad_title']);
         $category = (int)$_POST['category'];
         $subcategory = (int)$_POST['subcategory'];
         $asking_price = !empty($_POST['asking_price']) ? (float)$_POST['asking_price'] : null;
@@ -22,8 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_ad'])) {
         $location = htmlspecialchars($_POST['location']);
         $status = htmlspecialchars($_POST['status']);
 
-        // Prepare the update statement
-        $update_stmt = $conn->prepare("
+               $update_stmt = $conn->prepare("
             UPDATE ad_form 
             SET 
                 ad_title = ?, category = ?, subcategory = ?, asking_price = ?, 

@@ -1,5 +1,4 @@
 <?php
-// /admin/util/get_blog_cat_form.php
 require_once __DIR__ . '/../../config/config.php';
 
 $category_id = isset($_GET['blog_category_id']) ? (int)$_GET['blog_category_id'] : 0;

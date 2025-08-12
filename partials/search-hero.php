@@ -5,8 +5,6 @@ $keyword = isset($_POST['keyword']) ? mysqli_real_escape_string($conn, $_POST['k
 $location = isset($_POST['location']) ? mysqli_real_escape_string($conn, $_POST['location']) : '';
 
 $results = [];
-
-// Search Ads
 $ad_query = "SELECT 'ad' AS type, id, ad_title AS title, description, phone, email, location, created_at, ad_slug 
              FROM ad_form 
              WHERE (
@@ -22,8 +20,6 @@ $ad_query = "SELECT 'ad' AS type, id, ad_title AS title, description, phone, ema
 if (!empty($location)) {
     $ad_query .= " AND (postal_code LIKE '%$location%' OR city_town_neighbourhood LIKE '%$location%')";
 }
-
-// Search Blogs
 $blog_query = "SELECT 'blog' AS type, id, title, description, phone, email, created_at, blog_slug 
                FROM blog_posts 
                WHERE (
@@ -37,8 +33,6 @@ $blog_query = "SELECT 'blog' AS type, id, title, description, phone, email, crea
 if (!empty($location)) {
     $blog_query .= " AND (title LIKE '%$location%' OR category_id LIKE '%$location%')";
 }
-
-// Run and collect results
 $ads_result = mysqli_query($conn, $ad_query);
 $blogs_result = mysqli_query($conn, $blog_query);
 
@@ -63,8 +57,7 @@ if (empty($results)) {
         $desc = htmlspecialchars(substr($item['description'], 0, 100));
         $id = $item['id'];
 
-        // Set URL
-        $url = ($type === 'ad') ? "ads/" . $item['ad_slug'] : "articles/" . $item['blog_slug'];
+               $url = ($type === 'ad') ? "ads/" . $item['ad_slug'] : "articles/" . $item['blog_slug'];
 
         echo "<div class='result-item mb-3 p-3 bg-light rounded'>";
         echo "<a href='$url' class='text-dark text-decoration-none'>";

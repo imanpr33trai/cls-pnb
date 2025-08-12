@@ -1,8 +1,6 @@
 <?php
-// /admin/pages/sub-cat.php
-require_once __DIR__ . '/../../config/config.php';
 
-// Handle subcategory deletion
+require_once __DIR__ . '/../../config/config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_subcategory'])) {
     $subcategory_id = (int)$_POST['subcategory_id'];
     $stmt = $conn->prepare("DELETE FROM ad_subcategories WHERE id = ?");
@@ -14,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_subcategory'])
     }
     $stmt->close();
 }
-
-// Fetch all subcategories with their parent category name
 $stmt = $conn->prepare("
     SELECT 
         sc.id, 
@@ -33,8 +29,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $subcategories = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
-
-// Fetch all parent categories for the "Add New" form
 $category_stmt = $conn->prepare("SELECT id, name FROM ad_categories ORDER BY name");
 $category_stmt->execute();
 $category_result = $category_stmt->get_result();
@@ -51,7 +45,7 @@ $category_stmt->close();
             </a>
         </div>
         
-        <!-- Subcategories List -->
+        
         <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
             <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
                 <table class="min-w-full leading-normal">

@@ -1,5 +1,3 @@
-<!-- footer -->
-<!-- footer -->
 <footer class="sm:p-5">
     <div class="container">
         <div class="row">
@@ -8,14 +6,7 @@
             </div>
             <div class="col-12 d-flex flex-md-row flex-column pt-3 gap-5">
                 <div class="col-lg-7 footer-links">
-                    <!-- <a href="#">Vehicle</a>
-                        <a href="#">Townhouses</a>
-                        <a href="#">Video Game</a>
-                        <a href="#">Boats</a>
-                        <a href="#">Campers</a>
-                        <a href="#">Car</a>
-                        <a href="#">Clothes</a>
-                        <a href="#">All</a> -->
+
                     <?php
                     include_once(__DIR__ . '/footer-cat.php');
                     ?>
@@ -46,82 +37,68 @@
         </div>
     </div>
 </footer>
-<!-- footer -->
-<!-- footer -->
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+
+
 
 <script src="<?php echo $base_url; ?>assets/js/script.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/js/intlTelInput.min.js"></script> -->
-<!-- New, separate script JUST for the phone number country dropdown -->
+</script>
+
+
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        // Get references to our HTML elements
         const searchInput = $('#header-search-input');
         const categorySelect = $('#header-category-select');
         const resultsBox = $('#header-search-results');
-        let searchTimeout; // This is for debouncing, to avoid too many requests
+        let searchTimeout;
 
-        // --- Main function to fetch and display search results ---
         function fetchSearchResults() {
             const query = searchInput.val().trim();
             const category = categorySelect.val();
 
-            // 1. If the search box is empty or too short, hide the results and stop
             if (query.length < 2) {
-                resultsBox.addClass('d-none').html(''); // Hide and clear
+                resultsBox.addClass('d-none').html('');
                 return;
             }
 
-            // 2. Perform the AJAX request to our backend script
             $.ajax({
-                url: '/ajax/search.php', // This should be the path to your PHP script
+                url: '/ajax/search.php',
                 method: 'GET',
                 data: {
-                    q: query, // The search term
-                    cat: category // The selected category
+                    q: query,
+                    cat: category
                 },
-                success: function (response) {
-                    // 3. When we get a successful response...
-                    resultsBox.html(response); // Put the HTML from PHP into our results box
-                    resultsBox.removeClass('d-none'); // Make the results box visible
+                success: function(response) {
+                    resultsBox.html(response);
+                    resultsBox.removeClass('d-none');
                 },
-                error: function () {
-                    // Optional: Handle errors
+                error: function() {
                     resultsBox.html("<div class='text-danger text-center p-2'>Search failed.</div>");
                     resultsBox.removeClass('d-none');
                 }
             });
         }
 
-        // --- Event Listeners ---
 
-        // When a user types in the search input
-        searchInput.on('keyup', function () {
-            clearTimeout(searchTimeout); // Reset the timer on each keypress
-            // Wait 300ms after the user stops typing, then perform the search.
-            // This is called "debouncing" and is critical for performance.
+        searchInput.on('keyup', function() {
+            clearTimeout(searchTimeout);
             searchTimeout = setTimeout(fetchSearchResults, 300);
         });
 
-        // When the user changes the category dropdown
-        categorySelect.on('change', function () {
-            // If the user has already typed something, re-run the search immediately
+        categorySelect.on('change', function() {
             if (searchInput.val().trim().length >= 2) {
                 fetchSearchResults();
             }
         });
 
-        // Hide the results box if the user clicks anywhere else on the page
-        $(document).on('click', function (e) {
-            // If the click is not on the search input or the results box...
+        $(document).on('click', function(e) {
             if (!$(e.target).closest('#header-search-input, #header-search-results').length) {
-                resultsBox.addClass('d-none'); // ...hide the results.
+                resultsBox.addClass('d-none');
             }
         });
 
@@ -129,46 +106,40 @@
 </script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         const phoneInputField = document.querySelector("#phonenumbid");
         const countryHiddenField = $("#country_name_hidden");
 
-        // Initialize the intl-tel-input plugin
         const phoneInput = window.intlTelInput(phoneInputField, {
-            initialCountry: "auto", // Auto-detect user's country
+            initialCountry: "auto",
             geoIpLookup: callback => {
-                $.get("https://ipapi.co/json", function () { }).always(function (resp) {
+                $.get("https://ipapi.co/json", function() {}).always(function(resp) {
                     const countryCode = (resp && resp.country_code) ? resp.country_code : "us";
                     callback(countryCode);
                 });
             },
-            separateDialCode: true, // Shows the country code next to the flag
-            // We are NOT using utilsScript because we are not validating the number itself
+            separateDialCode: true,
         });
 
-        // --- Function to update the hidden input with the selected country name ---
         function updateCountryName() {
             const countryData = phoneInput.getSelectedCountryData();
-            countryHiddenField.val(countryData.name); // e.g., "India", "United States"
+            countryHiddenField.val(countryData.name);
         }
 
-        // 1. Set the initial country name on page load
         updateCountryName();
 
-        // 2. Update the country name whenever the user selects a new country
         phoneInputField.addEventListener('countrychange', updateCountryName);
     });
 </script>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const input = document.querySelector(".search-posts-input-cont input");
         const categorySelect = document.getElementById("cats");
         const resultBox = document.getElementById("search-results");
 
-        // Only run this script if all the necessary elements exist
         if (input && categorySelect && resultBox) {
-            input.addEventListener("input", function () {
+            input.addEventListener("input", function() {
                 const query = input.value.trim();
                 const categoryId = categorySelect.value;
 
@@ -186,8 +157,7 @@
                     });
             });
 
-            // Optional: hide on click outside
-            document.addEventListener("click", function (e) {
+            document.addEventListener("click", function(e) {
                 if (!resultBox.contains(e.target) && !input.contains(e.target)) {
                     resultBox.classList.add("d-none");
                 }
@@ -201,7 +171,7 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const searchBtn = document.getElementById('search-btn');
         if (searchBtn) {
             const keywordInput = document.getElementById('keyword');
@@ -210,7 +180,7 @@
             const loader = document.getElementById('loader');
             const resultsContainer = document.getElementById('search-results');
 
-            searchBtn.addEventListener('click', function (e) {
+            searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
 
                 const keyword = keywordInput.value.trim();
@@ -229,13 +199,12 @@
                 formData.append('keyword', keyword);
                 formData.append('location', location);
 
-                // Correct path to the new handler
                 const fetchUrl = `<?php echo $base_url; ?>ajax/search-handler.php`;
 
                 fetch(fetchUrl, {
-                    method: 'POST',
-                    body: formData
-                })
+                        method: 'POST',
+                        body: formData
+                    })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Network Error: ${response.statusText}`);
@@ -245,10 +214,8 @@
                     .then(data => {
                         loader.style.display = 'none';
 
-                        // Correctly access the 'results' array from the response
                         if (data && Array.isArray(data.results) && data.results.length > 0) {
                             const resultsHtml = data.results.map(ad => {
-                                // Construct the correct URL for the ad
                                 const adUrl = `<?php echo $base_url; ?>ads/${ad.ad_slug}`;
                                 const description = ad.description ? ad.description.substring(0, 100) + '...' : 'No description available.';
                                 const adLocation = [ad.city_town_neighbourhood, ad.postal_code].filter(Boolean).join(', ');
@@ -278,7 +245,7 @@
 </script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
         function showError(input, message) {
@@ -292,8 +259,7 @@
             $(input).removeClass("invalid").next(".error").remove();
         }
 
-        // Password Strength
-        $('#inputPassword5').on('input', function () {
+        $('#inputPassword5').on('input', function() {
             const password = $(this).val();
             const strength = zxcvbn(password);
             const colors = ['red', 'orange', '#ffcc00', '#2ecc71'];
@@ -301,8 +267,7 @@
             $('.password-strength').text(labels[strength.score]).css('color', colors[strength.score]);
         });
 
-        // Show/Hide Password
-        $('.hide a').on('click', function (e) {
+        $('.hide a').on('click', function(e) {
             e.preventDefault();
             const input = $('#inputPassword5');
             const type = input.attr('type') === 'password' ? 'text' : 'password';
@@ -310,8 +275,7 @@
             $(this).find('h6').text(type === 'password' ? 'Hide' : 'Show');
         });
 
-        // Show/Hide Password
-        $('.hide a').on('click', function (e) {
+        $('.hide a').on('click', function(e) {
             e.preventDefault();
             const input = $('#inputPassword6');
             const type = input.attr('type') === 'password' ? 'text' : 'password';
@@ -319,12 +283,11 @@
             $(this).find('h6').text(type === 'password' ? 'Hide' : 'Show');
         });
 
-        $('#registerForm input').on('input blur', function () {
+        $('#registerForm input').on('input blur', function() {
             const id = $(this).attr('id');
             const val = $(this).val();
 
-            clearError(this); // clear previous error
-
+            clearError(this);
             if (id === 'firstnameid' && !/^[a-zA-Z]{2,}$/.test(val)) {
                 showError(this, 'First name should contain only letters.');
             }
@@ -342,28 +305,26 @@
             }
         });
 
-        $('#registerForm').on('submit', function (e) {
+        $('#registerForm').on('submit', function(e) {
             e.preventDefault();
             let valid = true;
 
-            $('#registerForm input').trigger('blur'); // trigger validation on all fields
-
+            $('#registerForm input').trigger('blur');
             if ($('.invalid').length > 0) {
                 valid = false;
                 $('.invalid:first').focus();
             }
 
             if (valid) {
-                this.submit(); // or send via AJAX
+                this.submit();
             }
         });
     });
 </script>
 
-<!-- Login Page Validation Script -->
+
 <script>
-    $(document).ready(function () {
-        // Only run this script on the login page
+    $(document).ready(function() {
         if ($('#loginForm').length) {
 
             const loginForm = $('#loginForm');
@@ -372,31 +333,26 @@
             const acceptCheckbox = $('#accept-login');
             const checkboxError = $('#checkbox-error');
 
-            // Re-usable error function (similar to your register page)
             function showError(input, message) {
                 const $input = $(input);
                 $input.addClass("is-invalid").removeClass("is-valid");
-                // Add error message below the input
                 $input.next(".invalid-feedback").remove();
                 $input.after(`<div class="invalid-feedback">${message}</div>`);
             }
 
-            // Re-usable clear error function
             function clearError(input) {
                 const $input = $(input);
                 $input.removeClass("is-invalid");
                 $input.next(".invalid-feedback").remove();
             }
 
-            // Re-usable success function
             function showSuccess(input) {
                 const $input = $(input);
                 $input.removeClass("is-invalid").addClass("is-valid");
                 $input.next(".invalid-feedback").remove();
             }
 
-            // --- Real-time validation as user types ---
-            emailField.on('input blur', function () {
+            emailField.on('input blur', function() {
                 if (this.value === '') {
                     showError(this, 'Email address is required.');
                 } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)) {
@@ -406,7 +362,7 @@
                 }
             });
 
-            passwordField.on('input blur', function () {
+            passwordField.on('input blur', function() {
                 if (this.value === '') {
                     showError(this, 'Password is required.');
                 } else {
@@ -414,11 +370,9 @@
                 }
             });
 
-            // --- Validation on Form Submit ---
-            loginForm.on('submit', function (e) {
+            loginForm.on('submit', function(e) {
                 let isFormValid = true;
 
-                // 1. Validate email
                 if (emailField.val() === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.val())) {
                     isFormValid = false;
                     showError(emailField, 'A valid email is required.');
@@ -426,7 +380,6 @@
                     showSuccess(emailField);
                 }
 
-                // 2. Validate password
                 if (passwordField.val() === '') {
                     isFormValid = false;
                     showError(passwordField, 'Password is required.');
@@ -434,15 +387,13 @@
                     showSuccess(passwordField);
                 }
 
-                // 3. **Validate the checkbox**
                 if (!acceptCheckbox.is(':checked')) {
                     isFormValid = false;
                     checkboxError.text('You must agree to the terms to log in.');
                 } else {
-                    checkboxError.text(''); // Clear error if checked
+                    checkboxError.text('');
                 }
 
-                // If any validation fails, stop the form from submitting
                 if (!isFormValid) {
                     e.preventDefault();
                 }
@@ -451,17 +402,13 @@
     });
 </script>
 
-<!-- /partials/footer.php -->
 
-<!-- ... other footer content and scripts like jQuery ... -->
+
+
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-        // =================================================================
-        //  GUARDED SCRIPT 1: Live Search Feature
-        //  This code will ONLY run if the search button exists on the page.
-        // =================================================================
         const searchBtn = document.getElementById('search-btn');
         if (searchBtn) {
             const keywordInput = document.getElementById('keyword');
@@ -470,7 +417,7 @@
             const loader = document.getElementById('loader');
             const resultsContainer = document.getElementById('search-results');
 
-            searchBtn.addEventListener('click', function (e) {
+            searchBtn.addEventListener('click', function(e) {
                 e.preventDefault();
 
                 const keyword = keywordInput.value.trim();
@@ -489,13 +436,12 @@
                 formData.append('keyword', keyword);
                 formData.append('location', location);
 
-                // This is the correct API endpoint handled by your router.php
                 const fetchUrl = `<?php echo $base_url; ?>ajax/search-handler.php`;
 
                 fetch(fetchUrl, {
-                    method: 'POST',
-                    body: formData
-                })
+                        method: 'POST',
+                        body: formData
+                    })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Network Error: ${response.statusText}`);
@@ -529,18 +475,13 @@
                         resultsContainer.innerHTML = `<p class="text-danger">An error occurred while fetching results.</p>`;
                     });
             });
-        } // End of search feature guard
-
-        // =================================================================
-        //  GUARDED SCRIPT 2: International Telephone Input
-        //  This code will ONLY run if the phone input field exists.
-        // =================================================================
+        }
         const phoneInput = document.getElementById('phonenumbid');
         if (phoneInput && typeof window.intlTelInput === 'function') {
             const iti = window.intlTelInput(phoneInput, {
                 utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/19.2.16/js/utils.js",
                 initialCountry: "auto",
-                geoIpLookup: function (callback) {
+                geoIpLookup: function(callback) {
                     fetch("https://ipapi.co/json")
                         .then(res => res.json())
                         .then(data => callback(data.country_code))
@@ -548,15 +489,11 @@
                 }
             });
 
-            // Example: Update a hidden input with the full number on form submit
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
-                registerForm.addEventListener('submit', function () {
+                registerForm.addEventListener('submit', function() {
                     const fullNumber = iti.getNumber();
-                    // If you want to store the full international number, you can uncomment this
-                    // phoneInput.value = fullNumber; 
 
-                    // Store country name in the hidden field
                     const countryData = iti.getSelectedCountryData();
                     const countryNameInput = document.getElementById('country_name_hidden');
                     if (countryNameInput) {
@@ -564,8 +501,7 @@
                     }
                 });
             }
-        } // End of phone input guard
-
+        }
     });
 </script>
 

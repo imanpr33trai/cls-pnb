@@ -1,5 +1,4 @@
 <?php
-// /admin/util/get_category_form.php
 require_once __DIR__ . '/../../config/config.php';
 
 $category_id = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
