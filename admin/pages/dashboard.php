@@ -29,14 +29,16 @@ $ads_today = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE DATE(crea
 $blogs_today = $conn->query("SELECT COUNT(*) as count FROM blog_posts WHERE DATE(created_at) = '$today_date'")->fetch_assoc()['count'];
 $pending_ads = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE status = 'pending'")->fetch_assoc()['count'];
 
-// Mock Data for Subscribers
-$newsletter_subscribers = [
-    ['name' => 'Alice', 'email' => 'alice@example.com', 'date' => '2025-08-08'],
-    ['name' => 'Bob', 'email' => 'bob@example.com', 'date' => '2025-08-08'],
-    ['name' => 'Charlie', 'email' => 'charlie@example.com', 'date' => '2025-08-07'],
-];
-$total_subscribers = count($newsletter_subscribers);
-$subscribers_today = count(array_filter($newsletter_subscribers, fn($sub) => $sub['date'] === $today_date));
+// Counts for "This Week"
+$start_of_week = date('Y-m-d H:i:s', strtotime('monday this week'));
+$ads_this_week = $conn->query("SELECT COUNT(*) as count FROM ad_form WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
+$blogs_this_week = $conn->query("SELECT COUNT(*) as count FROM blog_posts WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
+$users_this_week = $conn->query("SELECT COUNT(*) as count FROM users WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
+
+// Real Subscribers data
+$total_subscribers = $conn->query("SELECT COUNT(*) as count FROM subscribers")->fetch_assoc()['count'];
+$subscribers_today = $conn->query("SELECT COUNT(*) as count FROM subscribers WHERE DATE(created_at) = '$today_date'")->fetch_assoc()['count'];
+$subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers WHERE created_at >= '$start_of_week'")->fetch_assoc()['count'];
 
 ?>
 
@@ -63,7 +65,7 @@ $subscribers_today = count(array_filter($newsletter_subscribers, fn($sub) => $su
                 </div>
                 <p class="text-3xl font-bold text-gray-800 mt-2"><?= $total_ads ?> Active Ads</p>
             </div>
-            <p class="text-sm text-gray-400 mt-4">+120 this week</p>
+            <p class="text-sm text-gray-400 mt-4">+<?= $ads_this_week ?> this week</p>
         </div>
         <!-- Total Blogs -->
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
@@ -74,7 +76,7 @@ $subscribers_today = count(array_filter($newsletter_subscribers, fn($sub) => $su
                 </div>
                 <p class="text-3xl font-bold text-gray-800 mt-2"><?= $total_blogs ?> Blogs Published</p>
             </div>
-            <p class="text-sm text-gray-400 mt-4">+6 this week</p>
+            <p class="text-sm text-gray-400 mt-4">+<?= $blogs_this_week ?> this week</p>
         </div>
         <!-- Total Users -->
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
@@ -85,7 +87,7 @@ $subscribers_today = count(array_filter($newsletter_subscribers, fn($sub) => $su
                 </div>
                 <p class="text-3xl font-bold text-gray-800 mt-2"><?= $total_users ?> Registered Users</p>
             </div>
-            <p class="text-sm text-gray-400 mt-4">+79 this week</p>
+            <p class="text-sm text-gray-400 mt-4">+<?= $users_this_week ?> this week</p>
         </div>
         <!-- Total Subscribers -->
         <div class="bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between">
@@ -96,7 +98,7 @@ $subscribers_today = count(array_filter($newsletter_subscribers, fn($sub) => $su
                 </div>
                 <p class="text-3xl font-bold text-gray-800 mt-2"><?= $total_subscribers ?> Subscribers</p>
             </div>
-            <p class="text-sm text-gray-400 mt-4">+34 new</p>
+            <p class="text-sm text-gray-400 mt-4">+<?= $subscribers_this_week ?> new this week</p>
         </div>
     </div>
 

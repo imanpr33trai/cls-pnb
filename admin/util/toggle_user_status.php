@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../config/config.php';
 header('Content-Type: application/json');
 
 // Check if user is admin (you might have a more robust check)
-if (!isset($_SESSION['admin_id'])) {
+if (!isset($_SESSION['admins_id'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized']);
     exit;
 }
@@ -50,4 +50,4 @@ if ($stmt->execute()) {
 }
 
 $stmt->close();
-$conn->close();
+// $conn->close();

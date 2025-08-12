@@ -90,11 +90,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->Password   = $_ENV['SMTP_PASSWORD'];
             $mail->SMTPSecure =$_ENV['SMTP_SECURE'];
             $mail->Port       = $_ENV['SMTP_PORT'];
-            $mail->setFrom($_ENV['SMTP_USERNAME'], 'Your Site Name');
-            $mail->addAddress($email, "{$first_name} {$last_name}");
-            $mail->isHTML(true);
-            $mail->Subject = 'Verify Your Account';
-            $mail->Body    = "Hello {$first_name},<br><br>Your verification code is: <b>{$otp}</b><br><br>This code will expire in 15 minutes.";
+            $mail->setFrom($_ENV['SMTP_USERNAME'], 'Punjab Classified');
+$mail->addAddress($email, "{$first_name} {$last_name}");
+$mail->isHTML(true);
+$mail->Subject = 'Verify Your Account';
+
+$mail->Body = "
+    <div style='font-family: Arial, sans-serif; font-size: 15px; color: #333;'>
+        <p>Hi <strong>{$first_name}</strong>,</p>
+        
+        <p>Thank you for signing up with <strong>Punjab Classified</strong>! To complete your registration, please use the verification code below:</p>
+        
+        <p style='font-size: 18px; font-weight: bold; color: #2b6cb0; background: #f1f5f9; padding: 10px; border-radius: 5px; text-align: center;'>
+            {$otp}
+        </p>
+        
+        <p>This code will expire in <strong>15 minutes</strong>. If you didn’t request this, you can safely ignore this email.</p>
+        
+        <hr style='border: none; border-top: 1px solid #ddd; margin: 20px 0;'>
+        
+        <p style='font-size: 13px; color: #777;'>
+            Regards,<br>
+            The Punjab Classified Team
+        </p>
+    </div>
+";
+
             $mail->send();
 
             $_SESSION['verification_email'] = $email;
