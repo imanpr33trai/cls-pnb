@@ -340,6 +340,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (toggleUserStatusButton) {
       toggleUserStatus(toggleUserStatusButton.dataset.userId);
     }
+
+    const dashboardRedirectButton = target.closest(".dashboard-redirect");
+    if (dashboardRedirectButton) {
+      const page = dashboardRedirectButton.dataset.page;
+      if (page) {
+        loadPage(page);
+      }
+    }
   });
 
   document.body.addEventListener("click", function (event) {

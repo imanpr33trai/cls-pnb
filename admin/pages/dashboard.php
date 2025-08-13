@@ -95,19 +95,19 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Ad Posts (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">➕ <?= $ads_today ?> New Ads Posted</p>
-            <button class="mt-4 w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition-colors">Review Pending Ads</button>
+            <button data-page="pending-ads" class="dashboard-redirect mt-4 w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition-colors">Review Pending Ads</button>
         </div>
         
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Blog Posts (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">📝 <?= $blogs_today ?> New Blogs Submitted</p>
-            <button class="mt-4 w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition-colors">Approve Blogs</button>
+            <button data-page="pending-blogs" class="dashboard-redirect mt-4 w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition-colors">Approve Blogs</button>
         </div>
         
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">New Subscribers (Today)</h4>
             <p class="text-2xl font-bold text-gray-800">📬 <?= $subscribers_today ?> New Newsletter Subscribed</p>
-            <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors">View Emails</button>
+            <button data-page="view-subscribers" class="dashboard-redirect mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors">View Emails</button>
         </div>
         
         <div class="bg-white shadow-lg rounded-xl p-6">
@@ -115,19 +115,19 @@ $subscribers_this_week = $conn->query("SELECT COUNT(*) as count FROM subscribers
             <p class="text-2xl font-bold    
             
             text-gray-800">🏷️ <?= $ad_categories_count ?> Categories</p>
-            <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Manage Ad Categories</button>
+            <button data-page="category" class="dashboard-redirect mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Manage Ad Categories</button>
         </div>
         
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">Blog Categories</h4>
             <p class="text-2xl font-bold text-gray-800">📚 <?= $blog_categories_count ?> Categories</p>
-            <button class="mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Edit Blog Categories</button>
+            <button data-page="blog-cat" class="dashboard-redirect mt-4 w-full bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-800 transition-colors">Edit Blog Categories</button>
         </div>
         
         <div class="bg-white shadow-lg rounded-xl p-6">
             <h4 class="text-gray-500 font-medium mb-2">Pending Ad Approvals</h4>
             <p class="text-2xl font-bold text-gray-800">⏳ <?= $pending_ads ?> Ads Awaiting Review</p>
-            <button class="mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">Go to Moderation</button>
+            <button data-page="pending-ads" class="dashboard-redirect mt-4 w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition-colors">Go to Moderation</button>
         </div>
     </div>
 </div>
