@@ -365,6 +365,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (cancelButton) {
       closeModal(deleteAdModal);
     }
+    
+    if (event.target.matches('.fixed.inset-0')) {
+        closeModal(event.target);
+    }
   });
 
   document.body.addEventListener("submit", function (event) {
